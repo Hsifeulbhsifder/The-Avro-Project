@@ -37,7 +37,9 @@ public:
 
 	// Clears the entire stack (rolls the stack back to
 	// zero).
-	INLINEFORCE void Clear();
+	INLINEFORCE void Clear(){
+		m_currMarker = reinterpret_cast<Marker>(m_root);
+	}
 
 	// Frees all memory of stack
 	void Terminate();

@@ -56,6 +56,10 @@ include_directories(
 	${AVE_DIR}/src/core
 	${AVE_DIR}/headers
 	${AVE_DIR}/sources
+	${Avro_Arrow_SOURCE_DIR}/ARE/inc
+	${Avro_Arrow_SOURCE_DIR}/ARE/src/core
+	${Avro_Arrow_SOURCE_DIR}/ARE/headers
+	${Avro_Arrow_SOURCE_DIR}/ARE/sources
 	${AVE_DIR}/AvroUtil/inc
 	${AVE_DIR}/AvroUtil/src/core
 	${AVE_DIR}/AvroUtil/headers
@@ -89,7 +93,8 @@ set_target_properties(AVE PROPERTIES VS_INTERMEDIATE_DIRECTORY_PROFILE "${AVE_TM
 set_target_properties(AVE PROPERTIES VS_INTERMEDIATE_DIRECTORY_RELEASE "${AVE_TMP}/$(Platform)/release")
 set_target_properties(AVE PROPERTIES VS_INTERMEDIATE_DIRECTORY_PRODUCTION "${AVE_TMP}/$(Platform)/production")
 
-#links utilities
+#links utilities and rendering engine
 target_link_libraries(AVE AvroUtil)
+target_link_libraries(AVE ARE)
 
 install (TARGETS AVE RUNTIME DESTINATION "${Avro_Arrow_SOURCE_DIR}/bin/$(Platform)/$(Configuration)")

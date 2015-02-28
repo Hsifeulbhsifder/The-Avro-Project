@@ -3,7 +3,7 @@
 
 #include "avro_typedefs.h"
 
-class MemoryHeap{
+class DLLEXPORT MemoryHeap{
 	U8** m_heapBlocks;
 	U8* m_root;
 	U64 m_heapSize_bytes;

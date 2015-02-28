@@ -1,5 +1,4 @@
 @echo off
-color 0a
 
 echo Generating Visual Studio 32-bit solution
 

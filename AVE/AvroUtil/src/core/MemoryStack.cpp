@@ -20,10 +20,6 @@ INLINEFORCE void MemoryStack::Terminate(){
 	Reset();
 }
 
-INLINEFORCE void MemoryStack::Clear(){
-	m_currMarker = reinterpret_cast<Marker>(m_root);
-}
-
 B8 MemoryStack::Initialize(U64 stackSize_bytes){
 	if (m_root) Terminate();
 	AVRO_ASSERT(stackSize_bytes > 0, "Stack Size too low");
