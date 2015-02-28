@@ -11,3 +11,4 @@ echo.
 echo.
 echo Solution generated in /VS-2013x64
 pause
+exit

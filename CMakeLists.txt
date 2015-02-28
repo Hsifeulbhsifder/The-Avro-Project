@@ -75,6 +75,10 @@ include_directories(
 	${Avro_Arrow_SOURCE_DIR}/src/core
 	${Avro_Arrow_SOURCE_DIR}/headers
 	${Avro_Arrow_SOURCE_DIR}/sources
+	${Avro_Arrow_SOURCE_DIR}/ARE/inc
+	${Avro_Arrow_SOURCE_DIR}/ARE/src/core
+	${Avro_Arrow_SOURCE_DIR}/ARE/headers
+	${Avro_Arrow_SOURCE_DIR}/ARE/sources
 	${Avro_Arrow_SOURCE_DIR}/AVE/inc
 	${Avro_Arrow_SOURCE_DIR}/AVE/src/core
 	${Avro_Arrow_SOURCE_DIR}/AVE/headers
