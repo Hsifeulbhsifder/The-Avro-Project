@@ -43,5 +43,7 @@ typedef double				F64;
 #define lscope static
 #define glob static
 #define intern static
+#define scast static_cast
+#define rcast reinterpret_cast
 
 #endif

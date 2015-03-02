@@ -18,8 +18,8 @@
 
 #define AvroDebugBreak() DebugBreak()
 
-static INLINEFORCE bool IsNaN(float f) { return _isnan(f) != 0; }
-static INLINEFORCE bool IsFinite(float f) { return _finite(f) != 0; }
+static INLINEFORCE char IsNaN(float f) { return _isnan(f); }
+static INLINEFORCE char IsFinite(float f) { return _finite(f); }
 
 
 #endif

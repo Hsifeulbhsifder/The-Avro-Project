@@ -17,3 +17,4 @@ findstr -s -n -i -l "glob" %Wildcard%
 
 echo -------
 echo -------
+pause

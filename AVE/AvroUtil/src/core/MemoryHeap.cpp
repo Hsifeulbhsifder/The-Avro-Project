@@ -64,7 +64,7 @@ void* MemoryHeap::Allocate(U64 size_bytes)
 		srchPointer += srchpointerSize;
 	}
 	AllocateNewBlock(srchPointer, size_bytes);
-	if (found) return static_cast<void*>(srchPointer + HEADER_SIZE); // return pointer data only, skips head
+	if (found) return scast<void*>(srchPointer + HEADER_SIZE); // return pointer data only, skips head
 	return nullptr;
 }
 
@@ -78,7 +78,7 @@ void* MemoryHeap::AllocateAligned(U64 size_bytes, U8 alignment)
 	U64 expandedSize_bytes = size_bytes + alignment;
 
 	// Allocate unaligned block & convert address to U64
-	U64 rawAddress = reinterpret_cast<U64>(Allocate(expandedSize_bytes));
+	U64 rawAddress = rcast<U64>(Allocate(expandedSize_bytes));
 
 	// Calculate the adjustment by masking off the lower bits of the address, to determine how 
 	// misaligned it is
@@ -92,15 +92,15 @@ void* MemoryHeap::AllocateAligned(U64 size_bytes, U8 alignment)
 	// Store the adjustment in the byte immediately
 	// preceding the adjusted address
 	AVRO_ASSERT(adjustment < 256, "Adjustment larger than one byte worth");
-	U8* alignedMem = reinterpret_cast<U8*>(alignedAddress);
-	alignedMem[-1] = static_cast<U8>(adjustment);
-	return static_cast<void*>(alignedMem);
+	U8* alignedMem = rcast<U8*>(alignedAddress);
+	alignedMem[-1] = scast<U8>(adjustment);
+	return scast<void*>(alignedMem);
 }
 
 void MemoryHeap::Dissipate(void* mem)
 {
 	if (mem == nullptr) return;
-	U8* readjustedPointer = static_cast<U8*>(mem);
+	U8* readjustedPointer = scast<U8*>(mem);
 	readjustedPointer -= FOOTER_SIZE; // Adjust back to full pointer size
 	*readjustedPointer &= ~BLOCK_ALLOCATION_BIT;
 	Coalesce(readjustedPointer);
@@ -108,12 +108,12 @@ void MemoryHeap::Dissipate(void* mem)
 
 void MemoryHeap::DissipateAligned(void* mem)
 {
-	const U8* alignedMem = reinterpret_cast<const U8*>(mem);
-	U64 alignedAddress = reinterpret_cast<U64>(mem);
-	U64 adjustment = static_cast<U64>(alignedMem[-1]);
+	const U8* alignedMem = rcast<const U8*>(mem);
+	U64 alignedAddress = rcast<U64>(mem);
+	U64 adjustment = scast<U64>(alignedMem[-1]);
 
 	U64 rawAddress = alignedAddress - adjustment;
-	void* rawMem = reinterpret_cast<void*>(rawAddress);
+	void* rawMem = rcast<void*>(rawAddress);
 
 	Dissipate(rawMem);
 }
@@ -122,7 +122,7 @@ B8 MemoryHeap::GrowHeapSize()
 {
 	//allocate a new array
 	U64 mallocSize = sizeof(U8*) * (m_numBlocks + 1);
-	U8** newHeapBlocks = static_cast<U8**>(AVRO_DEFAULT_ALLOCATOR.Allocate(mallocSize));
+	U8** newHeapBlocks = scast<U8**>(AVRO_DEFAULT_ALLOCATOR.Allocate(mallocSize));
 
 	//check allocation success
 	if (!newHeapBlocks) return false;
@@ -131,7 +131,7 @@ B8 MemoryHeap::GrowHeapSize()
 	for (U64 i = 0; i < m_numBlocks; i++) newHeapBlocks[i] = m_heapBlocks[i];
 
 	//allocate new memory block
-	newHeapBlocks[m_numBlocks] = static_cast<U8*>(AVRO_DEFAULT_ALLOCATOR.Allocate(m_heapSize_bytes));
+	newHeapBlocks[m_numBlocks] = scast<U8*>(AVRO_DEFAULT_ALLOCATOR.Allocate(m_heapSize_bytes));
 
 	// check allocation
 	if (!newHeapBlocks[m_numBlocks]) return false;
@@ -156,12 +156,12 @@ void MemoryHeap::AllocateNewBlock(U8* pointer, U64 size_bytes)
 	AVRO_ASSERT(!(*pointer & BLOCK_ALLOCATION_BIT), "Block already allocated, check Allocate function");
 	U8 oldSize = *pointer;
 	//Set new size + alloc bit
-	*pointer = static_cast<U8>(size_bytes) | BLOCK_ALLOCATION_BIT;
-	*(pointer + size_bytes - FOOTER_SIZE) = static_cast<U8>(size_bytes) | BLOCK_ALLOCATION_BIT;
+	*pointer = scast<U8>(size_bytes) | BLOCK_ALLOCATION_BIT;
+	*(pointer + size_bytes - FOOTER_SIZE) = scast<U8>(size_bytes) | BLOCK_ALLOCATION_BIT;
 	//Set size of remaining part of free block in header and footer
 	if (size_bytes < oldSize){
-		*(pointer + size_bytes) = oldSize - static_cast<U8>(size_bytes);
-		if (pointer != m_root)*(pointer + oldSize - FOOTER_SIZE) = oldSize - static_cast<U8>(size_bytes);
+		*(pointer + size_bytes) = oldSize - scast<U8>(size_bytes);
+		if (pointer != m_root)*(pointer + oldSize - FOOTER_SIZE) = oldSize - scast<U8>(size_bytes);
 	}
 }
 

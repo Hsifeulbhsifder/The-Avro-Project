@@ -23,28 +23,28 @@
 //FUNCTIONS
 namespace AU{
 	template<class T>
-	INLINEFORCE static T Square(const T a){
+	INLINEFORCE glob T Square(const T a){
 		return a*a;
 	}
 
-	INLINEFORCE static F32 Sqrt(const F32 value){ return sqrtf(value); }
+	INLINEFORCE glob F32 Sqrt(const F32 value){ return sqrtf(value); }
 
-	INLINEFORCE static F32 Abs(const F32 value){
+	INLINEFORCE glob F32 Abs(const F32 value){
 		return fabsf(value);
 	}
 
 	template<class T>
-	INLINEFORCE static T Max(const T a, const T b){
+	INLINEFORCE glob T Max(const T a, const T b){
 		return (a >= b) ? a : b;
 	}
 
 	template<class T>
-	INLINEFORCE static T Min(const T a, const T b){
+	INLINEFORCE glob T Min(const T a, const T b){
 		return (a <= b) ? a : b;
 	}
 
 	template<class T>
-	INLINEFORCE static T Clamp(const T a, const T min, const T max){
+	INLINEFORCE glob T Clamp(const T a, const T min, const T max){
 		return a<min ? min : a>max ? a : max;
 	}
 

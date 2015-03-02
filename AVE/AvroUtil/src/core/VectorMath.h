@@ -80,10 +80,10 @@ namespace AU{
 		F32& operator[](I32 index); // gets specific component reference
 		F32 operator[](I32 index) const; // gets specific component copy
 
-		INLINEFORCE glob F32 Dot(const V2& a, const V2& b); //static dot product
-		INLINEFORCE glob F32 Dist2(const V2& a, const V2& b); //static distance squared function
-		INLINEFORCE glob F32 Dist(const V2& a, const V2& b); //static distance function
-		INLINEFORCE glob F32 Cross(const V2& a, const V2& b); //static cross product
+		INLINEFORCE glob F32 Dot(const V2& a, const V2& b); //global dot product
+		INLINEFORCE glob F32 Dist2(const V2& a, const V2& b); //global distance squared function
+		INLINEFORCE glob F32 Dist(const V2& a, const V2& b); //global distance function
+		INLINEFORCE glob F32 Cross(const V2& a, const V2& b); //global cross product
 
 		B8 Equals(const V2& v, F32 tolerance) const; //fuzzy equality test
 
@@ -309,19 +309,19 @@ namespace AU{
 	}
 
 	INLINEFORCE F32 V2::Max() const{
-		return ave::Max(x, y);
+		return AU::Max(x, y);
 	}
 
 	INLINEFORCE F32 V2::Min() const{
-		return ave::Min(x, y);
+		return AU::Min(x, y);
 	}
 
 	INLINEFORCE F32 V2::AbsMax() const{
-		return ave::Max(Abs(x), Abs(y));
+		return AU::Max(Abs(x), Abs(y));
 	}
 
 	INLINEFORCE F32 V2::AbsMin() const{
-		return ave::Min(Abs(x), Abs(y));
+		return AU::Min(Abs(x), Abs(y));
 	}
 
 	INLINEFORCE F32 V2::Len() const{
@@ -364,7 +364,7 @@ namespace AU{
 	}
 
 	INLINEFORCE V2 V2::Clamp(F32 min, F32 max) const{
-		return V2(ave::Clamp(x, min, max), ave::Clamp(y, min, max));
+		return V2(AU::Clamp(x, min, max), AU::Clamp(y, min, max));
 	}
 
 }

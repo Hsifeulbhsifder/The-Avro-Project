@@ -45,7 +45,7 @@ void* MemoryQuantum::Allocate(){
 
 	U8* returnPointer = m_singularity;
 	m_singularity = GetNext(m_singularity);
-	return static_cast<void*>((returnPointer + TOP_QUARK_SIZE)); // return pointer data only, skips head
+	return scast<void*>((returnPointer + TOP_QUARK_SIZE)); // return pointer data only, skips head
 }
 
 void MemoryQuantum::Dissipate(void* quantum){
@@ -73,7 +73,7 @@ B8 MemoryQuantum::ExpandUniverse(){
 
 	//allocates a new array
 	U64 universeSize = sizeof(U8*) * (m_particles + 1);
-	U8** newUniverse = static_cast<U8**>(AVRO_DEFAULT_ALLOCATOR.Allocate(universeSize));
+	U8** newUniverse = scast<U8**>(AVRO_DEFAULT_ALLOCATOR.Allocate(universeSize));
 
 	// check allocation success
 	if (!newUniverse) return false;

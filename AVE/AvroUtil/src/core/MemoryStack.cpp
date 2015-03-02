@@ -24,10 +24,10 @@ B8 MemoryStack::Initialize(U64 stackSize_bytes){
 	if (m_root) Terminate();
 	AVRO_ASSERT(stackSize_bytes > 0, "Stack Size too low");
 	m_stackSize_bytes = stackSize_bytes;
-	m_root = static_cast<U8*>(AVRO_DEFAULT_ALLOCATOR.Allocate(stackSize_bytes));
+	m_root = scast<U8*>(AVRO_DEFAULT_ALLOCATOR.Allocate(stackSize_bytes));
 	if (!m_root) return false;
 
-	m_currMarker = reinterpret_cast<Marker>(m_root);
+	m_currMarker = rcast<Marker>(m_root);
 	return true;
 }
 
@@ -35,11 +35,11 @@ void* MemoryStack::Allocate(U64 size_bytes)
 {
 	AVRO_ASSERT(m_root, "Memory Stack has not been initialized");
 	AVRO_ASSERT(size_bytes > 0, "Allocation size too small");
-	Marker rootAddress = reinterpret_cast<Marker>(m_root);
+	Marker rootAddress = rcast<Marker>(m_root);
 	if ((rootAddress + m_stackSize_bytes - m_currMarker) >= size_bytes){
 		Marker memAddress = m_currMarker;
 		m_currMarker += size_bytes;
-		return reinterpret_cast<void*>(m_currMarker);
+		return rcast<void*>(m_currMarker);
 	}
 
 	return nullptr;
@@ -55,7 +55,7 @@ void* MemoryStack::AllocateAligned(U64 size_bytes, U8 alignment)
 	U64 expandedSize_bytes = size_bytes + alignment;
 
 	// Allocate unaligned block & convert address to Marker.
-	Marker rawAddress = reinterpret_cast<Marker>(Allocate(expandedSize_bytes));
+	Marker rawAddress = rcast<Marker>(Allocate(expandedSize_bytes));
 
 	// Calculate the adjustment by masking off the lower bits
 	// of the address, to determine how "misaligned" it is.
@@ -66,12 +66,12 @@ void* MemoryStack::AllocateAligned(U64 size_bytes, U8 alignment)
 	// Calculate the adjusted address
 	Marker alignedAddress = rawAddress + adjustment;
 
-	return reinterpret_cast<void*>(alignedAddress);
+	return rcast<void*>(alignedAddress);
 }
 
 INLINEFORCE void MemoryStack::FreeToMarker(Marker marker)
 {
-	U64 rootAddress = reinterpret_cast<U64>(m_root);
+	U64 rootAddress = rcast<U64>(m_root);
 	AVRO_ASSERT(marker >= rootAddress, "Marker precedes root stack pointer");
 	AVRO_ASSERT(marker <= (rootAddress + m_stackSize_bytes), "Marker succeeds end of stack");
 
