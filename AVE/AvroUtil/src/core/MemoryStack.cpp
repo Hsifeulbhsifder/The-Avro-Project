@@ -16,7 +16,7 @@ void MemoryStack::Reset(){
 }
 
 INLINEFORCE void MemoryStack::Terminate(){
-	free(m_root);
+	AVRO_DEFAULT_ALLOCATOR.Dissipate(m_root);
 	Reset();
 }
 
@@ -24,7 +24,7 @@ B8 MemoryStack::Initialize(U64 stackSize_bytes){
 	if (m_root) Terminate();
 	AVRO_ASSERT(stackSize_bytes > 0, "Stack Size too low");
 	m_stackSize_bytes = stackSize_bytes;
-	m_root = static_cast<U8*>(malloc(stackSize_bytes));
+	m_root = static_cast<U8*>(AVRO_DEFAULT_ALLOCATOR.Allocate(stackSize_bytes));
 	if (!m_root) return false;
 
 	m_currMarker = reinterpret_cast<Marker>(m_root);

@@ -14,13 +14,14 @@
 
 //CONSTANTS
 #define PI (3.1415926535897932f)
-#define E  (2.71828182845904523526f)
+#define TAU (6.2831853071795865f)
+#define E (2.71828182845904523526f)
 #define EZERO (1.e-8f)
 #define EPSILON (1.e-4f)
 
 
 //FUNCTIONS
-namespace ave{
+namespace AU{
 	template<class T>
 	INLINEFORCE static T Square(const T a){
 		return a*a;

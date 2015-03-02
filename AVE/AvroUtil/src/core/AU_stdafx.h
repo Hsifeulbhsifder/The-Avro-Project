@@ -9,4 +9,7 @@
 #include "Avro_Preprocessor.h"
 
 // TODO: reference additional headers your program requires here
+
+#include "AvroAllocator.h"
+
 #endif

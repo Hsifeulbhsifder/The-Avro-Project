@@ -6,7 +6,7 @@
 #include <MemoryStack.h>
 #include <AvroUtil.h>
 
-using namespace ave;
+using namespace AU;
 
 B8 AvroVersatileEngine::Initialize(HINSTANCE appInstance, U32 width, U32 height, char* title, U64 permanentHeapSize, U64 transientHeapSize){
 
@@ -28,6 +28,13 @@ B8 AvroVersatileEngine::Initialize(HINSTANCE appInstance, U32 width, U32 height,
 		MessageBox(NULL, "Window Not created!", "Error!", MB_ICONERROR | MB_OK);
 		return false;
 	}
+
+	if (!(m_renderingEngine.Initialize())){
+		OutputDebugStringA("Rendering engine initialization has failed");
+		MessageBox(NULL, "Rendering Engine initialization Not created!", "Error!", MB_ICONERROR | MB_OK);
+		return false;
+	}
+
 	OutputDebugStringA("Engine Initialization Sequence Is Complete\n");
 	return true;
 }
@@ -38,24 +45,32 @@ void AvroVersatileEngine::Run(){
 		m_isRunning = true;
 
 		MemoryStack singleFrameAllocator;
-		singleFrameAllocator.Initialize(ave::KiB(1024));
+		singleFrameAllocator.Initialize(AU::KiB(1024));
 
 		while (m_isRunning){
 			singleFrameAllocator.Clear();
 
-			BOOL msgResult = GetMessage(&msg, 0, 0, 0);
-			if (msgResult > 0){
+			PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE);
+			if (msg.message != WM_QUIT){
 				TranslateMessage(&msg);
 				DispatchMessageA(&msg);
 			}
 			else{
 				OutputDebugStringA("AvroArrow is kill\n");
+				m_isRunning = false;
 				break;
 			}
+
+			m_renderingEngine.Render(0);
+
 		}
 	}
 }
 
 void AvroVersatileEngine::Terminate(){
+	m_renderingEngine.Terminate();
+	m_transientHeap.Terminate();
+	m_permanentHeap.Terminate();
+
 	OutputDebugStringA("Engine Termination Sequence Is Complete\n");
 }

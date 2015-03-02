@@ -20,8 +20,7 @@ I32 CALLBACK WinMain(HINSTANCE hInstance,
 
 	AvroVersatileEngine engine;
 
-	if (engine.Initialize(hInstance, SCREEN_WIDTH, SCREEN_HEIGHT, TITLE, ave::MiB(10), ave::MiB(250))){
-
+	if (engine.Initialize(hInstance, SCREEN_WIDTH, SCREEN_HEIGHT, TITLE, AU::MiB(10), AU::MiB(250))){
 		engine.Run();
 
 		engine.Terminate();

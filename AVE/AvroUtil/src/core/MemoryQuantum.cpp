@@ -1,6 +1,5 @@
 #include "AU_stdafx.h"
 #include "MemoryQuantum.h"
-#include <stdlib.h>
 
 const glob U64 TOP_QUARK_SIZE = sizeof(U8*);
 
@@ -27,8 +26,8 @@ B8 MemoryQuantum::Initialize(U64 quantumSize, U64 quanta){
 
 void MemoryQuantum::Terminate(){
 	//Free all memory
-	for (U64 i = 0; i < m_particles; i++) free(m_universe[i]);
-	free(m_universe);
+	for (U64 i = 0; i < m_particles; i++) AVRO_DEFAULT_ALLOCATOR.Dissipate(m_universe[i]);
+	AVRO_DEFAULT_ALLOCATOR.Dissipate(m_universe);
 
 	Reset(); // update member Variables
 }
@@ -74,7 +73,7 @@ B8 MemoryQuantum::ExpandUniverse(){
 
 	//allocates a new array
 	U64 universeSize = sizeof(U8*) * (m_particles + 1);
-	U8** newUniverse = static_cast<U8**>(malloc(universeSize));
+	U8** newUniverse = static_cast<U8**>(AVRO_DEFAULT_ALLOCATOR.Allocate(universeSize));
 
 	// check allocation success
 	if (!newUniverse) return false;
@@ -103,7 +102,7 @@ B8 MemoryQuantum::ExpandUniverse(){
 	}
 
 	// destroy old universe of pointers
-	if (m_universe) free(m_universe);
+	if (m_universe) AVRO_DEFAULT_ALLOCATOR.Dissipate(m_universe);
 
 	// assign the new universe of pointers and increment amount of pointers
 	m_universe = newUniverse;
@@ -121,7 +120,7 @@ U8* MemoryQuantum::AllocateNewQuantumVolume(U64 total_size, U64 segment_size){
 	U64 totalVolumeSize = total_size;
 
 	//allocate new Volume
-	U8* newVolume = (U8*)malloc(totalVolumeSize);
+	U8* newVolume = (U8*)AVRO_DEFAULT_ALLOCATOR.Allocate(totalVolumeSize);
 	if (!newVolume) return nullptr;
 
 	// turn the memory into linked list of chunks

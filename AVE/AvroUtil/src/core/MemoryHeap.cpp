@@ -28,10 +28,10 @@ void MemoryHeap::Terminate(){
 	for (U64 i = 0; i < m_numBlocks; i++){
 		U64 currPointerSize = *currPointer;
 		U8* nextPointer = currPointer + currPointerSize;
-		free(currPointer);
+		AVRO_DEFAULT_ALLOCATOR.Dissipate(currPointer);
 		currPointer = nextPointer;
 	}
-	free(m_heapBlocks);
+	AVRO_DEFAULT_ALLOCATOR.Dissipate(m_heapBlocks);
 
 	Reset();
 }
@@ -122,7 +122,7 @@ B8 MemoryHeap::GrowHeapSize()
 {
 	//allocate a new array
 	U64 mallocSize = sizeof(U8*) * (m_numBlocks + 1);
-	U8** newHeapBlocks = static_cast<U8**>(malloc(mallocSize));
+	U8** newHeapBlocks = static_cast<U8**>(AVRO_DEFAULT_ALLOCATOR.Allocate(mallocSize));
 
 	//check allocation success
 	if (!newHeapBlocks) return false;
@@ -131,7 +131,7 @@ B8 MemoryHeap::GrowHeapSize()
 	for (U64 i = 0; i < m_numBlocks; i++) newHeapBlocks[i] = m_heapBlocks[i];
 
 	//allocate new memory block
-	newHeapBlocks[m_numBlocks] = static_cast<U8*>(malloc(m_heapSize_bytes));
+	newHeapBlocks[m_numBlocks] = static_cast<U8*>(AVRO_DEFAULT_ALLOCATOR.Allocate(m_heapSize_bytes));
 
 	// check allocation
 	if (!newHeapBlocks[m_numBlocks]) return false;

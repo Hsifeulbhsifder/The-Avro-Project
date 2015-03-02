@@ -2,6 +2,7 @@
 #define AVRO_VERSATILE_ENGINE_H
 
 #include "MemoryHeap.h"
+#include "AvroRenderingEngine.h"
 
 class DLLEXPORT AvroVersatileEngine{
 private:
@@ -12,6 +13,8 @@ public:
 	B8 m_isRunning;
 	MemoryHeap m_permanentHeap;
 	MemoryHeap m_transientHeap;
+
+	AvroRenderingEngine m_renderingEngine;
 
 	AvroVersatileEngine(){}
 

@@ -68,6 +68,14 @@ public:
 	}
 	//@}
 
+	INLINEFORCE B8 operator bool() const{
+		return m_container.IsValidIndex(m_index)
+	}
+
+	INLINEFORCE B8 operator!() const{
+		return !(bool)*this;
+	}
+
 	INLINEFORCE I GetIndex() const{
 		return m_index;
 	}
@@ -88,6 +96,38 @@ private:
 	C& m_container;
 	I m_index;
 };
+
+template <typename C, typename E, typename I>
+INLINEFORCE IndexedIterator<C, E, I> 
+operator+(I32 offset, IndexedIterator<C, E, I> rhs){
+	return rhs + offset;
+}
+
+/************************************************************************/
+/* Base Dynamic Array, untyped data                                     */
+/************************************************************************/
+template <class Allocator>
+class VoidArr{
+	void* m_data;
+	I32 m_size;
+	I32 m_capacity;
+	Allocator& m_allocator;
+public:
+	INLINEFORCE VoidArr(Allocator& allocator){
+
+	}
+	INLINEFORCE void* GetData(){ return m_data; }
+	INLINEFORCE const void* GetData() const { return m_data; }
+
+	INLINEFORCE B8 IsValidIndex(I32 i) const{
+		return i >= 0 && i < m_size;
+	}
+
+	INLINEFORCE I32 Size() const{ return m_size; }
+
+	
+};
+
 
 /**
 * ReversePredicateWrapper class used by implicit heaps.

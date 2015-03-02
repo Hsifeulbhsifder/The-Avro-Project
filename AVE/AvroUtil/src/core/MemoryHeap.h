@@ -2,8 +2,9 @@
 #define AVRO_UTIL_MEMORY_HEAP_H
 
 #include "avro_typedefs.h"
+#include "AvroAllocator.h"
 
-class DLLEXPORT MemoryHeap{
+class DLLEXPORT MemoryHeap: public AvroAllocator{
 	U8** m_heapBlocks;
 	U8* m_root;
 	U64 m_heapSize_bytes;

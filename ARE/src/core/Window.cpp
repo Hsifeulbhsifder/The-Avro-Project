@@ -29,6 +29,8 @@ I64 CALLBACK Window::Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPAR
 	}break;
 	case WM_PAINT:{
 		hDC = BeginPaint(hwnd, &paint);
+		SetTextColor(hDC, COLORREF(0x00FF00FF));
+		TextOut(hDC, 150, 150, "Hello, World!", sizeof("Hello, World!"));
 		EndPaint(hwnd, &paint);
 	}break;
 	default:{

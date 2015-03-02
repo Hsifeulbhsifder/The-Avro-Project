@@ -5,7 +5,7 @@
 #include "AvroMath.h"
 
 
-namespace ave{
+namespace AU{
 
 	/************************************************************************/
 	/*	Two-Dimensional Vector                                              */

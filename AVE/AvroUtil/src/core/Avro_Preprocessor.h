@@ -4,6 +4,7 @@
 #include "avro_typedefs.h"
 #include "Platform.h"
 #include <iostream>
+#include "AvroAllocator.h"
 
 
 #ifdef A_W32
@@ -38,6 +39,6 @@
 #endif
 
 
-
+glob AvroDefaultAllocator AVRO_DEFAULT_ALLOCATOR;
 
 #endif

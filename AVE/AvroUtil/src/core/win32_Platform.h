@@ -7,6 +7,9 @@
 #define WIN32_LEAN_AND_MEAN
 #define WIN32_EXTRA_LEAN
 
+#define VARARGS __cdecl
+#define CDECL __cdecl
+#define STDCALL __stdcall
 #define INLINEFORCE __forceinline
 #define NOINLINE __declspec(noinline)
 

@@ -7,7 +7,6 @@ B8 AvroRenderingEngine::Initialize(){
 }
 
 void AvroRenderingEngine::Render(F32 delta){
-	OutputDebugStringA("Rendering\n");
 }
 
 void AvroRenderingEngine::Terminate(){

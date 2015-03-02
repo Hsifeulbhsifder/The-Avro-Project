@@ -2,7 +2,8 @@
 #define AVRO_UTIL_AVRO_UTIL_H
 #include "avro_typedefs.h"
 
-namespace ave{
+namespace AU{
+
 	INLINEFORCE U16 EndianSwapU16(U16 value){
 		return ((value & 0x00FF) << 8)
 			 | ((value & 0xFF00) >> 8);
@@ -86,6 +87,16 @@ namespace ave{
 
 	INLINEFORCE U64 GiB(U64 bytes){
 		return bytes * 1073741824;
+	}
+
+	template<typename T>
+	INLINEFORCE U32 SizeofArr(T* arr){ return (sizeof(arr) / sizeof(arr[0])); }
+
+	template<typename T>
+	INLINEFORCE void swap(T* a, T* b){
+		T* tmp = a;
+		a = b;
+		b = tmp;
 	}
 
 }

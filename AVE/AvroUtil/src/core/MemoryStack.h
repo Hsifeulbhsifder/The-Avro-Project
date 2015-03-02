@@ -1,9 +1,9 @@
 #ifndef AVRO_UTIL_MEMORY_STACK_H
 #define AVRO_UTIL_MEMORY_STACK_H
 #include "avro_typedefs.h"
+#include "AvroAllocator.h"
 
-
-class MemoryStack{
+class MemoryStack : public AvroAllocator{
 public:
 	// Stack marker: Represents the current top of the
 	// stack. You can only roll back to a marker, not to
@@ -32,6 +32,8 @@ public:
 	// Rolls the stack back to a previous marker.
 	INLINEFORCE void FreeToMarker(Marker marker);
 
+	INLINEFORCE void Dissipate(void* mem){} //Do not call
+
 	// resets all member variables
 	INLINEFORCE void Reset();
 
@@ -55,7 +57,7 @@ private:
 /************************************************************************/
 /* Double Buffered Stack for frame allocations across two frames        */
 /************************************************************************/
-class DiBufferedStack{
+class DiBufferedStack : public AvroAllocator{
 	U32 m_currStack;
 	MemoryStack m_stack[2];
 public:
@@ -79,6 +81,8 @@ public:
 		return m_stack[m_currStack].AllocateAligned(size_bytes, alignment);
 	}
 
+	INLINEFORCE void Dissipate(void* mem){} //Do not call
+
 private:
 	DiBufferedStack(const DiBufferedStack& rhs){}
 	void operator=(const DiBufferedStack& rhs){}
@@ -87,7 +91,7 @@ private:
 /************************************************************************/
 /* Triple Buffered Stack for frame allocations across three frames      */
 /************************************************************************/
-class TriBufferedStack{
+class TriBufferedStack : public AvroAllocator{
 
 	U32 m_currStack;
 	MemoryStack m_stack[3];
@@ -114,6 +118,8 @@ public:
 		return m_stack[m_currStack].AllocateAligned(size_bytes, alignment);
 	}
 
+	INLINEFORCE void Dissipate(void* mem){} //Do not call
+
 private:
 	TriBufferedStack(const TriBufferedStack& rhs){}
 	void operator=(const TriBufferedStack& rhs){}
@@ -122,7 +128,7 @@ private:
 /************************************************************************/
 /* Quadruple Buffered Stack for frame allocations across four frames    */
 /************************************************************************/
-class QuadBufferedStack{
+class QuadBufferedStack : public AvroAllocator{
 
 	U32 m_currStack;
 	MemoryStack m_stack[4];
@@ -149,6 +155,8 @@ public:
 	INLINEFORCE void* AllocateAligned(U64 size_bytes, U8 alignment){
 		return m_stack[m_currStack].AllocateAligned(size_bytes, alignment);
 	}
+
+	INLINEFORCE void Dissipate(void* mem){} //Do not call
 
 private:
 	QuadBufferedStack(const QuadBufferedStack& rhs){}
