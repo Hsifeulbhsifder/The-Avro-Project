@@ -104,18 +104,23 @@ operator+(I32 offset, IndexedIterator<C, E, I> rhs){
 }
 
 /************************************************************************/
-/* Base Dynamic Array, untyped data                                     */
+/* Base Dynamic Array, untyped data, unordered                          */
 /************************************************************************/
-template <class Allocator>
+template <AvroAllocator Allocator = AVRO_DEFAULT_ALLOCATOR>
 class VoidArr{
 	void* m_data;
 	I32 m_size;
 	I32 m_capacity;
-	Allocator& m_allocator;
+	//Allocator& m_allocator;
 public:
-	INLINEFORCE VoidArr(Allocator& allocator){
-
+	explicit INLINEFORCE VoidArr(U32 capacity = 16):m_capacity(capacity):SIZE(0){
+		data = Allocator.Allocate(capacity);
 	}
+	explicit INLINEFORCE VoidArr(void* data) : m_data(data){
+		m_capacity = AU::SizeofArr(data);
+		m_size = m_capacity;
+	}
+
 	INLINEFORCE void* GetData(){ return m_data; }
 	INLINEFORCE const void* GetData() const { return m_data; }
 

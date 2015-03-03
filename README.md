@@ -1,4 +1,4 @@
-# The-Avro-Project
+# The Avro Project
 A game based on a game I had previously created in Turing, but remastered with c++ and now in 3D, along side its own engine, rendering engine, and Utility set
 
 This project is inteded to be cross platform, but as I have no knowledge of programming in linux or unix, I have no idea how to do exactly that, so if you feel that 
