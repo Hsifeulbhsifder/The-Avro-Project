@@ -77,16 +77,21 @@ namespace AU{
 		return u.f64;
 	}
 
+	INLINEFORCE U32 HashF32(F32 value){
+		U32F32 u;
+		
+	}
+
 	INLINEFORCE U64 KiB(U64 bytes){
-		return bytes * 1024;
+		return bytes * 1024LL;
 	}
 
 	INLINEFORCE U64 MiB(U64 bytes){
-		return bytes * 1048576;
+		return bytes * 1048576LL;
 	}
 
 	INLINEFORCE U64 GiB(U64 bytes){
-		return bytes * 1073741824;
+		return bytes * 1073741824LL;
 	}
 
 	template<typename T>
