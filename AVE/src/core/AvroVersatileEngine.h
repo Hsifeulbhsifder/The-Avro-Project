@@ -13,12 +13,15 @@ public:
 	B8 m_isRunning;
 	MemoryHeap m_permanentHeap;
 	MemoryHeap m_transientHeap;
+#ifdef AVRO_DEBUG
+	MemoryHeap m_debugHeap;
+#endif
 
 	AvroRenderingEngine m_renderingEngine;
 
 	AvroVersatileEngine(){}
 
-	B8 Initialize(HINSTANCE appInstance, U32 width, U32 height, char* title, U64 permanentHeapSize, U64 transientHeapSize);
+	B8 Initialize(HINSTANCE appInstance, U32 width, U32 height, char* title, U64 permanentHeapSize, U64 transientHeapSize, U64 debugHeapSize);
 
 	void Run();
 

@@ -77,9 +77,81 @@ namespace AU{
 		return u.f64;
 	}
 
-	INLINEFORCE U32 HashF32(F32 value){
+	INLINEFORCE U64 HashB8(B8 value){
+		if (value) value /= value;
+		return (U64)value;
+	}
+
+	INLINEFORCE U64 HashU8(U8 value){
+		return (U64)value;
+	}
+
+	INLINEFORCE U64 HashU16(U16 value){
+		return (U64)value;
+	}
+	
+	INLINEFORCE U64 HashU32(U32 value){
+		return (U64)value;
+	}
+	
+	INLINEFORCE U64 HashU64(U64 value){
+		return value;
+	}
+
+	union U8I8{
+		U8 u8;
+		I8 i8;
+	};
+	
+	INLINEFORCE U64 HashI8(I8 value){
+		U8I8 u;
+		u.i8 = value;
+		return (U64)u.u8;
+	}
+
+	union U16I16{
+		U16 u16;
+		I16 i16;
+	};
+
+	INLINEFORCE U64 HashI16(I16 value){
+		U16I16 u;
+		u.i16 = value;
+		return (U64)u.u16;
+	}
+
+	union U32I32{
+		U32 u32;
+		I32 i32;
+	};
+
+	INLINEFORCE U64 HashI32(I32 value){
+		U32I32 u;
+		u.i32 = value;
+		return (U64)u.u32;
+	}
+
+	union U64I64{
+		U64 u64;
+		I64 i64;
+	};
+
+	INLINEFORCE U64 HashI64(I64 value){
+		U64I64 u;
+		u.i64 = value;
+		return u.u64;
+	}
+	
+	INLINEFORCE U64 HashF32(F32 value){
 		U32F32 u;
-		
+		u.f32 = value;
+		return (U64)u.u32;
+	}
+
+	INLINEFORCE U64 HashF64(F64 value){
+		U64F64 u;
+		u.f64 = value;
+		return u.u64;
 	}
 
 	INLINEFORCE U64 KiB(U64 bytes){
@@ -97,6 +169,8 @@ namespace AU{
 	template<typename T>
 	INLINEFORCE U32 SizeofArr(T* arr){ return (sizeof(arr) / sizeof(arr[0])); }
 
+	//Default swap function, define other swap functions 
+	//and use template specialization to do custom swaps
 	template<typename T>
 	INLINEFORCE void swap(T* a, T* b){
 		T* tmp = a;

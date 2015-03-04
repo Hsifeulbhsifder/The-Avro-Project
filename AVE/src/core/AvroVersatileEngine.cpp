@@ -8,7 +8,15 @@
 
 using namespace AU;
 
-B8 AvroVersatileEngine::Initialize(HINSTANCE appInstance, U32 width, U32 height, char* title, U64 permanentHeapSize, U64 transientHeapSize){
+B8 AvroVersatileEngine::Initialize(HINSTANCE appInstance, U32 width, U32 height, char* title, U64 permanentHeapSize, U64 transientHeapSize, U64 debugHeapSize){
+
+#ifdef AVRO_DEBUG
+	if (!(m_debugHeap.Initialize(debugHeapSize))){
+		OutputDebugStringA("Not enough system memory to debug this game");
+		MessageBox(NULL, "Not enough RAM to debug this game", "Error!", MB_ICONERROR | MB_OK);
+		return false;
+	}
+#endif
 
 	if (!(m_permanentHeap.Initialize(permanentHeapSize))){
 		OutputDebugStringA("Not enough system memory to run this game");
@@ -69,6 +77,9 @@ void AvroVersatileEngine::Run(){
 
 void AvroVersatileEngine::Terminate(){
 	m_renderingEngine.Terminate();
+#ifdef AVRO_DEBUG
+	m_debugHeap.Terminate();
+#endif
 	m_transientHeap.Terminate();
 	m_permanentHeap.Terminate();
 

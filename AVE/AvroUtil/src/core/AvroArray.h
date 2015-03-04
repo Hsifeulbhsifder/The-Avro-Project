@@ -109,8 +109,8 @@ operator+(I32 offset, IndexedIterator<C, E, I> rhs){
 template <AvroAllocator Allocator = AVRO_DEFAULT_ALLOCATOR>
 class VoidArr{
 	void* m_data;
-	I32 m_size;
-	I32 m_capacity;
+	U32 m_size;
+	U32 m_capacity;
 	//Allocator& m_allocator;
 public:
 	explicit INLINEFORCE VoidArr(U32 capacity = 16):m_capacity(capacity):SIZE(0){
@@ -124,13 +124,50 @@ public:
 	INLINEFORCE void* GetData(){ return m_data; }
 	INLINEFORCE const void* GetData() const { return m_data; }
 
-	INLINEFORCE B8 IsValidIndex(I32 i) const{
+	INLINEFORCE B8 IsValidIndex(U32 i) const{
 		return i >= 0 && i < m_size;
 	}
 
-	INLINEFORCE I32 Size() const{ return m_size; }
+	INLINEFORCE U32 Size() const{ return m_size; }
 
-	
+	INLINEFORCE void*& operator[](U32 index){
+		AVRO_ASSERT(index < m_size, "Array access request out of bounds");
+		return m_data[index];
+	}
+
+	INLINEFORCE void* operator[](U32 index) const{
+		AVRO_ASSERT(index < m_size, "Array access request out of bounds");
+		return m_data[index];
+	}
+
+	INLINEFORCE void Push(void* value){
+		if (m_size == m_capacity) {}//TODO: resize array
+		m_data[m_size++] = value;
+	}
+
+	INLINEFORCE void PushAll(void* array,U32 start, U32 count){
+		//TODO: Optimize
+		for (U32 i = 0, i < count, i++) Push(array[i + start]);
+	}
+
+	INLINEFORCE void PushAll(const VoidArr& array){
+		//TODO: Optimize
+		for (U32 i = 0, i < array.m_size; i++) Push(array[i]);
+	}
+
+	INLINEFORCE void PushAll(const VoidArr& array, U32 start, U32 count){
+		//TODO: Optimize
+		for (U32 i = 0; i < count; i++) Push(array[i + start]);
+	}
+
+	INLINEFORCE void Insert(void* value, U32 index){
+		AVRO_ASSERT(index < m_size, "Array access request out of bounds");
+		if ((m_size + 1) == m_capacity){} //TODO: resize array
+
+		//TODO: OPTIMIZE< OPTIMIZE, OPTIMIZE
+		for (U32 i = index)
+	}
+
 };
 
 
