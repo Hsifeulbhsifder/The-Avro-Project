@@ -172,7 +172,7 @@ namespace AU{
 	//Default swap function, define other swap functions 
 	//and use template specialization to do custom swaps
 	template<typename T>
-	INLINEFORCE void swap(T* a, T* b){
+	INLINEFORCE void Swap(T* a, T* b){
 		T* tmp = a;
 		a = b;
 		b = tmp;

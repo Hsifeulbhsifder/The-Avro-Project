@@ -145,27 +145,106 @@ public:
 		m_data[m_size++] = value;
 	}
 
-	INLINEFORCE void PushAll(void* array,U32 start, U32 count){
+	INLINEFORCE void PushArr(void* arr,U32 start, U32 count){
 		//TODO: Optimize
-		for (U32 i = 0, i < count, i++) Push(array[i + start]);
+		for (U32 i = 0, i < count, i++) Push(arr[i + start]);
 	}
 
-	INLINEFORCE void PushAll(const VoidArr& array){
+	INLINEFORCE void PushArr(const VoidArr& arr){
 		//TODO: Optimize
-		for (U32 i = 0, i < array.m_size; i++) Push(array[i]);
+		for (U32 i = 0, i < arr.m_size; i++) Push(arr[i]);
 	}
 
-	INLINEFORCE void PushAll(const VoidArr& array, U32 start, U32 count){
+	INLINEFORCE void PushArr(const VoidArr& arr, U32 start, U32 count){
 		//TODO: Optimize
-		for (U32 i = 0; i < count; i++) Push(array[i + start]);
+		for (U32 i = 0; i < count; i++) Push(arr[i + start]);
 	}
 
 	INLINEFORCE void Insert(void* value, U32 index){
 		AVRO_ASSERT(index < m_size, "Array access request out of bounds");
 		if ((m_size + 1) == m_capacity){} //TODO: resize array
 
-		//TODO: OPTIMIZE< OPTIMIZE, OPTIMIZE
-		for (U32 i = index)
+		m_data[m_size++] = m_data[index];
+		m_data[index] = value;
+	}
+
+	INLINEFORCE void InsertArr(void* arr, U32 start, U32 count){
+		//TODO: Optimize
+		for (U32 i = 0; i < count; i++) Insert(arr[i + start]);
+	}
+
+	INLINEFORCE void Swap(U32 indexA, U32 indexB){
+		AVRO_ASSERT(indexA < m_size, "Array access request out of bounds");
+		AVRO_ASSERT(indexB < m_size, "Array access request out of bounds");
+		AU::Swap(m_data[indexA], m_data[indexB]);
+	}
+
+	INLINEFORCE B8 Contains(void* value, B8 reverseDir = false) const{
+		if (reverseDir){
+			for (U32 i = m_size - 1; i >= 0; i--)
+				if (m_data[i] == value) return true;
+		}
+		else{
+			for (U32 i = 0; i < m_size; i++)
+				if (m_data[i] == value) return true;
+		}
+
+		return false;
+	}
+
+	INLINEFORCE I32 IndexOf(void* value, B8 reverseDir = false) const{
+		if (reverseDir){
+			for (U32 i = m_size - 1; i >= 0; i--)
+				if (m_data[i] == value) return i;
+		}
+		else{
+			for (U32 i = 0; i < m_size; i++)
+				if (m_data[i] == value) return i;
+		}
+
+		return -1;
+	}
+
+	INLINEFORCE B8 Remove(void* value, B8 reverseDir = false){
+		if (reverseDir){
+			for (U32 i = m_size - 1; i >= 0; i--){
+				if (m_data[i] == value){
+					m_data[i] = m_data[m_size - 1];
+					m_size--;
+					return true;
+				}
+			}
+		}
+		else{
+			for (U32 i = 0; i < m_size; i++){
+				if (m_data[i] == value){
+					m_data[i] = m_data[m_size - 1];
+					m_size--;
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	INLINEFORCE void* Remove(U32 index){
+		AVRO_ASSERT(indexA < m_size, "Array access request out of bounds");
+		void* value = m_data[index];
+		m_data[index] = m_data[m_size - 1];
+		m_size--;
+		return value;
+	}
+
+	INLINEFORCE void Remove(U32 start, U32 end){
+		AVRO_ASSERT(end < m_size, "Array access request out of bounds");
+		//TODO: replace this assertion with a check to count in reverse
+		AVRO_ASSERT(start <= end, "Starting point specified is greater than ending point");
+		U32 count = end - start + 1;
+		for (U32 i = 0; i < count; i++)
+			m_data[start + i] = m_data[m_size - 1 - i];
+
+		m_size -= count;
 	}
 
 };
