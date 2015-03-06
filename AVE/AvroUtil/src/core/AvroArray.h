@@ -237,14 +237,90 @@ public:
 	}
 
 	INLINEFORCE void Remove(U32 start, U32 end){
+		if (start > end){
+			AU::Swap(&start, &end);
+		}
 		AVRO_ASSERT(end < m_size, "Array access request out of bounds");
-		//TODO: replace this assertion with a check to count in reverse
-		AVRO_ASSERT(start <= end, "Starting point specified is greater than ending point");
 		U32 count = end - start + 1;
 		for (U32 i = 0; i < count; i++)
 			m_data[start + i] = m_data[m_size - 1 - i];
 
 		m_size -= count;
+	}
+
+	// returns true i array was modified
+	B8 RemoveArr(const void* arr, U32 start, U32 count, B8 reverseDir = false){
+		//TODO: Optimize
+		U32 sizeAtStart = m_size;
+		if (reverseDir){
+			for (U32 i = count - 1; i >= 0; i--){
+				for (U32 j = m_size - 1; j >= 0; j--){
+					if (arr[i + start] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+		else{
+			for (U32 i = 0; i < count; i++){
+				for (U32 j = 0; j < m_size; j++){
+					if (arr[i + start] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+
+		return sizeAtStart - m_size;
+	}
+
+	//TODO: change the functions below to assertions if necessary
+	INLINEFORCE void* Pop(){
+		if (m_size){
+			m_size--;
+			return m_data[m_size];
+		}
+		return nullptr;
+	}
+
+	INLINEFORCE void* Peek(){
+		if (m_size){
+			return m_data[Size - 1];
+		}
+		return nullptr;
+	}
+
+	INLINEFORCE void* First(){
+		if (m_size) return m_data[0];
+		return nullptr;
+	}
+
+	INLINEFORCE void Clear(){
+		for (U32 i = 0; i < m_size; i++) m_data[i] = nullptr;
+		m_size = 0;
+	}
+
+	INLINEFORCE void* Compress(){
+		if (m_size != m_capacity){} //TODO: resize
+		return m_data;
+	}
+
+	INLINEFORCE void* ReserveCapacity(U32 additionalCapacity){
+		I32 sizeRequired = m_size + additionalCapacity;
+		if (sizeRequired > m_capacity) {} //TODO: resize
+		return m_data;
+	}
+
+private:
+	INLINEFORCE void* Resize(U32 newSize){
+		void* newData = Allocator.Allocate(newSize);
+		if (!newData) return nullptr;
+
+		for (U32 i = 0; i < m_size; i++) newData[i] = m_data[i];
+
+
 	}
 
 };

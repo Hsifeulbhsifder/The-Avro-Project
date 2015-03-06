@@ -48,15 +48,26 @@ B8 AvroVersatileEngine::Initialize(HINSTANCE appInstance, U32 width, U32 height,
 }
 
 void AvroVersatileEngine::Run(){
-	MSG msg;
 	if (!m_isRunning){
+		LARGE_INTEGER perfomanceFrequency;
+		QueryPerformanceFrequency(&perfomanceFrequency);
+		U64 perfCountFrequency = perfomanceFrequency.QuadPart;
+
+		MSG msg;
 		m_isRunning = true;
 
 		MemoryStack singleFrameAllocator;
 		singleFrameAllocator.Initialize(AU::KiB(1024));
 
+		LARGE_INTEGER lastCounter;
+		QueryPerformanceCounter(&lastCounter);
+
+		U64 lastCycleCount = __rdtsc();
+
 		while (m_isRunning){
 			singleFrameAllocator.Clear();
+			LARGE_INTEGER beginCount;
+			QueryPerformanceCounter(&beginCount);
 
 			PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE);
 			if (msg.message != WM_QUIT){
@@ -71,6 +82,23 @@ void AvroVersatileEngine::Run(){
 
 			m_renderingEngine.Render(0);
 
+			U64 endCycleCount = __rdtsc();
+
+			LARGE_INTEGER endCounter;
+			QueryPerformanceCounter(&endCounter);
+
+			U64 cyclesElapsed = endCycleCount - lastCycleCount;
+			U64 counterElapsed = endCounter.QuadPart - lastCounter.QuadPart;
+			U64 frameTime = (U64)((1000.0 * counterElapsed) / perfCountFrequency);
+			U64 frameRate = perfCountFrequency / counterElapsed;
+			U64 kcyclesPerFrame = cyclesElapsed / (1000);
+
+			char buffer[256];
+			wsprintfA(buffer, "%dms | (%d Hz) | %dkcpf\n", frameTime, frameRate, kcyclesPerFrame);
+			OutputDebugStringA(buffer);
+			//TODO: Display this value
+			lastCounter = endCounter;
+			lastCycleCount = endCycleCount;
 		}
 	}
 }
