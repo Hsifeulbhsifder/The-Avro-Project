@@ -4,8 +4,8 @@
 #include <AvroVersatileEngine.h>
 #include <AvroUtil.h>
 
-#define SCREEN_WIDTH 800
-#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 1280
+#define SCREEN_HEIGHT 720
 #define SCREEN_DEPTH 16 //16-bit depth
 
 #define TITLE "Avro Arrow"
