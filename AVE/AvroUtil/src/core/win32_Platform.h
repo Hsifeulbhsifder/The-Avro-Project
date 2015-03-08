@@ -21,5 +21,26 @@
 static INLINEFORCE char IsNaN(float f) { return _isnan(f); }
 static INLINEFORCE char IsFinite(float f) { return _finite(f); }
 
+#ifdef AVRO_DEBUG
+
+#define DebugPrint(str){ \
+	OutputDebugStringA(str);\
+}
+
+#elif AVRO_PROFILE
+
+#define DebugPrint(str){ \
+	OutputDebugStringA(str);\
+}
+
+#elif AVRO_RELEASE
+
+#define DebugPrint(str){}
+
+#elif AVRO_PRODUCTION
+
+#define DebugPrint(str){}
+
+#endif
 
 #endif

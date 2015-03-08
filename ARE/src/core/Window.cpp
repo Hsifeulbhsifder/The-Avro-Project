@@ -1,6 +1,5 @@
 #include "ARE_stdafx.h"
 #include "Window.h"
-#include <cstring>
 
 #ifdef A_W32
 
@@ -8,7 +7,12 @@ glob PAINTSTRUCT paint;
 glob HDC hDC;
 glob B8* m_isRunning;
 
-I64 CALLBACK Window::Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam){
+void GameWindowSetState(B8* isRunning){
+	m_isRunning = isRunning;
+}
+
+#ifdef A_W32
+I64 intern CALLBACK Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam){
 	I64 result = 0;
 
 	switch (message){
@@ -16,7 +20,7 @@ I64 CALLBACK Window::Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPAR
 
 	}break;
 	case WM_SIZE:{
-		OutputDebugStringA("WM_SIZE\n");
+		DebugPrint("WM_SIZE\n");
 	}break;
 	case WM_DESTROY:{
 		*m_isRunning = false; //TODO: Handle this as error
@@ -25,7 +29,7 @@ I64 CALLBACK Window::Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPAR
 		*m_isRunning = false; //TODO: Handle this as message to user
 	}break;
 	case WM_ACTIVATEAPP:{
-		OutputDebugStringA("WM_ACTIVATE\n");
+		DebugPrint("WM_ACTIVATE\n");
 	}break;
 	case WM_PAINT:{
 		hDC = BeginPaint(hwnd, &paint);
@@ -40,19 +44,19 @@ I64 CALLBACK Window::Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPAR
 
 	return result;
 }
+#endif
 
-void Window::Win32_CreateWindow(HWND* window, HINSTANCE hInstance, U32 width, U32 height, char* title, B8* isRunning)
-{
-	m_isRunning = isRunning;
+#ifdef A_W32
+void intern Win32CreateWindow(HWND* hwnd, U32 width, U32 height, char* title){
 	WNDCLASSEX wcx = {};
 	char* WNDCLASSNAME = "AvroRenderingEngineWindowClass";
 
 	wcx.cbSize = sizeof(WNDCLASSEX); // size of wndclass
 	wcx.style = CS_OWNDC | CS_VREDRAW | CS_HREDRAW;
-	wcx.lpfnWndProc = (WNDPROC) Win32_Callback;
+	wcx.lpfnWndProc = (WNDPROC)Win32_Callback;
 	wcx.cbClsExtra = 0; // if we want to store extra memory
 	wcx.cbWndExtra = 0; // if we want to store extra memory
-	wcx.hInstance = hInstance;
+	wcx.hInstance = GetModuleHandle(0);
 	wcx.hIcon = LoadIconA(NULL, IDI_APPLICATION); //TODO: set Icon
 	wcx.hCursor = 0; // no cursor
 	wcx.hbrBackground = NULL; // no background clearing
@@ -61,11 +65,11 @@ void Window::Win32_CreateWindow(HWND* window, HINSTANCE hInstance, U32 width, U3
 	wcx.hIconSm = NULL; //TODO: set icon
 
 	if (!RegisterClassEx(&wcx)){
-		MessageBox(NULL, "Couldn't register window class", "Error!", MB_ICONERROR | MB_OK); 
+		MessageBox(NULL, "Couldn't register window class", "Error!", MB_ICONERROR | MB_OK);
 		exit(-1);
 	}
 
-	*window = CreateWindowEx(NULL,              // Extended Style For The Window
+	*hwnd = CreateWindowEx(NULL,              // Extended Style For The Window
 		WNDCLASSNAME,               // Class Name
 		title,                  // Window Title
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE,          // Required Window Style
@@ -75,8 +79,28 @@ void Window::Win32_CreateWindow(HWND* window, HINSTANCE hInstance, U32 width, U3
 		height,     // Height
 		NULL,                   // No Parent Window
 		NULL,                   // No Menu
-		hInstance,              // Instance
+		GetModuleHandle(0),              // Instance
 		NULL);                  // Don't Pass Anything To WM_CREATE
+}
+
+#elif A_UNX
+void intern UnixCreateWindow(U32 width, U32 height, char* title){
+
 
 }
+#endif
+
+void CreateGameWindow(Window* window, U32 width, U32 height, char* title)
+{
+	
+#ifdef A_W32
+	Win32CreateWindow(&(window->wnd), width, height, title);
+#elif A_UNX
+	UnixCreateWindow(width, height, title);
+#endif
+
+}
+
+
+
 #endif

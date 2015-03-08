@@ -5,48 +5,47 @@
 #include <Window.h>
 #include <MemoryStack.h>
 #include <AvroUtil.h>
+#include <iostream>
 
 using namespace AU;
 
-B8 AvroVersatileEngine::Initialize(HINSTANCE appInstance, U32 width, U32 height, char* title, U64 permanentHeapSize, U64 transientHeapSize, U64 debugHeapSize){
+B8 AvroVersatileEngine::Initialize(Window* window, U64 permanentHeapSize, U64 transientHeapSize, U64 debugHeapSize){
 
 #ifdef AVRO_DEBUG
 	if (!(m_debugHeap.Initialize(debugHeapSize))){
-		OutputDebugStringA("Not enough system memory to debug this game");
+		DebugPrint("Not enough system memory to debug this game");
 		MessageBox(NULL, "Not enough RAM to debug this game", "Error!", MB_ICONERROR | MB_OK);
 		return false;
 	}
 #endif
 
 	if (!(m_permanentHeap.Initialize(permanentHeapSize))){
-		OutputDebugStringA("Not enough system memory to run this game");
+		DebugPrint("Not enough system memory to run this game");
 		MessageBox(NULL, "Not enough RAM to run this game", "Error!", MB_ICONERROR | MB_OK);
 		return false;
 	}
 	if (!(m_transientHeap.Initialize(transientHeapSize))){
-		OutputDebugStringA("Run this game on a lower setting");
+		DebugPrint("Run this game on a lower setting");
 		MessageBox(NULL, "Run this game on a lower setting", "Error!", MB_ICONERROR | MB_OK);
 		return false;
 	}
 
+	m_window = window;
 	m_isRunning = false;
-	Window::Win32_CreateWindow(&m_window, appInstance, width, height, title, &m_isRunning);
-	if (!m_window) {
-		OutputDebugStringA("Window creation has failed");
-		MessageBox(NULL, "Window Not created!", "Error!", MB_ICONERROR | MB_OK);
-		return false;
-	}
+	GameWindowSetState(&m_isRunning);
+	
 
 	if (!(m_renderingEngine.Initialize())){
-		OutputDebugStringA("Rendering engine initialization has failed");
+		DebugPrint("Rendering engine initialization has failed");
 		MessageBox(NULL, "Rendering Engine initialization Not created!", "Error!", MB_ICONERROR | MB_OK);
 		return false;
 	}
 
-	OutputDebugStringA("Engine Initialization Sequence Is Complete\n");
+	DebugPrint("Engine Initialization Sequence Is Complete\n");
 	return true;
 }
 
+//TODO: Heavily modify
 void AvroVersatileEngine::Run(){
 	if (!m_isRunning){
 		LARGE_INTEGER perfomanceFrequency;
@@ -75,7 +74,7 @@ void AvroVersatileEngine::Run(){
 				DispatchMessageA(&msg);
 			}
 			else{
-				OutputDebugStringA("AvroArrow is kill\n");
+				DebugPrint("AvroArrow is kill\n");
 				m_isRunning = false;
 				break;
 			}
@@ -89,14 +88,13 @@ void AvroVersatileEngine::Run(){
 
 			U64 cyclesElapsed = endCycleCount - lastCycleCount;
 			U64 counterElapsed = endCounter.QuadPart - lastCounter.QuadPart;
-			U64 frameTime = (U64)((1000.0 * counterElapsed) / perfCountFrequency);
-			U64 frameRate = perfCountFrequency / counterElapsed;
-			U64 kcyclesPerFrame = cyclesElapsed / (1000);
+			F64 frameTime = (1000.0 * counterElapsed) / (F64) perfCountFrequency;
+			F64 frameRate = (F64) perfCountFrequency / (F64) counterElapsed;
+			F64 kcyclesPerFrame = (F64) cyclesElapsed / (1000.0);
 
 			char buffer[256];
-			wsprintfA(buffer, "%dms | (%d Hz) | %dkcpf\n", frameTime, frameRate, kcyclesPerFrame);
-			OutputDebugStringA(buffer);
-			//TODO: Display this value
+			sprintf_s(buffer, sizeof(buffer), "%.04fms | (%.02f Hz) | %.02fkcpf\n", frameTime, frameRate, kcyclesPerFrame);
+			DebugPrint(buffer);
 			lastCounter = endCounter;
 			lastCycleCount = endCycleCount;
 		}
@@ -111,5 +109,5 @@ void AvroVersatileEngine::Terminate(){
 	m_transientHeap.Terminate();
 	m_permanentHeap.Terminate();
 
-	OutputDebugStringA("Engine Termination Sequence Is Complete\n");
+	DebugPrint("Engine Termination Sequence Is Complete\n");
 }

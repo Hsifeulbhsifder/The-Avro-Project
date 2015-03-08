@@ -1,6 +1,6 @@
-#ifndef AVRO_UTIL_WIN32_MATH_H
-#define AVRO_UTIL_WIN32_MATH_H
-#ifdef A_W32
+#ifndef AVRO_UTIL_UNIX_MATH_H
+#define AVRO_UTIL_UNIX_MATH_H
+#ifdef A_UNX
 
 // SSE intrinsic inverse square root of float
 glob INLINEFORCE F32 SqrtInv(F32 f){

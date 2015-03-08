@@ -106,15 +106,28 @@ operator+(I32 offset, IndexedIterator<C, E, I> rhs){
 /************************************************************************/
 /* Base Dynamic Array, untyped data, unordered                          */
 /************************************************************************/
-template <AvroAllocator Allocator = AVRO_DEFAULT_ALLOCATOR>
+template <class Allocator = AVRO_DEFAULT_ALLOCATOR>
 class VoidArr{
 	void* m_data;
 	U32 m_size;
 	U32 m_capacity;
 	//Allocator& m_allocator;
+
+private:
+	INLINEFORCE void* Resize(U32 newSize){
+		void* newData = Allocator.Allocate(newSize);
+		if (!newData) return nullptr;
+
+		for (U32 i = 0; i < m_size; i++) newData[i] = m_data[i];
+		if (m_data) Allocator.Dissipate(m_data);
+		m_data = newData;
+		m_capacity = newSize;
+		return m_data;
+	}
+
 public:
-	explicit INLINEFORCE VoidArr(U32 capacity = 16):m_capacity(capacity):SIZE(0){
-		data = Allocator.Allocate(capacity);
+	explicit INLINEFORCE VoidArr(U32 capacity = 16):m_capacity(capacity), m_size(0){
+		m_data = Allocator.Allocate(capacity);
 	}
 	explicit INLINEFORCE VoidArr(void* data) : m_data(data){
 		m_capacity = AU::SizeofArr(data);
@@ -141,7 +154,7 @@ public:
 	}
 
 	INLINEFORCE void Push(void* value){
-		if (m_size == m_capacity) {}//TODO: resize array
+		if (m_size == m_capacity) Resize(AU::Max(8, m_size * 2));
 		m_data[m_size++] = value;
 	}
 
@@ -162,7 +175,7 @@ public:
 
 	INLINEFORCE void Insert(void* value, U32 index){
 		AVRO_ASSERT(index < m_size, "Array access request out of bounds");
-		if ((m_size + 1) == m_capacity){} //TODO: resize array
+		if ((m_size + 1) == m_capacity) Resize(AU::Max(8, m_size * 2));
 
 		m_data[m_size++] = m_data[index];
 		m_data[index] = value;
@@ -276,6 +289,60 @@ public:
 		return sizeAtStart - m_size;
 	}
 
+	B8 RemoveArr(const VoidArray& arr, B8 reverseDir = false){
+		//TODO: Optimize
+		U32 sizeAtStart = m_size;
+		if (reverseDir){
+			for (U32 i = arr.m_size - 1; i >= 0; i--){
+				for (U32 j = m_size - 1; j >= 0; j--){
+					if (arr[i] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+		else{
+			for (U32 i = 0; i < arr.m_size; i++){
+				for (U32 j = 0; j < m_size; j++){
+					if (arr[i] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+
+		return sizeAtStart - m_size;
+	}
+
+	B8 RemoveArr(const VoidArray& arr, U32 start, U32 count, B8 reverseDir = false){
+		//TODO: Optimize
+		U32 sizeAtStart = m_size;
+		if (reverseDir){
+			for (U32 i = count - 1; i >= 0; i--){
+				for (U32 j = m_size - 1; j >= 0; j--){
+					if (arr[i + start] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+		else{
+			for (U32 i = 0; i < count; i++){
+				for (U32 j = 0; j < m_size; j++){
+					if (arr[i + start] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+
+		return sizeAtStart - m_size;
+	}
+
 	//TODO: change the functions below to assertions if necessary
 	INLINEFORCE void* Pop(){
 		if (m_size){
@@ -285,7 +352,7 @@ public:
 		return nullptr;
 	}
 
-	INLINEFORCE void* Peek(){
+	INLINEFORCE void* Peek() const{
 		if (m_size){
 			return m_data[Size - 1];
 		}
@@ -303,24 +370,53 @@ public:
 	}
 
 	INLINEFORCE void* Compress(){
-		if (m_size != m_capacity){} //TODO: resize
+		if (m_size != m_capacity) Resize(m_size);
 		return m_data;
 	}
 
 	INLINEFORCE void* ReserveCapacity(U32 additionalCapacity){
 		I32 sizeRequired = m_size + additionalCapacity;
-		if (sizeRequired > m_capacity) {} //TODO: resize
+		if (sizeRequired > m_capacity) Resize(sizeRequired);
 		return m_data;
 	}
 
-private:
-	INLINEFORCE void* Resize(U32 newSize){
-		void* newData = Allocator.Allocate(newSize);
-		if (!newData) return nullptr;
+	INLINEFORCE void Reverse(){
+		for (U32 i = 0, lastIndex = m_size - 1, n = m_size / 2; i < n; i++){
+			U32 j = lastIndex - i;
+			AU::Swap(&m_data[i], &m_data[j]);
+		}
+	}
 
-		for (U32 i = 0; i < m_size; i++) newData[i] = m_data[i];
+	INLINEFORCE void Shuffle(){
+		//TODO: Implement shuffling
+	}
 
+	INLINEFORCE void Truncate(U32 newSize){
+		AVRO_ASSERT(m_size <= newSize, "New size cannot be equal to or greater than past size during truncation");
+		for (U32 i = newSize; i < m_size; i++)
+			m_data[i] = nullptr;
+		m_size = newSize;
+	}
 
+	INLINEFORCE void*& RandomIndex(){
+		if (m_size){}
+		//TODO: Implement random index
+		return nullptr;
+	}
+
+	INLINEFORCE void* RandomIndex() const{
+		if (m_size){}
+		//TODO: Implement random index
+		return nullptr;
+	}
+
+	INLINEFORCE void* ToArr() const{
+		return m_data;
+	}
+
+	template<typename T>
+	INLINEFORCE T* ToArr() const{
+		return (T*)m_data;
 	}
 
 };
@@ -363,6 +459,105 @@ public:
 	}
 
 
+
+};
+
+/************************************************************************/
+/* Templated Dynamic Array, unordered                                   */
+/************************************************************************/
+
+template<typename E, typename Allocator = AVRO_DEFAULT_ALLOCATOR>
+class Array{
+	E* m_data;
+	U32 m_size;
+	U32 m_capacity;
+
+private:
+	template <typename E, typename Allocator>
+	INLINEFORCE E* Resize(U32 newSize){
+		E* newData = Allocator.Allocate(newSize * sizeof(E));
+		if (!newData) return nullptr;
+
+		for (U32 i = 0; i < m_size; i++) newData[i] = m_data[i];
+		if (m_data) Allocator.Dissipate(m_data);
+		m_data = newData;
+		m_capacity = newSize;
+		return m_data;
+	}
+
+public:
+
+	template<typename E, typename Allocator>
+	INLINEFORCE explicit Array(U32 capacity = 16):m_capacity(capacity), m_size(0){
+		m_data = (E*)Allocator.Allocate(capacity * sizeof(E));
+	}
+
+	template<typename OtherAllocator>
+	INLINEFORCE Array(const Array<E, OtherAllocator>& rhs)
+		:m_capacity(rhs.m_capacity), m_size(rhs.m_size){
+		//TODO: Optimize
+
+		m_data = (E*)OtherAllocator.Allocate(capacity * sizeof(E));
+		for (U32 i = 0; i < rhs.m_size; i++) m_data[i] = rhs.m_data[i];
+	}
+
+	INLINEFORCE Array(const Array& rhs)
+		:m_capacity(rhs.m_capacity), m_size(rhs.m_size){
+		//TODO: Optimize
+		m_data = (E*)Allocator.Allocate(capacity * sizeof(E));
+		for (U32 i = 0; i < rhs.m_size; i++) m_data[i] = rhs.m_data[i];
+	}
+
+	INLINEFORCE Array(Array&& rhs)
+		:m_capacity(rhs.m_capacity), m_size(rhs.m_size), m_data(rhs.m_data){
+		rhs.m_capacity = 0;
+		rhs.m_size = 0;
+		rhs.m_data = nullptr;
+	}
+
+	template<typename OtherAllocator>
+	Array& operator=(const Array<E, OtherAllocator> rhs){
+		//TODO: Optimize
+		m_capacity = rhs.m_capacity;
+		m_size = rhs.m_size;
+		m_data = (E*)OtherAllocator.Allocate(capacity * sizeof(E));
+		for (U32 i = 0; i < rhs.m_size; i++) m_data[i] = rhs.m_data[i];
+		return *this;
+	}
+
+	Array& operator=(const Array<E, Allocator>& rhs){
+		if (this != &rhs){
+			//TODO: Optimize
+			m_capacity = rhs.m_capacity;
+			m_size = rhs.m_size;
+			m_data = (E*)Allocator.Allocate(capacity * sizeof(E));
+			for (U32 i = 0; i < rhs.m_size; i++) m_data[i] = rhs.m_data[i];
+		}
+		return *this;
+	}
+
+	template<typename OtherAllocator>
+	Array& operator=(Array<E, OtherAllocator>&& rhs){
+		m_capacity = rhs.m_capacity;
+		m_size = rhs.m_size;
+		m_data = rhs.m_data;
+		rhs.m_capacity = 0;
+		rhs.m_size = 0;
+		rhs.m_data = nullptr;
+		return *this;
+	}
+
+	Array& operator=(Array<E, Allocator>&& rhs){
+		if (this != &rhs){
+			m_capacity = rhs.m_capacity;
+			m_size = rhs.m_size;
+			m_data = rhs.m_data;
+			rhs.m_capacity = 0;
+			rhs.m_size = 0;
+			rhs.m_data = nullptr;
+		}
+		return *this;
+	}
 
 };
 

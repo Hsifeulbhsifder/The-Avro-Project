@@ -10,6 +10,10 @@
 #ifdef A_W32
 #include <windows.h>
 #include "win32_Platform.h"
+#include "win32_AvroMath.h"
+#elif A_UNX
+#include "Unix_Platform.h"
+#include "Unix_AvroMath.h"
 #endif
 
 #ifdef AVRO_DEBUG
@@ -29,7 +33,7 @@
 			sprintf_s(buffer, sizeof(buffer), "%s Failed Assertion at: %s ln:%d :: %s\n", \
 			(#expr), __FILE__, __LINE__, (strmessage));\
 			OutputDebugStringA(buffer);\
-			AvroDebugBreak();\\
+			AvroDebugBreak();\
 }  
 
 #elif AVRO_RELEASE
