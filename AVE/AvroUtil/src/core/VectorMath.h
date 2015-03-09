@@ -415,6 +415,9 @@ namespace AU{
 		glob const V3 X_AXIS;
 		glob const V3 Y_AXIS;
 		glob const V3 Z_AXIS;
+		glob const V3 XY_AXIS;
+		glob const V3 YZ_AXIS;
+		glob const V3 XZ_AXIS;
 
 
 		INLINEFORCE V3(){} //Default ctor
@@ -552,6 +555,8 @@ namespace AU{
 		}
 	};
 
+	//Functions
+	INLINEFORCE V3(F32  s):x(s),y(s),z(s){}
 
 
 
@@ -564,6 +569,23 @@ namespace AU{
 		F32 y;
 		F32 z;
 		F32 w;
+
+		glob const V4 ZERO;
+		glob const V4 UNIT;
+		glob const V4 X_AXIS;
+		glob const V4 Y_AXIS;
+		glob const V4 Z_AXIS;
+		glob const V4 W_AXIS;
+		glob const V4 XY_AXIS;
+		glob const V4 YZ_AXIS;
+		glob const V4 ZW_AXIS;
+		glob const V4 XZ_AXIS;
+		glob const V4 YW_AXIS;
+		glob const V4 XW_AXIS;
+		glob const V4 XYZ_AXIS;
+		glob const V4 XYW_AXIS;
+		glob const V4 XZW_AXIS;
+		glob const V4 YZW_AXIS;
 	};
 
 	
@@ -581,6 +603,23 @@ namespace AU{
 		F32 y;
 		F32 z;
 		F32 w;
+
+		glob const Q4 ZERO;
+		glob const Q4 UNIT;
+		glob const Q4 X_AXIS;
+		glob const Q4 Y_AXIS;
+		glob const Q4 Z_AXIS;
+		glob const Q4 W_AXIS;
+		glob const Q4 XY_AXIS;
+		glob const Q4 YZ_AXIS;
+		glob const Q4 ZW_AXIS;
+		glob const Q4 XZ_AXIS;
+		glob const Q4 YW_AXIS;
+		glob const Q4 XW_AXIS;
+		glob const Q4 XYZ_AXIS;
+		glob const Q4 XYW_AXIS;
+		glob const Q4 XZW_AXIS;
+		glob const Q4 YZW_AXIS;
 	};
 
 
@@ -593,6 +632,16 @@ namespace AU{
 	/************************************************************************/
 	struct M33{
 		F32 m[9];
+
+		glob const U32 m00 = 0;
+		glob const U32 m01 = 3;
+		glob const U32 m02 = 6;
+		glob const U32 m10 = 1;
+		glob const U32 m11 = 4;
+		glob const U32 m12 = 7;
+		glob const U32 m20 = 2;
+		glob const U32 m21 = 5;
+		glob const U32 m22 = 8;
 	};
 
 
@@ -606,6 +655,20 @@ namespace AU{
 	/************************************************************************/
 	struct M43{
 		F32 m[12];
+		
+		glob const U32 m00 = 0;
+		glob const U32 m01 = 4;
+		glob const U32 m02 = 8;
+		glob const U32 m10 = 1;
+		glob const U32 m11 = 5;
+		glob const U32 m12 = 9;
+		glob const U32 m20 = 2;
+		glob const U32 m21 = 6;
+		glob const U32 m22 = 10;
+		glob const U32 m30 = 3;
+		glob const U32 m31 = 7;
+		glob const U32 m32 = 11;
+
 	};
 
 
@@ -618,6 +681,24 @@ namespace AU{
 	/************************************************************************/
 	struct M44{
 		F32 m[16];
+
+		glob const U32 m00 = 0;
+		glob const U32 m01 = 4;
+		glob const U32 m02 = 8;
+		glob const U32 m03 = 12;
+		glob const U32 m10 = 1;
+		glob const U32 m11 = 5;
+		glob const U32 m12 = 9;
+		glob const U32 m13 = 13;
+		glob const U32 m20 = 2;
+		glob const U32 m21 = 6;
+		glob const U32 m22 = 10;
+		glob const U32 m23 = 14;
+		glob const U32 m30 = 3;
+		glob const U32 m31 = 7;
+		glob const U32 m32 = 11;
+		glob const U32 m33 = 15;
+
 	};
 
 
