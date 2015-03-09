@@ -17,15 +17,15 @@ ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 
 set(CMAKE_CXX_FLAGS "/D WIN32 /D _WINDOWS /GR /EHsc")	
 set(CMAKE_CXX_FLAGS_DEBUG "/D _DEBUG /D AVRO_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
-set(CMAKE_CXX_FLAGS_PROFILE "/D NDEBUG /D AVRO_PROFILE /MT /Zi /O2 /Ob1 /RTC1")
-set(CMAKE_CXX_FLAGS_RELEASE "/D NDEBUG /D AVRO_RELEASE /MT /O2 /Ob2 /RTCs")
+set(CMAKE_CXX_FLAGS_PROFILE "/D NDEBUG /D AVRO_PROFILE /MT /Zi /O2 /Ob1")
+set(CMAKE_CXX_FLAGS_RELEASE "/D NDEBUG /D AVRO_RELEASE /MT /O2 /Ob2")
 set(CMAKE_CXX_FLAGS_PRODUCTION "/D NDEBUG /D AVRO_PRODUCTION /MT /Ox /Ob2")
 	
 set(CMAKE_SHARED_LINKER_FLAGS "")
 set(CMAKE_SHARED_LINKER_FLAGS_DEBUG "/debug /INCREMENTAL")
 set(CMAKE_SHARED_LINKER_FLAGS_PROFILE "/debug /INCREMENTAL")
-set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "/INCREMENTAL :NO")
-set(CMAKE_SHARED_LINKER_FLAGS_PRODUCTION "/INCREMENTAL :NO")
+set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "/INCREMENTAL:NO")
+set(CMAKE_SHARED_LINKER_FLAGS_PRODUCTION "/INCREMENTAL:NO")
 
 set(ARE_DIR ${Avro_Arrow_SOURCE_DIR}/ARE)
 set(ARE_BIN ${ARE_DIR}/bin)
@@ -45,6 +45,8 @@ file(GLOB_RECURSE SRCS
 		${ARE_DIR}/src/core/*.cxx
 )
 
+find_package(OpenGL REQUIRED)
+
 include_directories(
 	${ARE_DIR}/inc
 	${ARE_DIR}/src/core
@@ -54,6 +56,7 @@ include_directories(
 	${Avro_Arrow_SOURCE_DIR}/AVE/AvroUtil/src/core
 	${Avro_Arrow_SOURCE_DIR}/AVE/AvroUtil/headers
 	${Avro_Arrow_SOURCE_DIR}/AVE/AvroUtil/sources
+	${OPENGL_INCLUDE_DIRS}
 )
 
 #adds the library
@@ -77,13 +80,13 @@ set_target_properties(ARE PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_PROFILE "${ARE_BIN
 set_target_properties(ARE PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${ARE_BIN}/$(Platform)/release")
 set_target_properties(ARE PROPERTIES ARCHIVE_OUTPUT_DIRECTORY_PRODUCTION "${ARE_BIN}/$(Platform)/production")
 
-set_target_properties(ARE PROPERTIES VS_INTERMEDIATE_DIRECTORY "${ARE_TMP}")
-set_target_properties(ARE PROPERTIES VS_INTERMEDIATE_DIRECTORY_DEBUG "${ARE_TMP}/$(Platform)/debug")
-set_target_properties(ARE PROPERTIES VS_INTERMEDIATE_DIRECTORY_PROFILE "${ARE_TMP}/$(Platform)/profile")
-set_target_properties(ARE PROPERTIES VS_INTERMEDIATE_DIRECTORY_RELEASE "${ARE_TMP}/$(Platform)/release")
-set_target_properties(ARE PROPERTIES VS_INTERMEDIATE_DIRECTORY_PRODUCTION "${ARE_TMP}/$(Platform)/production")
+set_target_properties(ARE PROPERTIES INTERMEDIATE_DIRECTORY "${ARE_TMP}")
+set_target_properties(ARE PROPERTIES INTERMEDIATE_DIRECTORY_DEBUG "${ARE_TMP}/$(Platform)/debug")
+set_target_properties(ARE PROPERTIES INTERMEDIATE_DIRECTORY_PROFILE "${ARE_TMP}/$(Platform)/profile")
+set_target_properties(ARE PROPERTIES INTERMEDIATE_DIRECTORY_RELEASE "${ARE_TMP}/$(Platform)/release")
+set_target_properties(ARE PROPERTIES INTERMEDIATE_DIRECTORY_PRODUCTION "${ARE_TMP}/$(Platform)/production")
 
 #links utilities
-target_link_libraries(ARE AvroUtil)
+target_link_libraries(ARE AvroUtil ${OPENGL_LIBRARIES})
 
 install (TARGETS ARE RUNTIME DESTINATION "${Avro_Arrow_SOURCE_DIR}/bin/$(Platform)/$(Configuration)")

@@ -393,10 +393,9 @@ namespace AU{
 	}
 
 	INLINEFORCE glob U64 HashV2(const V2& value){
-		U64 result = 31;
-
-		result = 17 * result + HashF32(value.x);
-		result = 17 * result + HashF32(value.y);
+		U64 result = 17;
+		result = 31 * result + HashF32(value.x);
+		result = 31 * result + HashF32(value.y);
 		return result;
 	}
 

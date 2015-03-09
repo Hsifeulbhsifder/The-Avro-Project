@@ -20,8 +20,8 @@
 #define DLLEXPORT
 #endif
 
-#ifndef DLLEXPORT
-#define DLLEXPORT
+#ifndef DLLIMPORT
+#define DLLIMPORT
 #endif
 
 static INLINEFORCE char IsNaN(float f);
