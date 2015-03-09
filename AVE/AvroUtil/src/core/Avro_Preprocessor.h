@@ -23,7 +23,7 @@
 			char buffer [512]; \
 			sprintf_s(buffer, sizeof(buffer), "%s Failed Assertion at: %s ln:%d :: %s\n", \
 			(#expr), __FILE__, __LINE__, (strmessage));\
-			OutputDebugStringA(buffer);\
+			DebugPrint(buffer);\
 			AvroDebugBreak();\
 		} 
 				
@@ -32,7 +32,7 @@
 			char buffer [512]; \
 			sprintf_s(buffer, sizeof(buffer), "%s Failed Assertion at: %s ln:%d :: %s\n", \
 			(#expr), __FILE__, __LINE__, (strmessage));\
-			OutputDebugStringA(buffer);\
+			DebugPrint(buffer);\
 			AvroDebugBreak();\
 }  
 

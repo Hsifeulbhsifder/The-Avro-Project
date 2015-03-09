@@ -193,6 +193,9 @@ namespace AU{
 		b = tmp;
 	}
 
+	//QuickSort
+	template<typename T>
+	glob void Sort(T* arr, U32 begin, U32 end);
 }
 
 #endif

@@ -492,6 +492,13 @@ public:
 		m_data = (E*)Allocator.Allocate(capacity * sizeof(E));
 	}
 
+	template<typename E>
+	INLINEFORCE Array(E* arr) : m_data(arr){
+		m_capacity = AU::SizeofArr(arr);
+		m_size = capacity;
+	}
+	
+
 	template<typename OtherAllocator>
 	INLINEFORCE Array(const Array<E, OtherAllocator>& rhs)
 		:m_capacity(rhs.m_capacity), m_size(rhs.m_size){
@@ -559,6 +566,295 @@ public:
 		return *this;
 	}
 
+	INLINEFORCE E* GetData(){ return m_data; }
+	INLINEFORCE const E* GetData() const { return m_data; }
+
+	INLINEFORCE B8 IsValidIndex(U32 i) const{
+		return i >= 0 && i < m_size;
+	}
+
+	INLINEFORCE U32 Size() const{ return m_size; }
+
+	INLINEFORCE E& operator[](U32 index){
+		AVRO_ASSERT(index < m_size, "Array access request out of bounds");
+		return m_data[index];
+	}
+
+	INLINEFORCE E operator[](U32 index) const{
+		AVRO_ASSERT(index < m_size, "Array access request out of bounds");
+		return m_data[index];
+	}
+
+	INLINEFORCE void Push(const E& value){
+		if (m_size == m_capacity) Resize(AU::Max(8, m_size * 2));
+		m_data[m_size++] = value;
+	}
+
+	INLINEFORCE void PushArr(const E& arr, U32 start, U32 count){
+		//TODO: Optimize
+		for (U32 i = 0, i < count, i++) Push(arr[i + start]);
+	}
+
+	INLINEFORCE void PushArr(const Array& arr){
+		//TODO: Optimize
+		for (U32 i = 0, i < arr.m_size; i++) Push(arr[i]);
+	}
+
+	INLINEFORCE void PushArr(const Array& arr, U32 start, U32 count){
+		//TODO: Optimize
+		for (U32 i = 0; i < count; i++) Push(arr[i + start]);
+	}
+
+	INLINEFORCE void Insert(const E& value, U32 index){
+		AVRO_ASSERT(index < m_size, "Array access request out of bounds");
+		if ((m_size + 1) == m_capacity) Resize(AU::Max(8, m_size * 2));
+
+		m_data[m_size++] = m_data[index];
+		m_data[index] = value;
+	}
+
+	INLINEFORCE void InsertArr(const E& arr, U32 start, U32 count){
+		//TODO: Optimize
+		for (U32 i = 0; i < count; i++) Insert(arr[i + start]);
+	}
+
+	INLINEFORCE void Swap(U32 indexA, U32 indexB){
+		AVRO_ASSERT(indexA < m_size, "Array access request out of bounds");
+		AVRO_ASSERT(indexB < m_size, "Array access request out of bounds");
+		AU::Swap(m_data[indexA], m_data[indexB]);
+	}
+
+	INLINEFORCE B8 Contains(const E& value, B8 reverseDir = false) const{
+		if (reverseDir){
+			for (U32 i = m_size - 1; i >= 0; i--)
+				if (m_data[i] == value) return true;
+		}
+		else{
+			for (U32 i = 0; i < m_size; i++)
+				if (m_data[i] == value) return true;
+		}
+
+		return false;
+	}
+
+	INLINEFORCE I32 IndexOf(const E& value, B8 reverseDir = false) const{
+		if (reverseDir){
+			for (U32 i = m_size - 1; i >= 0; i--)
+				if (m_data[i] == value) return i;
+		}
+		else{
+			for (U32 i = 0; i < m_size; i++)
+				if (m_data[i] == value) return i;
+		}
+
+		return -1;
+	}
+
+	INLINEFORCE B8 Remove(const E& value, B8 reverseDir = false){
+		if (reverseDir){
+			for (U32 i = m_size - 1; i >= 0; i--){
+				if (m_data[i] == value){
+					m_data[i] = m_data[m_size - 1];
+					m_size--;
+					return true;
+				}
+			}
+		}
+		else{
+			for (U32 i = 0; i < m_size; i++){
+				if (m_data[i] == value){
+					m_data[i] = m_data[m_size - 1];
+					m_size--;
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	INLINEFORCE E Remove(U32 index){
+		AVRO_ASSERT(indexA < m_size, "Array access request out of bounds");
+		void* value = m_data[index];
+		m_data[index] = m_data[m_size - 1];
+		m_size--;
+		return value;
+	}
+
+	INLINEFORCE void Remove(U32 start, U32 end){
+		if (start > end){
+			AU::Swap(&start, &end);
+		}
+		AVRO_ASSERT(end < m_size, "Array access request out of bounds");
+		U32 count = end - start + 1;
+		for (U32 i = 0; i < count; i++)
+			m_data[start + i] = m_data[m_size - 1 - i];
+
+		m_size -= count;
+	}
+
+	// returns true i array was modified
+	B8 RemoveArr(const E* arr, U32 start, U32 count, B8 reverseDir = false){
+		//TODO: Optimize
+		U32 sizeAtStart = m_size;
+		if (reverseDir){
+			for (U32 i = count - 1; i >= 0; i--){
+				for (U32 j = m_size - 1; j >= 0; j--){
+					if (arr[i + start] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+		else{
+			for (U32 i = 0; i < count; i++){
+				for (U32 j = 0; j < m_size; j++){
+					if (arr[i + start] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+
+		return sizeAtStart - m_size;
+	}
+
+	B8 RemoveArr(const Array& arr, B8 reverseDir = false){
+		//TODO: Optimize
+		U32 sizeAtStart = m_size;
+		if (reverseDir){
+			for (U32 i = arr.m_size - 1; i >= 0; i--){
+				for (U32 j = m_size - 1; j >= 0; j--){
+					if (arr[i] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+		else{
+			for (U32 i = 0; i < arr.m_size; i++){
+				for (U32 j = 0; j < m_size; j++){
+					if (arr[i] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+
+		return sizeAtStart - m_size;
+	}
+
+	B8 RemoveArr(const Array& arr, U32 start, U32 count, B8 reverseDir = false){
+		//TODO: Optimize
+		U32 sizeAtStart = m_size;
+		if (reverseDir){
+			for (U32 i = count - 1; i >= 0; i--){
+				for (U32 j = m_size - 1; j >= 0; j--){
+					if (arr[i + start] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+		else{
+			for (U32 i = 0; i < count; i++){
+				for (U32 j = 0; j < m_size; j++){
+					if (arr[i + start] == m_data[j]){
+						Remove(j);
+						break;
+					}
+				}
+			}
+		}
+
+		return sizeAtStart - m_size;
+	}
+
+	//TODO: change the functions below to assertions if necessary
+	INLINEFORCE E Pop(){
+		if (m_size){
+			m_size--;
+			return m_data[m_size];
+		}
+		return nullptr;
+	}
+
+	INLINEFORCE E Peek() const{
+		if (m_size){
+			return m_data[Size - 1];
+		}
+		return nullptr;
+	}
+
+	INLINEFORCE E First(){
+		if (m_size) return m_data[0];
+		return nullptr;
+	}
+
+	INLINEFORCE void Clear(){
+		for (U32 i = 0; i < m_size; i++) m_data[i] = nullptr;
+		m_size = 0;
+	}
+
+	INLINEFORCE E* Compress(){
+		if (m_size != m_capacity) Resize(m_size);
+		return m_data;
+	}
+
+	INLINEFORCE E* ReserveCapacity(U32 additionalCapacity){
+		I32 sizeRequired = m_size + additionalCapacity;
+		if (sizeRequired > m_capacity) Resize(sizeRequired);
+		return m_data;
+	}
+
+	INLINEFORCE void Reverse(){
+		for (U32 i = 0, lastIndex = m_size - 1, n = m_size / 2; i < n; i++){
+			U32 j = lastIndex - i;
+			AU::Swap(&m_data[i], &m_data[j]);
+		}
+	}
+
+	//Quick Sort
+	INLINEFORCE void Sort(){
+		AU::Sort<E>(m_data, 0, m_size);
+	}
+
+	INLINEFORCE void Shuffle(){
+		//TODO: Implement shuffling
+	}
+
+	INLINEFORCE void Truncate(U32 newSize){
+		AVRO_ASSERT(m_size <= newSize, "New size cannot be equal to or greater than past size during truncation");
+		for (U32 i = newSize; i < m_size; i++)
+			m_data[i] = nullptr;
+		m_size = newSize;
+	}
+
+	INLINEFORCE E& RandomIndex(){
+		if (m_size){}
+		//TODO: Implement random index
+		return nullptr;
+	}
+
+	INLINEFORCE E RandomIndex() const{
+		if (m_size){}
+		//TODO: Implement random index
+		return nullptr;
+	}
+
+	INLINEFORCE E* ToArr() const{
+		return m_data;
+	}
+
+	template<typename T>
+	INLINEFORCE T* ToArr() const{
+		return (T*)m_data;
+	}
 };
 
 #endif

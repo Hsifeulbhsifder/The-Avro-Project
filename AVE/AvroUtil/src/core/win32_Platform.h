@@ -43,4 +43,9 @@ static INLINEFORCE char IsFinite(float f) { return _finite(f); }
 
 #endif
 
+
+#define ErrorBox(str, title){\
+	MessageBox(NULL, str, title, MB_ICONERROR | MB_OK);\
+}
+
 #endif

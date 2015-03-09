@@ -2,7 +2,7 @@
 #include "AvroVersatileEngine.h"
 #include <iostream>
 #include <AvroMath.h>
-#include <Window.h>
+#include <AvroWindow.h>
 #include <MemoryStack.h>
 #include <AvroUtil.h>
 #include <iostream>
@@ -14,30 +14,33 @@ B8 AvroVersatileEngine::Initialize(Window* window, U64 permanentHeapSize, U64 tr
 #ifdef AVRO_DEBUG
 	if (!(m_debugHeap.Initialize(debugHeapSize))){
 		DebugPrint("Not enough system memory to debug this game");
-		MessageBox(NULL, "Not enough RAM to debug this game", "Error!", MB_ICONERROR | MB_OK);
+		ErrorBox("Not enough RAM to debug this game", "Error!");
 		return false;
 	}
 #endif
 
 	if (!(m_permanentHeap.Initialize(permanentHeapSize))){
 		DebugPrint("Not enough system memory to run this game");
-		MessageBox(NULL, "Not enough RAM to run this game", "Error!", MB_ICONERROR | MB_OK);
+		ErrorBox("Not enough RAM to run this game", "Error!");
 		return false;
 	}
 	if (!(m_transientHeap.Initialize(transientHeapSize))){
 		DebugPrint("Run this game on a lower setting");
-		MessageBox(NULL, "Run this game on a lower setting", "Error!", MB_ICONERROR | MB_OK);
+		ErrorBox("Run this game on a lower setting", "Error!");
 		return false;
 	}
 
 	m_window = window;
 	m_isRunning = false;
 	GameWindowSetState(&m_isRunning);
+
+	CreateGLContext(m_window);
+	MakeCurrent(m_window);
 	
 
 	if (!(m_renderingEngine.Initialize())){
 		DebugPrint("Rendering engine initialization has failed");
-		MessageBox(NULL, "Rendering Engine initialization Not created!", "Error!", MB_ICONERROR | MB_OK);
+		ErrorBox("Rendering Engine initialization Not created!", "Error!");
 		return false;
 	}
 
@@ -64,9 +67,9 @@ void AvroVersatileEngine::Run(){
 		U64 lastCycleCount = __rdtsc();
 
 		while (m_isRunning){
-			singleFrameAllocator.Clear();
 			LARGE_INTEGER beginCount;
 			QueryPerformanceCounter(&beginCount);
+			singleFrameAllocator.Clear();
 
 			PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE);
 			if (msg.message != WM_QUIT){
@@ -103,6 +106,10 @@ void AvroVersatileEngine::Run(){
 
 void AvroVersatileEngine::Terminate(){
 	m_renderingEngine.Terminate();
+
+	MakeCurrent(m_window, true);
+	TerminateGLContext(m_window);
+
 #ifdef AVRO_DEBUG
 	m_debugHeap.Terminate();
 #endif

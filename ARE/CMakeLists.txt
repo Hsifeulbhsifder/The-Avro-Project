@@ -45,6 +45,8 @@ file(GLOB_RECURSE SRCS
 		${ARE_DIR}/src/core/*.cxx
 )
 
+find_package(OpenGL REQUIRED)
+
 include_directories(
 	${ARE_DIR}/inc
 	${ARE_DIR}/src/core
@@ -54,6 +56,7 @@ include_directories(
 	${Avro_Arrow_SOURCE_DIR}/AVE/AvroUtil/src/core
 	${Avro_Arrow_SOURCE_DIR}/AVE/AvroUtil/headers
 	${Avro_Arrow_SOURCE_DIR}/AVE/AvroUtil/sources
+	${OPENGL_INCLUDE_DIRS}
 )
 
 #adds the library
@@ -84,6 +87,6 @@ set_target_properties(ARE PROPERTIES INTERMEDIATE_DIRECTORY_RELEASE "${ARE_TMP}/
 set_target_properties(ARE PROPERTIES INTERMEDIATE_DIRECTORY_PRODUCTION "${ARE_TMP}/$(Platform)/production")
 
 #links utilities
-target_link_libraries(ARE AvroUtil)
+target_link_libraries(ARE AvroUtil ${OPENGL_LIBRARIES})
 
 install (TARGETS ARE RUNTIME DESTINATION "${Avro_Arrow_SOURCE_DIR}/bin/$(Platform)/$(Configuration)")
