@@ -13,7 +13,7 @@ void GameWindowSetState(B8* isRunning){
 #ifdef A_W32
 I64 intern CALLBACK Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPARAM lparam){
 	I64 result = 0;
-
+	
 	switch (message){
 	case WM_CREATE:{
 
