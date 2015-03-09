@@ -34,7 +34,6 @@ I32 STDCALL WinMain(HINSTANCE hInstance,
 		ErrorBox("Engine Initialization has failed!", "Error!");
 	}
 
-
 	return 0;
 }
 

@@ -97,7 +97,7 @@ namespace AU{
 		INLINEFORCE glob F32 Dist(const V2& a, const V2& b); //global distance function
 		INLINEFORCE glob F32 Cross(const V2& a, const V2& b); //global cross product
 
-		INLINEFORCE B8 Equals(const V2& v, F32 tolerance) const; //fuzzy equality test
+		INLINEFORCE B8 Equals(const V2& v, F32 tolerance = EPSILON) const; //fuzzy equality test
 
 		INLINEFORCE V2 Set(F32 x, F32 y); //set components, chained return
 
@@ -422,6 +422,7 @@ namespace AU{
 		INLINEFORCE V3(){} //Default ctor
 		INLINEFORCE explicit V3(F32 s); //Scalar ctor
 		INLINEFORCE V3(F32 x, F32 y, F32 z); //Defined ctor
+		INLINEFORCE V3(const V2& rhs, F32 z); //ctor from V2 and scalar
 		INLINEFORCE V3(const V3& rhs); //Copy ctor
 		INLINEFORCE V3(const V2& rhs); //Copy ctor from V2
 		INLINEFORCE V3(V3&& rhs); //Move ctor
@@ -512,15 +513,24 @@ namespace AU{
 		INLINEFORCE glob V3 Cross(const V3& a, const V3& b); //global cross product
 		INLINEFORCE glob V3 Cross(const V3& a, const V2& b); //global cross product
 
-		INLINEFORCE B8 Equals(const V3& v, F32 tolerance) const; //fuzzy equality test
+		INLINEFORCE B8 Equals(const V3& v, F32 tolerance = EPSILON) const; //fuzzy equality test
+		INLINEFORCE B8 AllComponentsEqual(F32 tolerance = EPSILON) const;
 
-		INLINEFORCE V2 Set(F32 x, F32 y); //set components, chained return
+		INLINEFORCE V2 Set(F32 x, F32 y, F32 z); //set components, chained return
 
 		INLINEFORCE F32 Max() const; // gets max component
 		INLINEFORCE F32 Min() const; // gets min component
 
+		INLINEFORCE V3 Abs() const; // Absolute value of every component of this vector
+
 		INLINEFORCE F32 AbsMax() const; // gets absolute max component
 		INLINEFORCE F32 AbsMin() const; // gets absolute min component
+
+		INLINEFORCE V3 ComponentMin(const V3& rhs) const; //component wise max of two vectors
+		INLINEFORCE V3 ComponentMax(const V2& rhs) const; //component wise max of two vectors
+		INLINEFORCE V3 ComponentMin(const V2& rhs) const; //component wise min of two vectors
+		INLINEFORCE V3 ComponentMin(const V2& rhs) const; //component wise min of two vectors
+
 
 		INLINEFORCE F32 Len() const; // euclidean length
 		INLINEFORCE F32 Len2() const; // euclidean length squared
@@ -532,7 +542,16 @@ namespace AU{
 		INLINEFORCE B8 IsEpsilonZero(F32 tolerance = EPSILON) const; // fuzzy check for zero
 		INLINEFORCE B8 IsZero() const; //check if absolutely zero
 
+		INLINEFORCE void ToDirectionAndMagnitude(V3* v, F32* s) const; //returns a unit direction vector as well as a magnitude
+		INLINEFORCE V3 SignV3() const; //sets each component to either +1 or -1
+		INLINEFORCE V3 Projection() const; //Projects 2D components of vector based on z
+
+		INLINEFORCE V3 UnsafeNormalize() const;
+
 		INLINEFORCE V3 Clamp(F32 min, F32 max) const; //copies this vector, but clamps axes
+		INLINEFORCE V3 Clamp2D(F32 min, F32 max) const; //copies this vector, but clamps axes that aren't z
+
+		INLINEFORCE V3 Reciprocal() const; //Reciprocates vector
 
 		INLINEFORCE V2 XY() const; //Swizzles to V2(x,y)
 		INLINEFORCE V2 YZ() const; //Swizzles to V2(y,z)
@@ -555,7 +574,7 @@ namespace AU{
 	};
 
 	//Functions
-	INLINEFORCE V3(F32  s):x(s),y(s),z(s){}
+	V3::V3(F32  s):x(s),y(s),z(s){}
 
 
 
