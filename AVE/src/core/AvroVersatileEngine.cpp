@@ -1,11 +1,12 @@
 #include "AVE_stdafx.h"
-#include "AvroVersatileEngine.h"
+#include <AvroVersatileEngine.h>
 #include <iostream>
 #include <AvroMath.h>
 #include <AvroWindow.h>
 #include <MemoryStack.h>
 #include <AvroUtil.h>
 #include <iostream>
+#include <AvroTimer.h>
 
 using namespace AU;
 
@@ -51,9 +52,7 @@ B8 AvroVersatileEngine::Initialize(Window* window, U64 permanentHeapSize, U64 tr
 //TODO: Heavily modify
 void AvroVersatileEngine::Run(){
 	if (!m_isRunning){
-		LARGE_INTEGER perfomanceFrequency;
-		QueryPerformanceFrequency(&perfomanceFrequency);
-		U64 perfCountFrequency = perfomanceFrequency.QuadPart;
+		U64 perfCountFrequency = PerformanceFrequency();
 
 		MSG msg;
 		m_isRunning = true;
@@ -61,14 +60,13 @@ void AvroVersatileEngine::Run(){
 		MemoryStack singleFrameAllocator;
 		singleFrameAllocator.Initialize(AU::KiB(1024));
 
-		LARGE_INTEGER lastCounter;
-		QueryPerformanceCounter(&lastCounter);
+		U64 lastCounter = PerformanceCounter();
 
 		U64 lastCycleCount = __rdtsc();
 
 		while (m_isRunning){
-			LARGE_INTEGER beginCount;
-			QueryPerformanceCounter(&beginCount);
+			U64 beginCount = PerformanceCounter();
+
 			singleFrameAllocator.Clear();
 
 			PeekMessage(&msg, NULL, NULL, NULL, PM_REMOVE);
@@ -86,11 +84,10 @@ void AvroVersatileEngine::Run(){
 
 			U64 endCycleCount = __rdtsc();
 
-			LARGE_INTEGER endCounter;
-			QueryPerformanceCounter(&endCounter);
+			U64 endCounter = PerformanceCounter();
 
 			U64 cyclesElapsed = endCycleCount - lastCycleCount;
-			U64 counterElapsed = endCounter.QuadPart - lastCounter.QuadPart;
+			U64 counterElapsed = endCounter - lastCounter;
 			F64 frameTime = (1000.0 * counterElapsed) / (F64) perfCountFrequency;
 			F64 frameRate = (F64) perfCountFrequency / (F64) counterElapsed;
 			F64 kcyclesPerFrame = (F64) cyclesElapsed / (1000.0);
