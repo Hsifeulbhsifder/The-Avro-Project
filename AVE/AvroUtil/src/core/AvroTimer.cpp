@@ -25,7 +25,7 @@ INLINEFORCE intern U64 UnixPerformanceCounter(){
 
 #endif
 
-INLINEFORCE U64 PerformanceFrequency()
+INLINEFORCE DLLEXPORT U64 PerformanceFrequency()
 {
 #ifdef A_W32
 	LARGE_INTEGER perfomanceFrequency;
@@ -35,7 +35,7 @@ INLINEFORCE U64 PerformanceFrequency()
 #endif
 }
 
-INLINEFORCE U64 PerformanceCounter()
+INLINEFORCE DLLEXPORT U64 PerformanceCounter()
 {
 #ifdef A_W32
 	LARGE_INTEGER perfomanceCounter;
