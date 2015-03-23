@@ -76,6 +76,10 @@ void intern Win32CreateWindow(HWND hwnd, U32 width, U32 height, char* title){
 		NULL);                  // Don't Pass Anything To WM_CREATE
 }
 
+INLINEFORCE intern void Win32TerminateWindow(HWND hwnd, HDC hdc){
+	ReleaseDC(hwnd, hdc);
+}
+
 INLINEFORCE intern void Win32CreateOpenGLContext(HDC deviceContext, HGLRC glContext){
 	glContext = wglCreateContext(deviceContext);
 }
@@ -92,6 +96,10 @@ INLINEFORCE intern B8 Win32MakeCurrentRenderingContext(HDC deviceContext, HGLRC 
 void intern UnixCreateWindow(U32 width, U32 height, char* title){
 
 
+}
+
+INLINEFORCE intern void UnixTerminateWindow(){
+	
 }
 
 INLINEFORCE intern void UnixCreateOpenGLContext(){
@@ -113,16 +121,26 @@ INLINEFORCE DLLEXPORT void CreateGameWindow(Window* window, U32 width, U32 heigh
 	
 #ifdef A_W32
 	Win32CreateWindow(window->wnd, width, height, title);
+	window->deviceContext = GetDC(window->wnd);
 #elif A_UNX
 	UnixCreateWindow(width, height, title);
 #endif
 
 }
 
+INLINEFORCE DLLEXPORT void TerminateGameWindow(Window* window)
+{
+#ifdef A_W32
+	Win32TerminateWindow(window->wnd, window->deviceContext);
+#elif A_UNX
+	UnixTerminateWindow();
+#endif
+}
+
 INLINEFORCE DLLEXPORT void CreateGLContext(Window* window)
 {
 #ifdef A_W32
-	Win32CreateOpenGLContext(GetDC(window->wnd), window->glContext);
+	Win32CreateOpenGLContext(window->deviceContext, window->glContext);
 #elif A_UNX
 	UnixCreateOpenGLContext();
 #endif
@@ -141,13 +159,27 @@ INLINEFORCE DLLEXPORT B8 MakeCurrent(Window* window, B8 terminate)
 {
 #ifdef A_W32
 	if (!terminate)	return Win32MakeCurrentRenderingContext(GetDC(window->wnd), window->glContext);
-	return Win32MakeCurrentRenderingContext(GetDC(window->wnd), NULL);
+	return Win32MakeCurrentRenderingContext(window->deviceContext, NULL);
 #elif A_UNX
 	return UnixMakeCurrentRenderingContext();
 #endif
 }
 
+INLINEFORCE DLLEXPORT void SwapBuffers(Window* window)
+{
+#ifdef A_W32
+	SwapBuffers(window->deviceContext);
+#elif A_UNX
+	return SwapBuffers();
+#endif
+}
 
-
+INLINEFORCE DLLEXPORT U32 GetVRefreshRate(){
+#ifdef A_W32
+	return 60;
+#elif A_UNX
+	return 60;
+#endif
+}
 
 #endif

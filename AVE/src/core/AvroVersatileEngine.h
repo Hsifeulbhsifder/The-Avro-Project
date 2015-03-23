@@ -10,6 +10,9 @@ class DLLEXPORT AvroVersatileEngine{
 private:
 	AvroVersatileEngine(const AvroVersatileEngine& rhs){}
 	void operator=(const AvroVersatileEngine& rhs){}
+	F32 m_targetSecondsPerFrame;
+	U64 m_perfFrequency;
+	B8 m_granularSleeping;
 public:
 	Window* m_window;
 	B8 m_isRunning;
@@ -26,6 +29,8 @@ public:
 	B8 Initialize(Window* window, U64 permanentHeapSize, U64 transientHeapSize, U64 debugHeapSize);
 
 	void Run();
+	
+	void Execute();
 
 	void Terminate();
 

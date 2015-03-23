@@ -16,8 +16,11 @@
 #define PI (3.1415926535897932f)
 #define TAU (6.2831853071795865f)
 #define E (2.71828182845904523526f)
-#define EZERO (1.e-8f)
-#define EPSILON (1.e-4f)
+#define EZERO (1.0e-8f)
+#define EPSILON (1.0e-4f)
+#define ARCFINITY (3.402e+38f)
+#define VECTOR_PROXIMITY_THRESHOLD (0.00002f)
+#define VECTOR_PARALLEL_THRESHOLD (0.02f)
 
 
 //FUNCTIONS
@@ -46,6 +49,10 @@ namespace AU{
 	template<class T>
 	INLINEFORCE glob T Clamp(const T a, const T min, const T max){
 		return a<min ? min : a>max ? a : max;
+	}
+
+	INLINEFORCE glob F32 SelectF32(F32 comparand, F32 valueGreaterThanEqualsZero, F32 valueLesserThanZero){
+		return comparand >= 0.f ? valueGreaterThanEqualsZero : valueLesserThanZero;
 	}
 
 	I32 factorial(I32 n);

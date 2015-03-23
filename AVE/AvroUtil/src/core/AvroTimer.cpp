@@ -44,3 +44,25 @@ INLINEFORCE DLLEXPORT U64 PerformanceCounter()
 	return UnixPerformanceCounter();
 #endif
 }
+
+INLINEFORCE DLLEXPORT F32 SecondsElapsed(U64 begin, U64 end, U64 perfFrequency)
+{
+	return (F32)(end - begin) / (F32)perfFrequency;
+}
+
+INLINEFORCE DLLEXPORT void OSSleep(U32 ms)
+{
+#ifdef A_W32
+	Sleep(ms);
+#elif A_UNX
+
+#endif
+}
+
+INLINEFORCE DLLEXPORT B8 SetOSSchedulerGranularity(U32 msGranularity){
+#ifdef A_W32
+	return timeBeginPeriod(msGranularity) == TIMERR_NOERROR;
+#elif A_UNX
+	return false;
+#endif
+}

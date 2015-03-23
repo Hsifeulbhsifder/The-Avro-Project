@@ -17,7 +17,7 @@ ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 
 set(warnings "/W3 /WX")
 	
-set(CMAKE_CXX_FLAGS "/D WIN32 /D _WINDOWS /GR /EHsc")	
+set(CMAKE_CXX_FLAGS "/D WIN32 /D _WINDOWS /GR /Oi /EHsc")	
 set(CMAKE_CXX_FLAGS_DEBUG "/D _DEBUG /D AVRO_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
 set(CMAKE_CXX_FLAGS_PROFILE "/D NDEBUG /D AVRO_PROFILE /MT /Zi /O2 /Ob1")
 set(CMAKE_CXX_FLAGS_RELEASE "/D NDEBUG /D AVRO_RELEASE /MT /O2 /Ob2")
@@ -81,3 +81,5 @@ set_target_properties(AvroUtil PROPERTIES INTERMEDIATE_DIRECTORY_PROFILE "${Avro
 set_target_properties(AvroUtil PROPERTIES INTERMEDIATE_DIRECTORY_RELEASE "${AvroUtil_TMP}/$(Platform)/release")
 set_target_properties(AvroUtil PROPERTIES INTERMEDIATE_DIRECTORY_PRODUCTION "${AvroUtil_TMP}/$(Platform)/production")
 
+#link to winmm.lib
+target_link_libraries(AvroUtil winmm.lib)
