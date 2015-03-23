@@ -1,5 +1,5 @@
 #include "AVE_stdafx.h"
-#include <AvroVersatileEngine.h>
+#include "AvroVersatileEngine.h"
 #include <iostream>
 #include <AvroMath.h>
 #include <AvroWindow.h>
@@ -39,11 +39,18 @@ B8 AvroVersatileEngine::Initialize(Window* window, U64 permanentHeapSize, U64 tr
 	MakeCurrent(m_window);
 	
 
-	if (!(m_renderingEngine.Initialize())){
+	if (!(m_renderingEngine.Initialize(m_window))){
 		DebugPrint("Rendering engine initialization has failed");
 		ErrorBox("Rendering Engine initialization Not created!", "Error!");
 		return false;
 	}
+
+	m_perfFrequency = PerformanceFrequency();
+
+	U32 gameUpdateHz = GetVRefreshRate();
+	m_targetSecondsPerFrame = 1.0f / (F32)gameUpdateHz;
+
+	m_granularSleeping = SetOSSchedulerGranularity(1);
 
 	DebugPrint("Engine Initialization Sequence Is Complete\n");
 	return true;
@@ -52,8 +59,6 @@ B8 AvroVersatileEngine::Initialize(Window* window, U64 permanentHeapSize, U64 tr
 //TODO: Heavily modify
 void AvroVersatileEngine::Run(){
 	if (!m_isRunning){
-		U64 perfCountFrequency = PerformanceFrequency();
-
 		MSG msg;
 		m_isRunning = true;
 
@@ -80,24 +85,59 @@ void AvroVersatileEngine::Run(){
 				break;
 			}
 
+
+
+			U64 workCounter = PerformanceCounter();
+
+			F32 workSecondsElapsed = SecondsElapsed(lastCounter, workCounter, m_perfFrequency);
+			
+			F32 secondsElapsedForFrame = workSecondsElapsed;
+			if (secondsElapsedForFrame < m_targetSecondsPerFrame){
+				if (m_granularSleeping){
+					U32 sleepMS = (U32)(1000.0f * (m_targetSecondsPerFrame - secondsElapsedForFrame));
+					if (sleepMS > 0) OSSleep(sleepMS);
+				}
+
+				F32 testSecondsElapsedForFrame = SecondsElapsed(lastCounter, PerformanceCounter(), m_perfFrequency);
+				AVRO_ASSERT(testSecondsElapsedForFrame > 0, "Slept too long!")
+				while (secondsElapsedForFrame < m_targetSecondsPerFrame){
+
+					secondsElapsedForFrame = 
+						SecondsElapsed(lastCounter, PerformanceCounter(), m_perfFrequency);
+				}
+			}else{
+				//TODO: MISSED FRAME RATE
+				//TODO: Log
+			}
+
 			m_renderingEngine.Render(0);
 
-			U64 endCycleCount = __rdtsc();
-
 			U64 endCounter = PerformanceCounter();
-
+			F32 frameTime = (1000.0f * SecondsElapsed(lastCounter, endCounter, m_perfFrequency));
+			lastCounter = endCounter;
+			F32 frameRate = 1000.0f / (F32) frameTime;
+			U64 endCycleCount = __rdtsc();
 			U64 cyclesElapsed = endCycleCount - lastCycleCount;
-			U64 counterElapsed = endCounter - lastCounter;
-			F64 frameTime = (1000.0 * counterElapsed) / (F64) perfCountFrequency;
-			F64 frameRate = (F64) perfCountFrequency / (F64) counterElapsed;
+			lastCycleCount = endCycleCount;
 			F64 kcyclesPerFrame = (F64) cyclesElapsed / (1000.0);
 
 			char buffer[256];
 			sprintf_s(buffer, sizeof(buffer), "%.04fms | (%.02f Hz) | %.02fkcpf\n", frameTime, frameRate, kcyclesPerFrame);
 			DebugPrint(buffer);
-			lastCounter = endCounter;
-			lastCycleCount = endCycleCount;
+
 		}
+	}
+}
+
+void AvroVersatileEngine::Execute(){
+	if (!m_isRunning){
+
+		MemoryStack singleFrameAllocator;
+
+		while (m_isRunning){
+
+		}
+
 	}
 }
 

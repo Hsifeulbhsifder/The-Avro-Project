@@ -17,7 +17,7 @@ ENDMACRO(ADD_MSVC_PRECOMPILED_HEADER)
 
 set(warnings "/W3 /WX")
 	
-set(CMAKE_CXX_FLAGS "/D WIN32 /D _WINDOWS /GR /EHsc")	
+set(CMAKE_CXX_FLAGS "/D WIN32 /D _WINDOWS /GR /Oi /EHsc")	
 set(CMAKE_CXX_FLAGS_DEBUG "/D _DEBUG /D AVRO_DEBUG /MTd /Zi /Ob0 /Od /RTC1")
 set(CMAKE_CXX_FLAGS_PROFILE "/D NDEBUG /D AVRO_PROFILE /MT /Zi /O2 /Ob1")
 set(CMAKE_CXX_FLAGS_RELEASE "/D NDEBUG /D AVRO_RELEASE /MT /O2 /Ob2")
@@ -94,7 +94,6 @@ set_target_properties(AVE PROPERTIES INTERMEDIATE_DIRECTORY_RELEASE "${AVE_TMP}/
 set_target_properties(AVE PROPERTIES INTERMEDIATE_DIRECTORY_PRODUCTION "${AVE_TMP}/$(Platform)/production")
 
 #links utilities and rendering engine
-target_link_libraries(AVE AvroUtil)
-target_link_libraries(AVE ARE)
+target_link_libraries(AVE AvroUtil ARE)
 
 install (TARGETS AVE RUNTIME DESTINATION "${Avro_Arrow_SOURCE_DIR}/bin/$(Platform)/$(Configuration)")

@@ -9,6 +9,7 @@
 
 #ifdef A_W32
 #include <windows.h>
+#include <timeapi.h>
 #include "win32_Platform.h"
 #include "win32_AvroMath.h"
 #elif A_UNX
