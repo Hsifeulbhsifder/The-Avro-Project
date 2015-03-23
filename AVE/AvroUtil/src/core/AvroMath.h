@@ -19,6 +19,21 @@
 #define EZERO (1.e-8f)
 #define EPSILON (1.e-4f)
 
+//Structs
+namespace AU{
+
+	//Radians wrapper class
+	struct R32{
+		F32 rad;
+	};
+
+	//Angle wrapper class
+	struct A32{
+		F32 deg;
+	};
+
+}
+
 
 //FUNCTIONS
 namespace AU{

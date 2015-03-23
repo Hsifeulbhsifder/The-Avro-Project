@@ -58,7 +58,7 @@ void AvroVersatileEngine::Run(){
 		m_isRunning = true;
 
 		MemoryStack singleFrameAllocator;
-		singleFrameAllocator.Initialize(AU::KiB(1024));
+		singleFrameAllocator.Initialize(KiB(1024));
 
 		U64 lastCounter = PerformanceCounter();
 
