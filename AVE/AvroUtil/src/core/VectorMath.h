@@ -208,7 +208,7 @@ namespace AU{
 	}
 
 	INLINEFORCE F32 V2::Dist2(const V2& a, const V2& b){
-		return Square(b.x - a.x) + Square(b.y - a.y);
+		return Sq(b.x - a.x) + Sq(b.y - a.y);
 	}
 
 	INLINEFORCE F32 V2::Dist(const V2& a, const V2& b){
@@ -937,15 +937,15 @@ namespace AU{
 	}
 
 	INLINEFORCE F32 V3::Dist2(const V3& a, const V3& b){
-		return Square(b.x - a.x) + Square(b.y - a.y) + Square(b.z - a.z);
+		return Sq(b.x - a.x) + Sq(b.y - a.y) + Sq(b.z - a.z);
 	}
 
 	INLINEFORCE F32 V3::Dist2(const V3& a, const V2& b){
-		return Square(b.x - a.x) + Square(b.y - a.y) + Square(a.z);
+		return Sq(b.x - a.x) + Sq(b.y - a.y) + Sq(a.z);
 	}
 
 	INLINEFORCE F32 V3::Dist2(const V2& a, const V3& b){
-		return Square(b.x - a.x) + Square(b.y - a.y) + Square(b.z);
+		return Sq(b.x - a.x) + Sq(b.y - a.y) + Sq(b.z);
 	}
 
 	INLINEFORCE F32 V3::Dist(const V3& a, const V3& b){
@@ -973,7 +973,7 @@ namespace AU{
 	}
 
 	INLINEFORCE B8 V3::AllComponentsEqual(F32 tolerance) const{
-		return AU::Abs(x - y) < tolerance && AU::Abs(y - z) < tolerance && AU::Abs(y - z);
+		return AU::Abs(x - y) < tolerance && AU::Abs(y - z) < tolerance && AU::Abs(y - z) < tolerance;
 	}
 
 	INLINEFORCE V3 V3::Set(F32 x, F32 y, F32 z){
@@ -989,19 +989,19 @@ namespace AU{
 
 		//Unrolled loop, checks axes
 		if (point.x < min.x)
-			dist2 += AU::Square(point.x - min.x);
+			dist2 += AU::Sq(point.x - min.x);
 		else if (point.x > max.x)
-			dist2 += AU::Square(point.x - max.x);
+			dist2 += AU::Sq(point.x - max.x);
 
 		if (point.y < min.y)
-			dist2 += AU::Square(point.y - min.y);
+			dist2 += AU::Sq(point.y - min.y);
 		else if (point.y > max.y)
-			dist2 += AU::Square(point.y - max.y);
+			dist2 += AU::Sq(point.y - max.y);
 
 		if (point.z < min.z)
-			dist2 += AU::Square(point.z - min.z);
+			dist2 += AU::Sq(point.z - min.z);
 		else if (point.z > max.z)
-			dist2 += AU::Square(point.z - max.z);
+			dist2 += AU::Sq(point.z - max.z);
 
 		return dist2;
 	}
@@ -1193,6 +1193,14 @@ namespace AU{
 		return V2(z, x);
 	}
 
+	INLINEFORCE glob U64 HashV3(const V3& value){
+		U64 result = 17;
+		result = 31 * result + HashF32(value.x);
+		result = 31 * result + HashF32(value.y);
+		result = 31 * result + HashF32(value.z);
+		return result;
+	}
+
 	/************************************************************************/
 	/* Four-Dimensional Vector                                              */
 	/************************************************************************/
@@ -1218,15 +1226,1084 @@ namespace AU{
 		glob const V4 XYW_AXIS;
 		glob const V4 XZW_AXIS;
 		glob const V4 YZW_AXIS;
+
+		INLINEFORCE V4(){}
+		INLINEFORCE explicit V4(F32 s);
+		INLINEFORCE V4(F32 x, F32 y, F32 z, F32 w = 1.0f);
+		INLINEFORCE V4(const V3& v, F32 w = 1.0f);
+		INLINEFORCE V4(const V2& v, F32 z = 0.0f, F32 w = 1.0f);
+		INLINEFORCE V4(const V2& xy,const V2& zw);
+		INLINEFORCE V4(const V2& v);
+		INLINEFORCE V4(const V3& v);
+		INLINEFORCE V4(const V4& v);
+		INLINEFORCE V4(V2&& v);
+		INLINEFORCE V4(V3&& v);
+		INLINEFORCE V4(V4&& v);
+
+		INLINEFORCE V4 operator=(const V2& v);
+		INLINEFORCE V4 operator=(const V3& v);
+		INLINEFORCE V4 operator=(const V4& v);
+		INLINEFORCE V4 operator=(V2&& v);
+		INLINEFORCE V4 operator=(V3&& v);
+		INLINEFORCE V4 operator=(V4&& v);
+
+		INLINEFORCE V4 operator+(const V2& v) const;
+		INLINEFORCE V4 operator+(const V3& v) const;
+		INLINEFORCE V4 operator+(const V4& v) const;
+		INLINEFORCE V4 operator+(F32 s) const;
+
+		INLINEFORCE V4 operator-(const V2& v) const;
+		INLINEFORCE V4 operator-(const V3& v) const;
+		INLINEFORCE V4 operator-(const V4& v) const;
+		INLINEFORCE V4 operator-(F32 s) const;
+
+		INLINEFORCE V4 operator*(const V2& v) const;
+		INLINEFORCE V4 operator*(const V3& v) const;
+		INLINEFORCE V4 operator*(const V4& v) const;
+		INLINEFORCE V4 operator*(F32 s) const;
+
+		INLINEFORCE V4 operator/(const V2& v) const;
+		INLINEFORCE V4 operator/(const V3& v) const;
+		INLINEFORCE V4 operator/(const V4& v) const;
+		INLINEFORCE V4 operator/(F32 s) const;
+
+		INLINEFORCE F32 operator|(const V2& v) const;
+		INLINEFORCE F32 operator|(const V3& v) const;
+		INLINEFORCE F32 operator|(const V4& v) const;
+
+		INLINEFORCE V4 operator^(const V2& v) const;
+		INLINEFORCE V4 operator^(const V3& v) const;
+		INLINEFORCE V4 operator^(const V4& v) const;
+
+		INLINEFORCE B8 operator==(const V4& v) const; //vector equality check
+		INLINEFORCE B8 operator==(F32 s) const; //scalar comparison
+		INLINEFORCE B8 operator!= (const V4& v) const; //vector inequality check
+		INLINEFORCE B8 operator!= (F32 s) const; //scalar inequality check
+		INLINEFORCE B8 operator<(const V4& v) const; //vector less-than comparison
+		INLINEFORCE B8 operator<(F32 s) const; //scalar less-than comparison
+		INLINEFORCE B8 operator>(const V4& v) const; //vector more-than comparison
+		INLINEFORCE B8 operator>(F32 s) const; //scalar more-than comparison
+		INLINEFORCE B8 operator<=(const V4& v) const; //vector less-than-equals comparison
+		INLINEFORCE B8 operator<=(F32 s) const; //scalar less-than-equals comparison
+		INLINEFORCE B8 operator>=(const V4& v) const; //vector more-than-equals comparison
+		INLINEFORCE B8 operator>=(F32 s) const; //scalar more-than-equals comparison
+
+		INLINEFORCE V4 operator-() const; // Negate this vector
+
+		INLINEFORCE V4 operator+=(const V2& v);
+		INLINEFORCE V4 operator+=(const V3& v);
+		INLINEFORCE V4 operator+=(const V4& v);
+		INLINEFORCE V4 operator+=(F32 v);
+
+		INLINEFORCE V4 operator-=(const V2& v);
+		INLINEFORCE V4 operator-=(const V3& v);
+		INLINEFORCE V4 operator-=(const V4& v);
+		INLINEFORCE V4 operator-=(F32 v);
+
+		INLINEFORCE V4 operator*=(const V2& v);
+		INLINEFORCE V4 operator*=(const V3& v);
+		INLINEFORCE V4 operator*=(const V4& v);
+		INLINEFORCE V4 operator*=(F32 v);
+
+		INLINEFORCE V4 operator/=(const V2& v);
+		INLINEFORCE V4 operator/=(const V3& v);
+		INLINEFORCE V4 operator/=(const V4& v);
+		INLINEFORCE V4 operator/=(F32 v);
+
+		INLINEFORCE V4 operator%(F32 tolerance) const; //Normalize with tolerance
+		INLINEFORCE V4 operator%=(const V2& v);
+		INLINEFORCE V4 operator%=(const V3& v);
+		INLINEFORCE V4 operator%=(const V4& v);
+
+		INLINEFORCE F32 operator~() const; //euclidean length squared
+
+		INLINEFORCE V4 operator++(); //doubles vector magnitude, chained return
+		INLINEFORCE V4 operator--(); //half of vector magnitude, chained return
+
+		INLINEFORCE F32& operator[](U32 index); // gets specific component reference
+		INLINEFORCE F32 operator[](U32 index) const; // gets specific component copy
+
+		INLINEFORCE glob F32 Dot3(const V4& a, const V4& b); //global dot product
+		INLINEFORCE glob F32 Dot(const V4& a, const V4& b); //global dot product
+		INLINEFORCE glob F32 Dot(const V4& a, const V3& b); //global dot product
+		INLINEFORCE glob F32 Dot(const V3& a, const V4& b); //global dot product
+		INLINEFORCE glob F32 Dot(const V4& a, const V2& b); //global dot product
+		INLINEFORCE glob F32 Dot(const V2& a, const V4& b); //global dot product
+
+		INLINEFORCE glob F32 Dist(const V4& a, const V4& b); //global distance
+		INLINEFORCE glob F32 Dist(const V4& a, const V3& b); //global distance
+		INLINEFORCE glob F32 Dist(const V3& a, const V4& b); //global distance
+		INLINEFORCE glob F32 Dist(const V4& a, const V2& b); //global distance
+		INLINEFORCE glob F32 Dist(const V2& a, const V4& b); //global distance
+
+		INLINEFORCE glob F32 Dist2(const V4& a, const V4& b); //global distance squared
+		INLINEFORCE glob F32 Dist2(const V4& a, const V3& b); //global distance squared
+		INLINEFORCE glob F32 Dist2(const V3& a, const V4& b); //global distance squared
+		INLINEFORCE glob F32 Dist2(const V4& a, const V2& b); //global distance squared
+		INLINEFORCE glob F32 Dist2(const V2& a, const V4& b); //global distance squared
+
+		INLINEFORCE glob V4 Cross(const V4& a, const V4& b); //global cross product
+		INLINEFORCE glob V4 Cross(const V4& a, const V3& b); //global cross product
+		INLINEFORCE glob V4 Cross(const V4& a, const V2& b); //global cross product
+
+		INLINEFORCE B8 Equals(const V4& v, F32 tolerance = EPSILON) const; //fuzzy equality test
+		INLINEFORCE B8 AllComponentsEqual(F32 tolerance = EPSILON) const;
+
+		INLINEFORCE V4 Set(F32 x, F32 y, F32 z, F32 w = 1.0f); //set components, chained return
+
+		INLINEFORCE F32 Max() const; // gets max component
+		INLINEFORCE F32 Min() const; // gets min component
+
+		INLINEFORCE V3 Abs() const; // Absolute value of every component of this vector
+
+		INLINEFORCE F32 AbsMax() const; // gets absolute max component
+		INLINEFORCE F32 AbsMin() const; // gets absolute min component
+
+		INLINEFORCE V4 ComponentMin(const V4& rhs) const; //component wise max of two vectors
+		INLINEFORCE V4 ComponentMax(const V4& rhs) const; //component wise max of two vectors
+		INLINEFORCE V4 ComponentMax(const V3& rhs) const; //component wise max of two vectors
+		INLINEFORCE V4 ComponentMin(const V3& rhs) const; //component wise min of two vectors
+		INLINEFORCE V4 ComponentMin(const V2& rhs) const; //component wise min of two vectors
+		INLINEFORCE V4 ComponentMax(const V2& rhs) const; //component wise min of two vectors
+
+
+		INLINEFORCE F32 Len() const; // euclidean length
+		INLINEFORCE F32 Len3() const; // euclidean length of three dimensional components
+		INLINEFORCE F32 Len2() const; // euclidean length squared
+		INLINEFORCE F32 Len32() const; // euclidean length squared of three dimensional components
+
+		INLINEFORCE V4 SafeNormalize(F32 tolerance = EZERO) const; //safe normalization
+
+		INLINEFORCE V4 Nor(F32 tolerance = EZERO); // self-normalization, chained return
+
+		INLINEFORCE B8 IsEpsilonZero(F32 tolerance = EPSILON) const; // fuzzy check for zero
+		INLINEFORCE B8 IsZero() const; //check if absolutely zero
+
+		INLINEFORCE void ToDirectionAndMagnitude(V4* v, F32* s) const; //returns a unit direction vector as well as a magnitude
+		INLINEFORCE V4 SignV4() const; //sets each component to either +1 or -1
+		INLINEFORCE V4 Projection() const; //Projects 2D components of vector based on z
+
+		INLINEFORCE V4 UnsafeNormalize() const;
+
+		INLINEFORCE V4 Clamp(F32 min, F32 max) const; //copies this vector, but clamps axes
+
+		INLINEFORCE V4 Reciprocal() const; //Reciprocates vector
+
+		INLINEFORCE B8 Uniform(F32 Tolerance = EPSILON) const; //checks if x == y == z == w
+		INLINEFORCE B8 Uniform3(F32 Tolerance = EPSILON) const; //checks if x == y == z
+
+		INLINEFORCE V4 Reflect(const V4& normal) const; // reflects vector across normal vector
+		INLINEFORCE V4 Reflect3(const V4& normal) const; // reflects vector across normal vector
+
+		//TODO: REFLECT ACROSS PLANE
+
+		//TODO: ANGLULAR ROTATION
+
+		INLINEFORCE B8 IsUnit(F32 len2Tolerance = EPSILON) const; //checks if it is unit
+
+		INLINEFORCE V4 Project(const V4& v) const; // Projects this vector onto another vector
+
+		INLINEFORCE glob B8 EqualVectors(const V4& a, const V4& b); // Checks if vectors are equal
+		INLINEFORCE glob B8 VectorsAreNear(const V4& a, const V4& b, F32 dist);// checks if vectors are within distance
+
+		//Distance from plane
+		INLINEFORCE glob F32 VectorPlaneDist(const V4& point, const V3& planeBase, const V3& planeNormal);
+
+		INLINEFORCE glob V4 ProjectPlane(const V4& point, const V3& planeBase, const V3& planeNormal);
+
+		INLINEFORCE glob B8 Parallel(const V4& a, const V4& b); // checks if vectors are roughly parallel
+
+		INLINEFORCE glob F32 Triple(const V4& a, const V4& b, const V4& c); // return triple: x|(y^z)
+
+		INLINEFORCE void BestAxesV3(V3* axis1, V3* axis2); //Good arbitrary axis to represent U and V axes of a plane, given the normal
+
+		//TODO: BEZIER CURVE		
+
+		INLINEFORCE V2 XY() const; //Swizzles to V2(x,y)
+		INLINEFORCE V2 YZ() const; //Swizzles to V2(y,z)
+		INLINEFORCE V2 XZ() const; //Swizzles to V2(x,z)
+		INLINEFORCE V2 YX() const; //Swizzles to V2(y,x)
+		INLINEFORCE V2 ZY() const; //Swizzles to V2(z,y)
+		INLINEFORCE V2 ZX() const; //Swizzles to V2(z,x)
+		INLINEFORCE V2 XW() const; //Swizzles to V2(x,w)
+		INLINEFORCE V2 YW() const; //Swizzles to V2(y,w)
+		INLINEFORCE V2 ZW() const; //Swizzles to V2(z,w)
+		INLINEFORCE V2 WX() const; //Swizzles to V2(w,x)
+		INLINEFORCE V2 WY() const; //Swizzles to V2(w,y)
+		INLINEFORCE V2 WZ() const; //Swizzles to V2(w,z)
+		INLINEFORCE V3 XYZ() const; //Swizzles to V3(x,y,z)
+		INLINEFORCE V3 XYW() const; //Swizzles to V3(x,y,w)
+		INLINEFORCE V3 XZW() const; //Swizzles to V3(x,z,w)
+		INLINEFORCE V3 YZW() const; //Swizzles to V3(y,z,w)
+
+		INLINEFORCE V3 AsV3() const; //Returns V3 components
+
+#if CHECK_NAN
+		INLINEFORCE void CheckNaN() const{
+			AVRO_ASSERT(!HasNaN(), "V4 contains NaN");
+		}
+#else
+		INLINEFORCE void CheckNaN() const{}
+#endif
+
+		INLINEFORCE B8 HasNaN() const{
+			return (IsNaN(x) || IsNaN(y) || IsNaN(z) || IsNaN(w) || !IsFinite(x) || !IsFinite(y) || !IsFinite(z) || !IsFinite(w));
+		}
 	};
 
+	//Functions
+	INLINEFORCE V4::V4(F32  s) :x(s), y(s), z(s), w(s){ V4::CheckNaN(); }
+
+	INLINEFORCE V4::V4(F32 x, F32 y, F32 z, F32 w) : x(x), y(y), z(z), w(w){ V4::CheckNaN(); }
+
+	INLINEFORCE V4::V4(const V4& rhs) : x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w){ V4::CheckNaN(); }
+	INLINEFORCE V4::V4(const V3& rhs) : x(rhs.x), y(rhs.y), z(rhs.z), w(1){ V4::CheckNaN(); }
+	INLINEFORCE V4::V4(const V3& rhs) : x(rhs.x), y(rhs.y), z(0), w(1){ V4::CheckNaN(); }
+	INLINEFORCE V4::V4(const V3& rhs, F32 w) : x(rhs.x), y(rhs.y), z(rhs.z), w(w){ V4::CheckNaN(); }
+	INLINEFORCE V4::V4(const V2& rhs, F32 z, F32 w) : x(rhs.x), y(rhs.y), z(z), w(w){ V4::CheckNaN(); }
+
+	INLINEFORCE V4::V4(V4&& rhs) : x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w){
+		rhs.x = 0;
+		rhs.y = 0;
+		rhs.z = 0;
+		rhs.w = 0;
+		CheckNaN();
+	}
+
+	INLINEFORCE V4::V4(V3&& rhs) :x(rhs.x), y(rhs.y), z(rhs.z), w(1){
+		rhs.x = 0;
+		rhs.y = 0;
+		rhs.z = 0;
+		CheckNaN();
+	}
+
+	INLINEFORCE V4::V4(V2&& rhs) :x(rhs.x), y(rhs.y), z(0), w(1){
+		rhs.x = 0;
+		rhs.y = 0;
+		CheckNaN();
+	}
+
+	INLINEFORCE V4 V4::operator=(const V4& rhs){
+		x = rhs.x;
+		y = rhs.y;
+		z = rhs.z;
+		w = rhs.w;
+		CheckNaN();
+	}
+
+	INLINEFORCE V4 V4::operator=(const V3& rhs){
+		x = rhs.x;
+		y = rhs.y;
+		z = rhs.z;
+		w = 1;
+		CheckNaN();
+	}
+
+	INLINEFORCE V4 V4::operator=(const V2& rhs){
+		x = rhs.x;
+		y = rhs.y;
+		z = 0;
+		w = 1;
+		CheckNaN();
+	}
+
+	INLINEFORCE V4 V4::operator=(V4&& rhs){
+		x = rhs.x;
+		y = rhs.y;
+		z = rhs.z;
+		w = rhs.w;
+		rhs.x = 0;
+		rhs.y = 0;
+		rhs.z = 0;
+		rhs.w = 0;
+		CheckNaN();
+	}
+
+	INLINEFORCE V4 V4::operator=(V3&& rhs){
+		x = rhs.x;
+		y = rhs.y;
+		z = rhs.z;
+		w = 1;
+		rhs.x = 0;
+		rhs.y = 0;
+		rhs.z = 0;
+		CheckNaN();
+	}
+
+	INLINEFORCE V4 V4::operator=(V2&& rhs){
+		x = rhs.x;
+		y = rhs.y;
+		z = 0;
+		w = 1;
+		rhs.x = 0;
+		rhs.y = 0;
+		CheckNaN();
+	}
+
+	INLINEFORCE V4 V4::operator+(const V4& v) const{
+		return V4(x + v.x, y + v.y, z + v.z, w + v.w);
+	}
+
+	INLINEFORCE V4 V4::operator+(const V3& v) const{
+		return V4(x + v.x, y + v.y, z + v.z, w + 1);
+	}
+
+	INLINEFORCE V4 V4::operator+(const V2& v) const{
+		return V4(x + v.x, y + v.y, z, w + 1);
+	}
+
+	INLINEFORCE V4 V4::operator+(F32 s) const{
+		return V4(x + s, y + s, z + s, w + s);
+	}
+
+	INLINEFORCE V4 V4::operator-(const V4& v) const{
+		return V4(x - v.x, y - v.y, z - v.z, w - v.w);
+	}
+
+	INLINEFORCE V4 V4::operator-(const V3& v) const{
+		return V4(x - v.x, y - v.y, z - v.z, w - 1);
+	}
+
+	INLINEFORCE V4 V4::operator-(const V2& v) const{
+		return V4(x - v.x, y - v.y, z, w - 1);
+	}
+
+	INLINEFORCE V4 V4::operator-(F32 s) const{
+		return V4(x - s, y - s, z - s, w - s);
+	}
+
+	INLINEFORCE V4 V4::operator*(const V4& v) const{
+		return V4(x * v.x, y * v.y, z * v.z, w * v.w);
+	}
+
+	INLINEFORCE V4 V4::operator*(const V3& v) const{
+		return V4(x * v.x, y * v.y, z * v.z, w);
+	}
+
+	INLINEFORCE V4 V4::operator*(const V2& v) const{
+		return V4(x * v.x, y * v.y, z, w);
+	}
+
+	INLINEFORCE V4 V4::operator*(F32 s) const{
+		return V4(x * s, y * s, z * s, w * s);
+	}
+
+	INLINEFORCE V4 V4::operator/(const V4& v) const{
+		return V4(x / v.x, y / v.y, z / v.z, w / v.w);
+	}
+
+	INLINEFORCE V4 V4::operator/(const V3& v) const{
+		return V4(x / v.x, y / v.y, z / v.z, w);
+	}
+
+	INLINEFORCE V4 V4::operator/(const V2& v) const{
+		return V4(x / v.x, y / v.y, z, w);
+	}
+
+	INLINEFORCE V4 V4::operator/(F32 s) const{
+		const F32 scale = 1.0f / s;
+		return V4(x * scale, y * scale, z * scale, w * scale);
+	}
+
+	INLINEFORCE V4 operator*(F32 s, const V4& v){
+		return v * s;
+	}
+
+	INLINEFORCE F32 V4::operator|(const V4& v) const{
+		return x*v.x + y*v.y + z*v.z + w+v.w;
+	}
+
+	INLINEFORCE F32 V4::operator|(const V3& v) const{
+		return x*v.x + y*v.y + z*v.z;
+	}
+
+	INLINEFORCE F32 V4::operator|(const V2& v) const{
+		return x*v.x + y*v.y;
+	}
+
+	INLINEFORCE V4 V4::operator^(const V4& v) const{
+		return V4(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x, 0);
+	}
+
+	INLINEFORCE V4 V4::operator^(const V3& v) const{
+		return V4(y*v.z - z*v.y, z*v.x - x*v.z, x*v.y - y*v.x, 0);
+	}
+
+	INLINEFORCE V4 V4::operator^(const V2& v) const{
+		return V4(-z*v.y, z*v.x, x*v.y - y*v.x, 0);
+	}
+
+	INLINEFORCE B8 V4::operator==(const V4& v) const{
+		return x == v.x && y == v.y && z == v.z && w == v.w;
+	}
+
+	INLINEFORCE B8 V4::operator==(F32 s) const{
+		return x == s && y == s && z == s && w == s;
+	}
+
+	INLINEFORCE B8 V4::operator!=(const V4& v) const{
+		return x != v.x || y != v.y || z != v.z || w != v.w;
+	}
+
+	INLINEFORCE B8 V4::operator!=(F32 s) const{
+		return x != s || y != s || z != s || w != s;
+	}
+
+	INLINEFORCE B8 V4::operator<(const V4& v) const{
+		return x < v.x && y < v.y && z < v.z && w < v.w;
+	}
+
+	INLINEFORCE B8 V4::operator<(F32 s) const{
+		return x < s && y < s && z < s && w < s;
+	}
+
+	INLINEFORCE B8 V4::operator>(const V4& v) const{
+		return x > v.x && y > v.y && z > v.z && w > v.w;
+	}
+
+	INLINEFORCE B8 V4::operator>(F32 s) const{
+		return x > s && y > s && z > s && w > s;
+	}
+
+	INLINEFORCE B8 V4::operator<=(const V4& v) const{
+		return x <= v.x && y <= v.y && z <= v.z && w <= v.w;
+	}
+
+	INLINEFORCE B8 V4::operator<=(F32 s) const{
+		return x <= s && y <= s && z <= s && w <= s;
+	}
+
+	INLINEFORCE B8 V4::operator>=(const V4& v) const{
+		return x >= v.x && y >= v.y && z >= v.z && w >= v.w;
+	}
+
+	INLINEFORCE B8 V4::operator>=(F32 s) const{
+		return x >= s && y >= s && z >= s && w >= s;
+	}
+
+	INLINEFORCE V4 V4::operator-() const{
+		return V4(-x, -y, -z, -w);
+	}
+
+	INLINEFORCE V4 V4::operator+=(const V4& v){
+		x += v.x;
+		y += v.y;
+		z += v.z;
+		w += v.w;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator+=(const V3& v){
+		x += v.x;
+		y += v.y;
+		z += v.z;
+		w += 1;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator+=(const V2& v){
+		x += v.x;
+		y += v.y;
+		w += 1;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator+=(F32 s){
+		x += s;
+		y += s;
+		z += s;
+		w += s;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator-=(const V4& v){
+		x -= v.x;
+		y -= v.y;
+		z -= v.z;
+		w -= v.w;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator-=(const V3& v){
+		x -= v.x;
+		y -= v.y;
+		z -= v.z;
+		w -= 1;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator-=(const V2& v){
+		x -= v.x;
+		y -= v.y;
+		w -= 1;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator-=(F32 s){
+		x -= s;
+		y -= s;
+		z -= s;
+		w -= s;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator*=(const V4& v){
+		x *= v.x;
+		y *= v.y;
+		z *= v.z;
+		w *= v.w;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator*=(const V3& v){
+		x *= v.x;
+		y *= v.y;
+		z *= v.z;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator*=(const V2& v){
+		x *= v.x;
+		y *= v.y;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator*=(F32 s){
+		x *= s;
+		y *= s;
+		z *= s;
+		w = s;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator/=(const V4& v){
+		x /= v.x;
+		y /= v.y;
+		z /= v.z;
+		w /= v.w;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator/=(const V3& v){
+		x /= v.x;
+		y /= v.y;
+		z /= v.z;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator/=(const V2& v){
+		x /= v.x;
+		y /= v.y;
+		z = ARCFINITY;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator/=(F32 s){
+		const F32 scale = 1.0f / s;
+		x *= scale;
+		y *= scale;
+		z *= scale;
+		w *= scale;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator%(F32 tolerance) const{
+#ifdef AVRO_DEBUG
+		const F32 squaredSum = x*x + y*y + z*z;
+		if (squaredSum > tolerance){
+			const F32 scl = SqrtInv(squaredSum);
+			return V4(x*scl, y*scl, z*scl, 0.0f);
+		}
+		return V4();
+#elif AVRO_PROFILE
+		const F32 squaredSum = x*x + y*y + z*z;
+		if (squaredSum > tolerance){
+			const F32 scl = SqrtInv(squaredSum);
+			return V4(x*scl, y*scl, z*scl, 0.0f);
+		}
+		return V4();;
+#endif
+		const F32 scl = SqrtInv(x*x + y*y + z*z);
+		return V4(x*scl, y*scl, z*scl, w*scl);
+	}
+
+	INLINEFORCE V4 V4::operator%=(const V4& v){
+		*this = v % EZERO;
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator%=(const V3& v){
+		*this = v % EZERO;
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator%=(const V2& v){
+		*this = v % EZERO;
+		return *this;
+	}
+
+	INLINEFORCE F32 V4::operator~() const{
+		return x*x + y*y + z*z + w*w;
+	}
+
+	INLINEFORCE V4 V4::operator++(){
+		x *= 2.f;
+		y *= 2.f;
+		z *= 2.f;
+		w *= 2.f;
+		return *this;
+	}
+
+	INLINEFORCE V4 V4::operator--(){
+		x *= 0.5f;
+		y *= 0.5f;
+		z *= 0.5f;
+		w *= 0.5f;
+		return *this;
+	}
+
+	INLINEFORCE F32& V4::operator[](U32 index){
+		AVRO_ASSERT(index < 4, "V4 only contains 4 components, index out of bounds");
+		if (index == 0) return x;
+		else if (index == 1) return y;
+		else if (index == 2) return z;
+		else return w;
+	}
+
+	INLINEFORCE F32 V4::operator[](U32 index) const{
+		AVRO_ASSERT(index < 4, "V4 only contains 4 components, index out of bounds");
+		if (index == 0) return x;
+		else if (index == 1) return y;
+		else if (index == 1) return z;
+		else return w;
+	}
+
+	INLINEFORCE F32 V4::Dot3(const V4& a, const V4& b){
+		return a | b;
+	}
+
+	INLINEFORCE F32 V4::Dot(const V4& a, const V4& b){
+		return a | b;
+	}
+
+	INLINEFORCE F32 V4::Dot(const V4& a, const V3& b){
+		return a | b;
+	}
+
+	INLINEFORCE F32 V4::Dot(const V3& a, const V4& b){
+		return b | a;
+	}
+
+	INLINEFORCE F32 V4::Dot(const V4& a, const V2& b){
+		return a | b;
+	}
+
+	INLINEFORCE F32 V4::Dot(const V2& a, const V4& b){
+		return b | a;
+	}
+
+	INLINEFORCE F32 V4::Dist2(const V4& a, const V4& b){
+		return Sq(b.x - a.x) + Sq(b.y - a.y) + Sq(b.z - a.z) + Sq(b.w - a.w);
+	}
+
+	INLINEFORCE F32 V4::Dist2(const V4& a, const V3& b){
+		return Sq(b.x - a.x) + Sq(b.y - a.y) + Sq(b.z - a.z) + Sq(1 - a.w);
+	}
+
+	INLINEFORCE F32 V4::Dist2(const V3& a, const V4& b){
+		return Sq(b.x - a.x) + Sq(b.y - a.y) + Sq(b.z - a.y) + Sq(b.w - 1);
+	}
+
+	INLINEFORCE F32 V4::Dist2(const V4& a, const V2& b){
+		return Sq(b.x - a.x) + Sq(b.y - a.y) + Sq(a.z) + Sq(1 - a.w);
+	}
+
+	INLINEFORCE F32 V4::Dist2(const V2& a, const V4& b){
+		return Sq(b.x - a.x) + Sq(b.y - a.y) + Sq(b.z) + Sq(b.w - 1);
+	}
+
+	INLINEFORCE F32 V4::Dist(const V4& a, const V4& b){
+		return Sqrt(Dist2(a, b));
+	}
+
+	INLINEFORCE F32 V4::Dist(const V4& a, const V3& b){
+		return Sqrt(Dist2(a, b));
+	}
+
+	INLINEFORCE F32 V4::Dist(const V3& a, const V4& b){
+		return Sqrt(Dist2(a, b));
+	}
+
+	INLINEFORCE F32 V4::Dist(const V4& a, const V2& b){
+		return Sqrt(Dist2(a, b));
+	}
+
+	INLINEFORCE F32 V4::Dist(const V2& a, const V4& b){
+		return Sqrt(Dist2(a, b));
+	}
+
+	INLINEFORCE V4 V4::Cross(const V4& a, const V4& b){
+		return a ^ b;
+	}
+
+	INLINEFORCE V4 V4::Cross(const V4& a, const V3& b){
+		return a ^ b;
+	}
+
+	INLINEFORCE V4 V4::Cross(const V4& a, const V2& b){
+		return a ^ b;
+	}
+
+	INLINEFORCE B8 V4::Equals(const V4& v, F32 tolerance) const{
+		return AU::Abs(x - v.x) < tolerance && AU::Abs(y - v.y) < tolerance 
+			&& AU::Abs(z - v.z) && AU::Abs(w - v.w) < tolerance;
+	}
+
+	INLINEFORCE B8 V4::AllComponentsEqual(F32 tolerance) const{
+		return AU::Abs(x - y) < tolerance && AU::Abs(y - z) < tolerance 
+			&& AU::Abs(y - z) < tolerance && AU::Abs(z - w) < tolerance;
+	}
+
+	INLINEFORCE V4 V4::Set(F32 x, F32 y, F32 z, F32 w){
+		this->x = x;
+		this->y = y;
+		this->z = z;
+		this->w = w;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE F32 Dist2BoxToPoint(const V4& min, const V4& max, const V4& point){
+		F32 dist2 = 0.0f; //Accumulative distance squared
+
+		//Unrolled loop, checks axes
+		if (point.x < min.x)
+			dist2 += AU::Sq(point.x - min.x);
+		else if (point.x > max.x)
+			dist2 += AU::Sq(point.x - max.x);
+
+		if (point.y < min.y)
+			dist2 += AU::Sq(point.y - min.y);
+		else if (point.y > max.y)
+			dist2 += AU::Sq(point.y - max.y);
+
+		if (point.z < min.z)
+			dist2 += AU::Sq(point.z - min.z);
+		else if (point.z > max.z)
+			dist2 += AU::Sq(point.z - max.z);
+
+		if (point.w < min.w)
+			dist2 += AU::Sq(point.w - min.w);
+		else if (point.w > max.w)
+			dist2 += AU::Sq(point.w - max.w);
+
+		return dist2;
+	}
+
+	INLINEFORCE F32 V4::Min() const{
+		return AU::Min(AU::Min(AU::Min(x, y), z), w);
+	}
+
+	INLINEFORCE F32 V4::Max() const{
+		return AU::Max(AU::Max(AU::Max(x, y), z), w);
+	}
+
+	INLINEFORCE F32 V4::AbsMin() const{
+		return AU::Min(AU::Min(AU::Min(AU::Abs(x), AU::Abs(y)), AU::Abs(z)), AU::Abs(w));
+	}
+
+	INLINEFORCE F32 V4::AbsMax() const{
+		return AU::Max(AU::Max(AU::Max(AU::Abs(x), AU::Abs(y)), AU::Abs(z)), AU::Abs(w));
+	}
+
+	INLINEFORCE V4 V4::ComponentMin(const V4& v) const{
+		return V4(AU::Min(x, v.x), AU::Min(y, v.y), AU::Min(z, v.z), AU::Min(w, v.w));
+	}
+
+	INLINEFORCE V4 V4::ComponentMax(const V4& v) const{
+		return V4(AU::Max(x, v.x), AU::Max(y, v.y), AU::Max(z, v.z), AU::Max(w, v.w));
+	}
+
+	INLINEFORCE V4 V4::ComponentMin(const V3& v) const{
+		return V4(AU::Min(x, v.x), AU::Min(y, v.y), AU::Min(z, v.z), AU::Min(w, 1.0f));
+	}
+
+	INLINEFORCE V4 V4::ComponentMax(const V3& v) const{
+		return V4(AU::Max(x, v.x), AU::Max(y, v.y), AU::Max(z, v.z), AU::Max(w, 1.0f));
+	}
+
+	INLINEFORCE V4 V4::ComponentMin(const V2& v) const{
+		return V4(AU::Min(x, v.x), AU::Min(y, v.y), AU::Min(z, 0.0f), AU::Min(w, 1.0f));
+	}
+
+	INLINEFORCE V4 V4::ComponentMax(const V2& v) const{
+		return V4(AU::Max(x, v.x), AU::Max(y, v.y), AU::Max(z, 0.0f), AU::Max(w, 1.0f));
+	}
+
+	INLINEFORCE F32 V4::Len() const{
+		return AU::Sqrt(x*x + y*y + z*z + w*w);
+	}
+
+	INLINEFORCE F32 V4::Len3() const{
+		return AU::Sqrt(x*x + y*y + z*z);
+	}
+
+	INLINEFORCE F32 V4::Len2() const{
+		return x*x + y*y + z*z + w*w;
+	}
+
+	INLINEFORCE F32 V4::Len32() const{
+		return x*x + y*y + z*z;
+	}
+
+	INLINEFORCE V4 V4::SafeNormalize(F32 tolerance) const{
+		const F32 squaredSum = x*x + y*y + z*z + w*w;
+		if (squaredSum > tolerance){
+			const F32 scl = SqrtInv(squaredSum);
+			return V4(x*scl, y*scl, z*scl);
+		}
+		return V4();
+	}
+
+	INLINEFORCE V4 V4::Nor(F32 tolerance){
+#ifdef AVRO_DEBUG
+		const F32 squaredSum = x*x + y*y + z*z + w*w;
+		if (squaredSum > tolerance){
+			const F32 scl = SqrtInv(squaredSum);
+			x *= scl;
+			y *= scl;
+			z *= scl;
+			w *= scl;
+			CheckNaN();
+			return *this;
+		}
+		x = y = z = 0;
+		w = 1;
+		return *this;
+#elif AVRO_PROFILE
+		const F32 squaredSum = x*x + y*y + z*z + w*w;
+		if (squaredSum > tolerance){
+			const F32 scl = SqrtInv(squaredSum);
+			x *= scl;
+			y *= scl;
+			z *= scl;
+			w *= scl;
+			CheckNaN(0;)
+			return *this;
+		}
+		x = y = z = 0;
+		w = 1;
+		return *this;;
+#endif
+		const F32 scl = SqrtInv(x*x + y*y + z*z + w*w);
+		x *= scl;
+		y *= scl;
+		z *= scl;
+		w *= scl;
+		CheckNaN();
+		return *this;
+	}
+
+	INLINEFORCE B8 V4::IsEpsilonZero(F32 tolerance) const{
+		return AU::Abs(x) < tolerance && AU::Abs(y) < tolerance && AU::Abs(z) < tolerance && AU::Abs(w) < tolerance;
+	}
+
+	INLINEFORCE B8 V4::IsZero() const{
+		return x == 0.f && y == 0.f && z == 0.f && w == 0.0f;
+	}
+
+	INLINEFORCE void V4::ToDirectionAndMagnitude(V4* v, F32* s) const{
+		*s = Len();
+		if (*s > EPSILON){
+			F32 lenReciprocal = 1.0f / *s;
+			*v = V4(x * lenReciprocal, y * lenReciprocal, z * lenReciprocal);
+		}
+		else{
+			*v = V4::ZERO;
+		}
+	}
+
+	INLINEFORCE V4 V4::SignV4() const{
+		return V4(AU::SelectF32(x, 1.f, -1.f), AU::SelectF32(y, 1.f, -1.f), AU::SelectF32(z, 1.f, -1.f), AU::SelectF32(w, 1.f, -1.f));
+	}
+
+	INLINEFORCE V4 V4::Projection() const{
+		const F32 rw = 1.f / w;
+		return V4(x*rw, y*rw, z*rw, 1.0f);
+	}
+
+	INLINEFORCE V4 V4::UnsafeNormalize() const{
+		const F32 scl = SqrtInv(x*x + y*y + z*z + w*w);
+		return V3(x*scl, y*scl, z*scl);
+	}
+
+	INLINEFORCE V4 V4::Clamp(F32 min, F32 max) const{
+		F32 len = Len();
+		const V4 dir = (len > EPSILON) ? (*this / len) : V4::ZERO;
+		len = AU::Clamp(len, min, max);
+		return len * dir;
+	}
+
+	INLINEFORCE V4 V4::Reciprocal() const{
+		V4 vec;
+		if (x != 0.f) vec.x = 1.f / x;
+		else vec.x = ARCFINITY;
+		if (y != 0.f) vec.y = 1.f / y;
+		else vec.y = ARCFINITY;
+		if (z != 0.f) vec.z = 1.f / z;
+		else vec.z = ARCFINITY;
+		if (w != 0.f) vec.z = 1.f / w;
+		else vec.w = ARCFINITY;
+		return vec;
+	}
+
+	INLINEFORCE B8 V4::Uniform(F32 tolerance) const{
+		return (AU::Abs(x - y) < tolerance) && (AU::Abs(y - z) < tolerance) && (AU::Abs(z - w) < tolerance);
+	}
+
+	INLINEFORCE B8 V4::Uniform3(F32 tolerance) const{
+		return (AU::Abs(x - y) < tolerance) && (AU::Abs(y - z) < tolerance);
+	}
+
+	INLINEFORCE V4 V4::Reflect(const V4& normal) const{
+		return *this - normal * 2.f * (*this | normal);
+	}
+
+	INLINEFORCE V4 V4::Reflect3(const V4& normal) const{
+		return *this - normal * 2.f * Dot3(*this, normal);
+	}
+
+	INLINEFORCE B8 V4::IsUnit(F32 len2Tolerance) const{
+		return AU::Abs(1.0f - Len2()) < len2Tolerance;
+	}
+
+	INLINEFORCE V4 V4::Project(const V4& v) const{
+		return (v * ((*this | v) / (v | v)));
+	}
+
+	INLINEFORCE B8 V4::EqualVectors(const V4& a, const V4& b){
+		return (AU::Abs(a.x - b.x) < VECTOR_PROXIMITY_THRESHOLD
+			&& AU::Abs(a.y - b.y) < VECTOR_PROXIMITY_THRESHOLD
+			&& AU::Abs(a.z - b.z) < VECTOR_PROXIMITY_THRESHOLD
+			&& AU::Abs(a.w - b.w) < VECTOR_PROXIMITY_THRESHOLD);
+	}
+
+	INLINEFORCE B8 V4::VectorsAreNear(const V4& a, const V4& b, F32 dist){
+		return (AU::Abs(a.x - b.x) < dist
+			&& AU::Abs(a.y - b.y) < dist
+			&& AU::Abs(a.z - b.z) < dist
+			&& AU::Abs(a.w - b.w) < dist);
+	}
+
+	INLINEFORCE B8 V4::Parallel(const V4& a, const V4& b){
+		return (AU::Abs((a | b) - 1.0f) <= VECTOR_PARALLEL_THRESHOLD);
+	}
+
+	INLINEFORCE F32 V4::Triple(const V4& a, const V4& b, const V4& c){
+		return a|(b^c);
+	}
+
+	INLINEFORCE F32 V4::VectorPlaneDist(const V4& point, const V3& planeBase, const V3& planeNormal){
+		return (point - planeBase) | planeNormal;
+	}
+
+	INLINEFORCE V4 V4::ProjectPlane(const V4& point, const V3& planeBase, const V3& planeNormal){
+		return point - ((point - planeBase) | planeNormal) * planeNormal;
+	}
+
+	INLINEFORCE V2 V4::XY() const{
+		return V2(x, y);
+	}
+
+	INLINEFORCE V2 V4::YZ() const{
+		return V2(y, z);
+	}
+
+	INLINEFORCE V2 V4::XZ() const{
+		return V2(x, z);
+	}
+
+	INLINEFORCE V2 V4::XW() const{
+		return V2(x, w);
+	}
+
+	INLINEFORCE V2 V4::YW() const{
+		return V2(y, w);
+	}
+
+	INLINEFORCE V2 V4::ZW() const{
+		return V2(z, w);
+	}
+
+	INLINEFORCE V2 V4::YX() const{
+		return V2(y, x);
+	}
+
+	INLINEFORCE V2 V4::ZY() const{
+		return V2(z, y);
+	}
+
+	INLINEFORCE V2 V4::ZX() const{
+		return V2(z, x);
+	}
+
+	INLINEFORCE V2 V4::WX() const{
+		return V2(w, x);
+	}
+
+	INLINEFORCE V2 V4::WY() const{
+		return V2(w, y);
+	}
+
+	INLINEFORCE V2 V4::WZ() const{
+		return V2(w, z);
+	}
+
+	INLINEFORCE V3 V4::XYZ() const{
+		return V3(x, y, z);
+	}
+
+	INLINEFORCE V3 V4::XYW() const{
+		return V3(x, y, w);
+	}
+
+	INLINEFORCE V3 V4::YZW() const{
+		return V3(y, z, w);
+	}
+
+	INLINEFORCE V3 V4::XZW() const{
+		return V3(x, z, w);
+	}
+
+	INLINEFORCE V3 V4::AsV3() const{
+		return V3(x, y, z);
+	}
+
+	INLINEFORCE glob U64 HashV4(const V4& value){
+		U64 result = 17;
+		result = 31 * result + HashF32(value.x);
+		result = 31 * result + HashF32(value.y);
+		result = 31 * result + HashF32(value.z);
+		result = 31 * result + HashF32(value.w);
+		return result;
+	}
 	
-
-
-
-
-
-
 	/************************************************************************/
 	/* Quaternion                                                           */
 	/************************************************************************/
