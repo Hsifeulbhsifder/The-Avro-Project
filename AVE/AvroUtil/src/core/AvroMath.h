@@ -26,7 +26,7 @@
 //FUNCTIONS
 namespace AU{
 	template<class T>
-	INLINEFORCE glob T Square(const T a){
+	INLINEFORCE glob T Sq(const T a){
 		return a*a;
 	}
 

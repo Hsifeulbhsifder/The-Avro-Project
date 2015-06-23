@@ -183,6 +183,18 @@ namespace AU{
 		return bytes * 1073741824LL;
 	}
 
+	//Forces a check if a value is NaN
+	INLINEFORCE glob B8 ForceCheckNaNF32(F32 x){
+		return (IsNaN(x) || !IsFinite(x));
+	}
+
+#if CHECK_NAN
+	INLINEFORCE glob void CheckNaNF32(F32 x){
+		AVRO_ASSERT(!ForceCheckNaNF32(x), "F32 value is NaN");
+	}
+#else
+	INLINEFORCE glob void CheckNaNF32(F32 x){}
+#endif
 
 	//Default swap function, define other swap functions 
 	//and use template specialization to do custom swaps
@@ -196,6 +208,14 @@ namespace AU{
 	//QuickSort
 	template<typename T>
 	glob void Sort(T* arr, U32 begin, U32 end);
+
+	//MergeSort
+	template<typename T>
+	glob void MergeSort(T* arr, U32 begin, U32 end);
+
+	//TODO: Make this more efficient
+	template<typename T>
+	glob void CopyArr(T* src, U32 srcStart, T* dest, U32 destStart, U32 numElements);
 }
 
 #endif
