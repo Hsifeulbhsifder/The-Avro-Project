@@ -21,6 +21,8 @@
 static INLINEFORCE char IsNaN(float f) { return _isnan(f); }
 static INLINEFORCE char IsFinite(float f) { return _finite(f); }
 
+//static INLINEFORCE HMODULE LoadLib(char* libPath){ return LoadLibrary(libPath); }
+
 #ifdef AVRO_DEBUG
 
 #define DebugPrint(str){ \

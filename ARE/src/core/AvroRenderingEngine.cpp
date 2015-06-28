@@ -14,9 +14,10 @@ B8 AvroRenderingEngine::Initialize(Window* window){
 	return true;
 }
 
-void AvroRenderingEngine::Render(F32 delta){
+void AvroRenderingEngine::Render(){
 	ClearScreen();
-
+	//DebugPrint("Test Message ");
+	//DebugPrint("This is a test for performance ");
 
 	SwapBuffers(m_window);
 }

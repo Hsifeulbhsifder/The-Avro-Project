@@ -7,26 +7,29 @@
 #include <AvroUtil.h>
 #include <iostream>
 #include <AvroTimer.h>
+#include <AvroInput.h>
 
 using namespace AU;
+
+glob U32 numControllers = 1; //Number of active controllers
 
 B8 AvroVersatileEngine::Initialize(Window* window, U64 permanentHeapSize, U64 transientHeapSize, U64 debugHeapSize){
 
 #ifdef AVRO_DEBUG
 	if (!(m_debugHeap.Initialize(debugHeapSize))){
-		DebugPrint("Not enough system memory to debug this game");
+		DebugPrint("Not enough system memory to debug this game\n");
 		ErrorBox("Not enough RAM to debug this game", "Error!");
 		return false;
 	}
 #endif
 
 	if (!(m_permanentHeap.Initialize(permanentHeapSize))){
-		DebugPrint("Not enough system memory to run this game");
+		DebugPrint("Not enough system memory to run this game\n");
 		ErrorBox("Not enough RAM to run this game", "Error!");
 		return false;
 	}
 	if (!(m_transientHeap.Initialize(transientHeapSize))){
-		DebugPrint("Run this game on a lower setting");
+		DebugPrint("Run this game on a lower setting\n");
 		ErrorBox("Run this game on a lower setting", "Error!");
 		return false;
 	}
@@ -40,9 +43,15 @@ B8 AvroVersatileEngine::Initialize(Window* window, U64 permanentHeapSize, U64 tr
 	
 
 	if (!(m_renderingEngine.Initialize(m_window))){
-		DebugPrint("Rendering engine initialization has failed");
+		DebugPrint("Rendering engine initialization has failed\n");
 		ErrorBox("Rendering Engine initialization Not created!", "Error!");
 		return false;
+	}
+
+	if (!(InitInput(numControllers))){
+		DebugPrint("Input initialization has failed\n");
+		ErrorBox("Input initialization Not created!", "Error!");
+		return false;;
 	}
 
 	m_perfFrequency = PerformanceFrequency();
@@ -110,7 +119,41 @@ void AvroVersatileEngine::Run(){
 				//TODO: Log
 			}
 
-			m_renderingEngine.Render(0);
+			//TODO: Handle Input Updating and rendering
+
+			//Input
+			//TODO: Poll more frequently
+			GPD::Poll();
+			for (U32 i = 0; i < numControllers; i++){
+				B8 dUp = GPD::U(i);
+				B8 dDown = GPD::D(i);
+				B8 dLeft = GPD::L(i);
+				B8 dRight = GPD::R(i);
+				B8 start = GPD::START(i);
+				B8 back = GPD::BACK(i);
+				B8 lb = GPD::LB(i);
+				B8 rb = GPD::RB(i);
+				B8 l3 = GPD::L3(i);
+				B8 r3 = GPD::R3(i);
+				B8 a = GPD::A(i);
+				B8 b = GPD::B(i);
+				B8 x = GPD::X(i);
+				B8 y = GPD::Y(i);
+				F32 lx = GPD::LX(i);
+				F32 ly = GPD::LY(i);
+				F32 rx = GPD::RX(i);
+				F32 ry = GPD::RY(i);
+				F32 lt = GPD::LT(i);
+				F32 rt = GPD::RT(i);
+
+				GPD::Vibrate(i, AU::Sqrt(lx*lx + ly*ly), AU::Sqrt(rx*rx + ry*ry));
+
+				char buffer[512];
+				sprintf_s(buffer, sizeof(buffer), "LX: %.03f LY: %.03f RX: %.03f RY: %.03f LT: %.03f RT: %.03f\n", lx, ly, rx, ry, lt, rt);
+				DebugPrint(buffer);
+			}
+
+			m_renderingEngine.Render();
 
 			U64 endCounter = PerformanceCounter();
 			F32 frameTime = (1000.0f * SecondsElapsed(lastCounter, endCounter, m_perfFrequency));
@@ -123,7 +166,7 @@ void AvroVersatileEngine::Run(){
 
 			char buffer[256];
 			sprintf_s(buffer, sizeof(buffer), "%.04fms | (%.02f Hz) | %.02fkcpf\n", frameTime, frameRate, kcyclesPerFrame);
-			DebugPrint(buffer);
+			//DebugPrint(buffer);
 
 		}
 	}
