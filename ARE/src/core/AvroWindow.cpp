@@ -1,5 +1,6 @@
 #include "ARE_stdafx.h"
 #include "AvroWindow.h"
+#include <AvroInput.h>
 
 #ifdef A_W32
 
@@ -19,16 +20,20 @@ I64 intern CALLBACK Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPARA
 
 	}break;
 	case WM_SIZE:{
-		DebugPrint("WM_SIZE\n");
 	}break;
 	case WM_DESTROY:{
 		*m_isRunning = false; //TODO: Handle this as error
+	}break;
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+	case WM_KEYDOWN:
+	case WM_KEYUP:{
+		//Drown These messages, we are using GetKeyState(VK_Menu)
 	}break;
 	case WM_CLOSE:{
 		*m_isRunning = false; //TODO: Handle this as message to user
 	}break;
 	case WM_ACTIVATEAPP:{
-		DebugPrint("WM_ACTIVATE\n");
 	}break;
 	default:{
 		result = DefWindowProcA(hwnd, message, wparam, lparam);
@@ -58,6 +63,7 @@ void intern Win32CreateWindow(HWND hwnd, U32 width, U32 height, char* title){
 	wcx.hIconSm = NULL; //TODO: set icon
 
 	if (!RegisterClassEx(&wcx)){
+		DebugPrint("Couldn't register window class\n");
 		ErrorBox("Couldn't register window class", "Error!");
 		exit(-1);
 	}

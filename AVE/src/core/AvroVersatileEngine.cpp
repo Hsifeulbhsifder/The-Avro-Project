@@ -13,8 +13,10 @@ using namespace AU;
 
 glob U32 numControllers = 1; //Number of active controllers
 
-B8 AvroVersatileEngine::Initialize(Window* window, U64 permanentHeapSize, U64 transientHeapSize, U64 debugHeapSize){
+B8 AvroVersatileEngine::Initialize
+(Window* window, U64 permanentHeapSize, U64 transientHeapSize, U64 debugHeapSize){
 
+	//Initialize memory
 #ifdef AVRO_DEBUG
 	if (!(m_debugHeap.Initialize(debugHeapSize))){
 		DebugPrint("Not enough system memory to debug this game\n");
@@ -34,8 +36,14 @@ B8 AvroVersatileEngine::Initialize(Window* window, U64 permanentHeapSize, U64 tr
 		return false;
 	}
 
-	m_window = window;
+	//initialize Input
+	if (!(InitInput(numControllers))){
+		numControllers = 0;
+	}
+
+	//Initialize window
 	m_isRunning = false;
+	m_window = window;
 	GameWindowSetState(&m_isRunning);
 
 	CreateGLContext(m_window);
@@ -46,12 +54,6 @@ B8 AvroVersatileEngine::Initialize(Window* window, U64 permanentHeapSize, U64 tr
 		DebugPrint("Rendering engine initialization has failed\n");
 		ErrorBox("Rendering Engine initialization Not created!", "Error!");
 		return false;
-	}
-
-	if (!(InitInput(numControllers))){
-		DebugPrint("Input initialization has failed\n");
-		ErrorBox("Input initialization Not created!", "Error!");
-		return false;;
 	}
 
 	m_perfFrequency = PerformanceFrequency();
@@ -107,7 +109,8 @@ void AvroVersatileEngine::Run(){
 					if (sleepMS > 0) OSSleep(sleepMS);
 				}
 
-				F32 testSecondsElapsedForFrame = SecondsElapsed(lastCounter, PerformanceCounter(), m_perfFrequency);
+				F32 testSecondsElapsedForFrame = SecondsElapsed(lastCounter, 
+												PerformanceCounter(), m_perfFrequency);
 				AVRO_ASSERT(testSecondsElapsedForFrame > 0, "Slept too long!")
 				while (secondsElapsedForFrame < m_targetSecondsPerFrame){
 
@@ -122,35 +125,43 @@ void AvroVersatileEngine::Run(){
 			//TODO: Handle Input Updating and rendering
 
 			//Input
+			AVI::SquareInputs(true); //TODO: Possibly remove from here
 			//TODO: Poll more frequently
-			GPD::Poll();
+			if (AVI::GetKeyTapped('W')){
+				DebugPrint("W \n");
+			} 
+			AVI::Poll();
 			for (U32 i = 0; i < numControllers; i++){
-				B8 dUp = GPD::U(i);
-				B8 dDown = GPD::D(i);
-				B8 dLeft = GPD::L(i);
-				B8 dRight = GPD::R(i);
-				B8 start = GPD::START(i);
-				B8 back = GPD::BACK(i);
-				B8 lb = GPD::LB(i);
-				B8 rb = GPD::RB(i);
-				B8 l3 = GPD::L3(i);
-				B8 r3 = GPD::R3(i);
-				B8 a = GPD::A(i);
-				B8 b = GPD::B(i);
-				B8 x = GPD::X(i);
-				B8 y = GPD::Y(i);
-				F32 lx = GPD::LX(i);
-				F32 ly = GPD::LY(i);
-				F32 rx = GPD::RX(i);
-				F32 ry = GPD::RY(i);
-				F32 lt = GPD::LT(i);
-				F32 rt = GPD::RT(i);
+				if (AVI::GamePadIsActive(i)){
+					B8 dUp = AVI::U(i);
+					B8 dDown = AVI::D(i);
+					B8 dLeft = AVI::L(i);
+					B8 dRight = AVI::R(i);
+					B8 start = AVI::START(i);
+					B8 back = AVI::BACK(i);
+					B8 lb = AVI::LB(i);
+					B8 rb = AVI::RB(i);
+					B8 l3 = AVI::L3(i);
+					B8 r3 = AVI::R3(i);
+					B8 a = AVI::A(i);
+					B8 b = AVI::B(i);
+					B8 x = AVI::X(i);
+					B8 y = AVI::Y(i);
+					F32 lx = AVI::LX(i);
+					F32 ly = AVI::LY(i);
+					F32 rx = AVI::RX(i);
+					F32 ry = AVI::RY(i);
+					F32 lt = AVI::LT(i);
+					F32 rt = AVI::RT(i);
 
-				GPD::Vibrate(i, AU::Sqrt(lx*lx + ly*ly), AU::Sqrt(rx*rx + ry*ry));
+					AVI::Vibrate(i, AU::Sqrt(lx*lx + ly*ly), AU::Sqrt(rx*rx + ry*ry));
 
-				char buffer[512];
-				sprintf_s(buffer, sizeof(buffer), "LX: %.03f LY: %.03f RX: %.03f RY: %.03f LT: %.03f RT: %.03f\n", lx, ly, rx, ry, lt, rt);
-				DebugPrint(buffer);
+					char buffer[256];
+					sprintf_s(buffer, sizeof(buffer), 
+							"LX: %.03f LY: %.03f RX: %.03f RY: %.03f LT: %.03f RT: %.03f\n", 
+							lx, ly, rx, ry, lt, rt);
+					DebugPrint(buffer);
+				}
 			}
 
 			m_renderingEngine.Render();
@@ -165,7 +176,8 @@ void AvroVersatileEngine::Run(){
 			F64 kcyclesPerFrame = (F64) cyclesElapsed / (1000.0);
 
 			char buffer[256];
-			sprintf_s(buffer, sizeof(buffer), "%.04fms | (%.02f Hz) | %.02fkcpf\n", frameTime, frameRate, kcyclesPerFrame);
+			sprintf_s(buffer, sizeof(buffer), "%.04fms | (%.02f Hz) | %.02fkcpf\n", 
+					frameTime, frameRate, kcyclesPerFrame);
 			//DebugPrint(buffer);
 
 		}
