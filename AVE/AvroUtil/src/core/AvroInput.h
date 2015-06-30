@@ -27,6 +27,10 @@
 #define AVI_X XINPUT_GAMEPAD_X
 #define AVI_Y XINPUT_GAMEPAD_Y
 
+#define AVI_LINEAR_INPUT 0
+#define AVI_SQUARED_INPUT 1
+#define AVI_QUARTIC_INPUT 2
+
 #define AVI_MAX_VIBRATION 65535
 #define AVI_MAX_STICK_VALUE 32768
 #define AVI_MAX_TRIGGER_VALUE 255
@@ -83,7 +87,12 @@ namespace AVI{
 	F32 RT(U32 controllerIndex);
 
 	void Vibrate(U32 controllerIndex, F32 lmgntd, F32 rmgntd);
-	void SquareInputs(B8 _squareInputs);
+	void SetInputType(U32 _inputType);
+
+	void SetStickDeadzone(F32 stickDeadzone);
+	void SetTriggerDeadzone(F32 triggerDeadzone);
+	F32 GetStickDeadzone();
+	F32 GetTriggerDeadzone();
 
 	B8 GamePadIsActive(U32 controllerIndex);
 

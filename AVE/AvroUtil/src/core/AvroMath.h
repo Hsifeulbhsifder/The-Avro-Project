@@ -27,7 +27,17 @@
 namespace AU{
 	template<class T>
 	INLINEFORCE glob T Sq(const T a){
-		return a*a;
+		return a * a;
+	}
+
+	template<class T>
+	INLINEFORCE glob T Cube(const T a){
+		return a * a * a;
+	}
+
+	template<class T>
+	INLINEFORCE glob T Quart(const T a){
+		return a * a * a * a;
 	}
 
 	INLINEFORCE glob F32 Sqrt(const F32 value){ return sqrtf(value); }

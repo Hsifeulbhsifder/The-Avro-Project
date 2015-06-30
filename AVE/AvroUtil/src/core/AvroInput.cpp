@@ -9,7 +9,7 @@ glob U32 numControllers;
 glob GamePad* gamepads;
 glob U8* prevKeys;
 
-glob B8 squareInputs = false; //Flag for squaring inputs 
+glob U32 inputType = AVI_LINEAR_INPUT; //Flag for squaring inputs 
 glob F32 STICK_DEADZONE = 8269; //Average of two recommended values on MSDN
 glob U32 STICK_DEADZONE2 = 68376361; //Square of the average of two recommended values on MSDN
 glob F32 TRIGGER_DEADZONE = 30; //Recommendation from MSDN
@@ -175,8 +175,25 @@ namespace AVI{
 		gamepads[controllerIndex].rv = rmgntd;
 	}
 
-	void SquareInputs(B8 _squareInputs){
-		squareInputs = _squareInputs;
+	void SetInputType(U32 _inputType){
+		inputType = _inputType;
+	}
+
+	void SetStickDeadzone(F32 stickDeadzone){
+		STICK_DEADZONE = (stickDeadzone * AVI_MAX_STICK_VALUE);
+		STICK_DEADZONE2 = (U32) AU::Sq(STICK_DEADZONE);
+	}
+
+	void SetTriggerDeadzone(F32 triggerDeadzone){
+		TRIGGER_DEADZONE = (triggerDeadzone * AVI_MAX_TRIGGER_VALUE);
+	}
+
+	F32 GetStickDeadzone(){
+		return STICK_DEADZONE / AVI_MAX_STICK_VALUE;
+	}
+
+	F32 GetTriggerDeadzone(){
+		return TRIGGER_DEADZONE / AVI_MAX_TRIGGER_VALUE;
 	}
 	
 	B8 GamePadIsActive(U32 controllerIndex){
@@ -220,16 +237,21 @@ namespace AVI{
 					lmgntd -= STICK_DEADZONE;
 					lx = nlxFactor * lmgntd;
 					ly = nlyFactor * lmgntd;
-					if (squareInputs){
-						gamepads[i].lx = AU::Sq(lx / (AVI_MAX_STICK_VALUE -
-							STICK_DEADZONE * nlxFactor * AU::Sgn(lx)));
-						gamepads[i].ly = AU::Sq(ly / (AVI_MAX_STICK_VALUE -
-							STICK_DEADZONE * nlyFactor * AU::Sgn(ly)));
-					} else{
+					if (inputType == AVI_LINEAR_INPUT){
 						gamepads[i].lx = lx / (AVI_MAX_STICK_VALUE -
 							STICK_DEADZONE * nlxFactor * AU::Sgn(lx));
 						gamepads[i].ly = ly / (AVI_MAX_STICK_VALUE -
 							STICK_DEADZONE * nlyFactor * AU::Sgn(ly));
+					} else if(inputType == AVI_SQUARED_INPUT){
+						gamepads[i].lx = AU::Sq(lx / (AVI_MAX_STICK_VALUE -
+							STICK_DEADZONE * nlxFactor * AU::Sgn(lx)));
+						gamepads[i].ly = AU::Sq(ly / (AVI_MAX_STICK_VALUE -
+							STICK_DEADZONE * nlyFactor * AU::Sgn(ly)));
+					} else if (inputType == AVI_QUARTIC_INPUT){
+						gamepads[i].lx = AU::Quart(lx / (AVI_MAX_STICK_VALUE -
+							STICK_DEADZONE * nlxFactor * AU::Sgn(lx)));
+						gamepads[i].ly = AU::Quart(ly / (AVI_MAX_STICK_VALUE -
+							STICK_DEADZONE * nlyFactor * AU::Sgn(ly)));
 					}
 				}
 
@@ -248,16 +270,21 @@ namespace AVI{
 					rmgntd -= STICK_DEADZONE;
 					rx = nrxFactor * rmgntd;
 					ry = nryFactor * rmgntd;
-					if (squareInputs){
-						gamepads[i].rx = AU::Sq(rx / (AVI_MAX_STICK_VALUE -
-							STICK_DEADZONE * nrxFactor * AU::Sgn(rx)));
-						gamepads[i].ry = AU::Sq(ry / (AVI_MAX_STICK_VALUE -
-							STICK_DEADZONE * nryFactor * AU::Sgn(ry)));
-					} else{
+					if (inputType == AVI_LINEAR_INPUT){
 						gamepads[i].rx = rx / (AVI_MAX_STICK_VALUE -
 							STICK_DEADZONE * nrxFactor * AU::Sgn(rx));
 						gamepads[i].ry = ry / (AVI_MAX_STICK_VALUE -
 							STICK_DEADZONE * nryFactor * AU::Sgn(ry));
+					} else if (inputType == AVI_SQUARED_INPUT){
+						gamepads[i].rx = AU::Sq(rx / (AVI_MAX_STICK_VALUE -
+							STICK_DEADZONE * nrxFactor * AU::Sgn(rx)));
+						gamepads[i].ry = AU::Sq(ry / (AVI_MAX_STICK_VALUE -
+							STICK_DEADZONE * nryFactor * AU::Sgn(ry)));
+					} else if (inputType == AVI_QUARTIC_INPUT){
+						gamepads[i].rx = AU::Quart(rx / (AVI_MAX_STICK_VALUE -
+							STICK_DEADZONE * nrxFactor * AU::Sgn(rx)));
+						gamepads[i].ry = AU::Quart(ry / (AVI_MAX_STICK_VALUE -
+							STICK_DEADZONE * nryFactor * AU::Sgn(ry)));
 					}
 				}
 
@@ -266,10 +293,12 @@ namespace AVI{
 				if (lt < TRIGGER_DEADZONE){
 					gamepads[i].lt = 0.f;
 				} else{
-					if (squareInputs){
-						gamepads[i].lt = AU::Sq(lt / AVI_MAX_TRIGGER_VALUE);
-					} else{
+					if (inputType == AVI_LINEAR_INPUT){
 						gamepads[i].lt = lt / AVI_MAX_TRIGGER_VALUE;
+					} else if (inputType == AVI_SQUARED_INPUT){
+						gamepads[i].lt = AU::Sq(lt / AVI_MAX_TRIGGER_VALUE);
+					} else if (inputType == AVI_QUARTIC_INPUT){
+						gamepads[i].lt = AU::Quart(lt / AVI_MAX_TRIGGER_VALUE);
 					}
 				}
 
@@ -278,10 +307,12 @@ namespace AVI{
 				if (rt < TRIGGER_DEADZONE){
 					gamepads[i].rt = 0.f;
 				} else{
-					if (squareInputs){
-						gamepads[i].rt = AU::Sq(rt / AVI_MAX_TRIGGER_VALUE);
-					} else{
+					if (inputType == AVI_LINEAR_INPUT){
 						gamepads[i].rt = rt / AVI_MAX_TRIGGER_VALUE;
+					} else if (inputType == AVI_SQUARED_INPUT){
+						gamepads[i].rt = AU::Sq(rt / AVI_MAX_TRIGGER_VALUE);
+					} else if (inputType == AVI_QUARTIC_INPUT){
+						gamepads[i].rt = AU::Quart(rt / AVI_MAX_TRIGGER_VALUE);
 					}
 				}
 

@@ -36,7 +36,7 @@ B8 AvroVersatileEngine::Initialize
 		return false;
 	}
 
-	//initialize Input
+	//Initialize Input
 	if (!(InitInput(numControllers))){
 		numControllers = 0;
 	}
@@ -125,7 +125,7 @@ void AvroVersatileEngine::Run(){
 			//TODO: Handle Input Updating and rendering
 
 			//Input
-			AVI::SquareInputs(true); //TODO: Possibly remove from here
+			AVI::SetInputType(AVI_QUARTIC_INPUT); //TODO: Possibly remove from here
 			//TODO: Poll more frequently
 			if (AVI::GetKeyTapped('W')){
 				DebugPrint("W \n");
