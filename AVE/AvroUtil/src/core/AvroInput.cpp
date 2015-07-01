@@ -35,7 +35,17 @@ glob XINPUT_SET_STATE_FUNC_TYPE* XInputSetState_ = XInputSetStateStub;
 #define XInputSetState XInputSetState_
 
 INLINEFORCE B8 Win32LoadXInput(){
-	HMODULE XInputLibrary = LoadLib("xinput1_3.dll");
+	HMODULE XInputLibrary = LoadLib("xinput1_4.dll");
+	if (!XInputLibrary)	{
+		// TODO(casey): Diagnostic
+		XInputLibrary = LoadLibraryA("xinput9_1_0.dll");
+	}
+
+	if (!XInputLibrary)	{
+		// TODO(casey): Diagnostic
+		XInputLibrary = LoadLibraryA("xinput1_3.dll");
+	}
+
 	if (XInputLibrary){
 		XInputGetState = (XINPUT_GET_STATE_FUNC_TYPE*)
 						GetProcAddress(XInputLibrary, "XInputGetState");

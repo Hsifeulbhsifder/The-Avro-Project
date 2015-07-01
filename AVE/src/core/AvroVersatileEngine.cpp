@@ -96,40 +96,14 @@ void AvroVersatileEngine::Run(){
 				break;
 			}
 
-
-
-			U64 workCounter = PerformanceCounter();
-
-			F32 workSecondsElapsed = SecondsElapsed(lastCounter, workCounter, m_perfFrequency);
-			
-			F32 secondsElapsedForFrame = workSecondsElapsed;
-			if (secondsElapsedForFrame < m_targetSecondsPerFrame){
-				if (m_granularSleeping){
-					U32 sleepMS = (U32)(1000.0f * (m_targetSecondsPerFrame - secondsElapsedForFrame));
-					if (sleepMS > 0) OSSleep(sleepMS);
-				}
-
-				F32 testSecondsElapsedForFrame = SecondsElapsed(lastCounter, 
-												PerformanceCounter(), m_perfFrequency);
-				AVRO_ASSERT(testSecondsElapsedForFrame > 0, "Slept too long!")
-				while (secondsElapsedForFrame < m_targetSecondsPerFrame){
-
-					secondsElapsedForFrame = 
-						SecondsElapsed(lastCounter, PerformanceCounter(), m_perfFrequency);
-				}
-			}else{
-				//TODO: MISSED FRAME RATE
-				//TODO: Log
-			}
-
 			//TODO: Handle Input Updating and rendering
 
 			//Input
-			AVI::SetInputType(AVI_QUARTIC_INPUT); //TODO: Possibly remove from here
+			AVI::SetInputType(AVI_LINEAR_INPUT); //TODO: Possibly remove from here
 			//TODO: Poll more frequently
 			if (AVI::GetKeyTapped('W')){
 				DebugPrint("W \n");
-			} 
+			}
 			AVI::Poll();
 			for (U32 i = 0; i < numControllers; i++){
 				if (AVI::GamePadIsActive(i)){
@@ -156,15 +130,43 @@ void AvroVersatileEngine::Run(){
 
 					AVI::Vibrate(i, AU::Sqrt(lx*lx + ly*ly), AU::Sqrt(rx*rx + ry*ry));
 
-					char buffer[256];
-					sprintf_s(buffer, sizeof(buffer), 
-							"LX: %.03f LY: %.03f RX: %.03f RY: %.03f LT: %.03f RT: %.03f\n", 
-							lx, ly, rx, ry, lt, rt);
-					DebugPrint(buffer);
+					//char buffer[256];
+					//sprintf_s(buffer, sizeof(buffer),
+					//	"LX: %.03f LY: %.03f RX: %.03f RY: %.03f LT: %.03f RT: %.03f\n",
+					//	lx, ly, rx, ry, lt, rt);
+					//DebugPrint(buffer);
 				}
 			}
 
 			m_renderingEngine.Render();
+
+			//Control Timing
+
+			U64 workCounter = PerformanceCounter();
+
+			F32 workSecondsElapsed = SecondsElapsed(lastCounter, workCounter, m_perfFrequency);
+			
+			F32 secondsElapsedForFrame = workSecondsElapsed;
+			if (secondsElapsedForFrame < m_targetSecondsPerFrame){
+				if (m_granularSleeping){
+					U32 sleepMS = (U32)(1000.0f * (m_targetSecondsPerFrame - secondsElapsedForFrame));
+					if (sleepMS > 0) OSSleep(sleepMS);
+				}
+
+				F32 testSecondsElapsedForFrame = SecondsElapsed(lastCounter, 
+												PerformanceCounter(), m_perfFrequency);
+				AVRO_ASSERT(testSecondsElapsedForFrame > 0, "Slept too long!")
+				while (secondsElapsedForFrame < m_targetSecondsPerFrame){
+
+					secondsElapsedForFrame = 
+						SecondsElapsed(lastCounter, PerformanceCounter(), m_perfFrequency);
+				}
+			}else{
+				//TODO: MISSED FRAME RATE
+				//TODO: Log
+			}
+
+			
 
 			U64 endCounter = PerformanceCounter();
 			F32 frameTime = (1000.0f * SecondsElapsed(lastCounter, endCounter, m_perfFrequency));
@@ -178,7 +180,7 @@ void AvroVersatileEngine::Run(){
 			char buffer[256];
 			sprintf_s(buffer, sizeof(buffer), "%.04fms | (%.02f Hz) | %.02fkcpf\n", 
 					frameTime, frameRate, kcyclesPerFrame);
-			//DebugPrint(buffer);
+			DebugPrint(buffer);
 
 		}
 	}
