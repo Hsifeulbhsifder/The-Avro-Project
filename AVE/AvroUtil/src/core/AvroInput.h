@@ -35,9 +35,9 @@
 #define AVI_MAX_STICK_VALUE 32768
 #define AVI_MAX_TRIGGER_VALUE 255
 
-#define AVI_NUM_KEYS 65536
-#define AVI_PREV_KEY_BIT 1 << 1
-#define AVI_KEY_BIT 1 << 15
+#define AVI_NUM_KEYS 256
+#define AVI_PREV_KEY_BIT (1 << 1)
+#define AVI_KEY_BIT (1 << 15)
 
 struct Controller{
 	F32 lx;

@@ -23,11 +23,11 @@ typedef XINPUT_GET_STATE(XINPUT_GET_STATE_FUNC_TYPE);
 typedef XINPUT_SET_STATE(XINPUT_SET_STATE_FUNC_TYPE);
 
 XINPUT_GET_STATE(XInputGetStateStub){
-	return 0;
+	return ERROR_DEVICE_NOT_CONNECTED;
 }
 
 XINPUT_SET_STATE(XInputSetStateStub){
-	return 0;
+	return ERROR_DEVICE_NOT_CONNECTED;
 }
 glob XINPUT_GET_STATE_FUNC_TYPE* XInputGetState_ = XInputGetStateStub;
 glob XINPUT_SET_STATE_FUNC_TYPE* XInputSetState_ = XInputSetStateStub;
@@ -35,22 +35,22 @@ glob XINPUT_SET_STATE_FUNC_TYPE* XInputSetState_ = XInputSetStateStub;
 #define XInputSetState XInputSetState_
 
 INLINEFORCE B8 Win32LoadXInput(){
-	HMODULE XInputLibrary = LoadLib("xinput1_4.dll");
-	if (!XInputLibrary)	{
+	HMODULE xInputLib = LoadLib("xinput1_4.dll");
+	if (!xInputLib)	{
 		// TODO(casey): Diagnostic
-		XInputLibrary = LoadLibraryA("xinput9_1_0.dll");
+		xInputLib = LoadLibraryA("xinput9_1_0.dll");
 	}
 
-	if (!XInputLibrary)	{
+	if (!xInputLib)	{
 		// TODO(casey): Diagnostic
-		XInputLibrary = LoadLibraryA("xinput1_3.dll");
+		xInputLib = LoadLibraryA("xinput1_3.dll");
 	}
 
-	if (XInputLibrary){
+	if (xInputLib){
 		XInputGetState = (XINPUT_GET_STATE_FUNC_TYPE*)
-						GetProcAddress(XInputLibrary, "XInputGetState");
+						GetProcAddress(xInputLib, "XInputGetState");
 		XInputSetState = (XINPUT_SET_STATE_FUNC_TYPE*)
-						GetProcAddress(XInputLibrary, "XInputSetState");
+						GetProcAddress(xInputLib, "XInputSetState");
 		return true;
 	}
 	else{
@@ -225,6 +225,8 @@ namespace AVI{
 			prevKeys[i] = GetKey(i);
 		}
 
+
+		//TODO: Check only plugged in controllers and optimize
 		//Poll gamepads and controllers
 		for (U32 i = 0; i < numControllers; i++){
 			XINPUT_STATE controllerState;

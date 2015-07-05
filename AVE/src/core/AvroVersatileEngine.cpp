@@ -8,6 +8,7 @@
 #include <iostream>
 #include <AvroTimer.h>
 #include <AvroInput.h>
+#include <AvroAudio.h>
 
 using namespace AU;
 
@@ -52,7 +53,7 @@ B8 AvroVersatileEngine::Initialize
 
 	if (!(m_renderingEngine.Initialize(m_window))){
 		DebugPrint("Rendering engine initialization has failed\n");
-		ErrorBox("Rendering Engine initialization Not created!", "Error!");
+		ErrorBox("Rendering Engine initialization failed!", "Error!");
 		return false;
 	}
 
@@ -60,6 +61,11 @@ B8 AvroVersatileEngine::Initialize
 
 	U32 gameUpdateHz = GetVRefreshRate();
 	m_targetSecondsPerFrame = 1.0f / (F32)gameUpdateHz;
+
+	if (!InitAudio(window, 48000, gameUpdateHz)){
+		DebugPrint("Audio initialization has failed\n");
+		ErrorBox("Audio initialization failed!", "Error!");
+	}
 
 	m_granularSleeping = SetOSSchedulerGranularity(1);
 
@@ -96,10 +102,18 @@ void AvroVersatileEngine::Run(){
 				break;
 			}
 
-			//TODO: Handle Input Updating and rendering
+			//TODO: Handle Input, Audio, Updating and rendering
 
 			//Input
 			AVI::SetInputType(AVI_LINEAR_INPUT); //TODO: Possibly remove from here
+
+
+			//ALT-F4 to close window
+			//TODO: Relocate
+			if (AVI::GetKey(VK_LMENU) && AVI::GetKey(VK_F4)){
+				m_isRunning = false;
+			}
+
 			//TODO: Poll more frequently
 			if (AVI::GetKeyTapped('W')){
 				DebugPrint("W \n");
@@ -180,7 +194,7 @@ void AvroVersatileEngine::Run(){
 			char buffer[256];
 			sprintf_s(buffer, sizeof(buffer), "%.04fms | (%.02f Hz) | %.02fkcpf\n", 
 					frameTime, frameRate, kcyclesPerFrame);
-			DebugPrint(buffer);
+			//DebugPrint(buffer);
 
 		}
 	}

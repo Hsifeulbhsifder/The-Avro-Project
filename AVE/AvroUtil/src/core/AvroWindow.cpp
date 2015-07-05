@@ -1,4 +1,4 @@
-#include "ARE_stdafx.h"
+#include "AU_stdafx.h"
 #include "AvroWindow.h"
 #include <AvroInput.h>
 
