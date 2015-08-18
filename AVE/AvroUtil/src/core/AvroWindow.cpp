@@ -35,6 +35,12 @@ I64 intern CALLBACK Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPARA
 	}break;
 	case WM_ACTIVATEAPP:{
 	}break;
+	//case WM_PAINT:{
+	//	HDC hDC = BeginPaint(hwnd, &paint);
+	//	SetTextColor(hDC, COLORREF(0x00FF00FF));
+	//	TextOut(hDC, 150, 150, "Hello, World!", sizeof("Hello, World!"));
+	//	EndPaint(hwnd, &paint);
+	//}break;
 	default:{
 		result = DefWindowProcA(hwnd, message, wparam, lparam);
 	}break;

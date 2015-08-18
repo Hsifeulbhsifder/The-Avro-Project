@@ -26,7 +26,7 @@ B8 DLLEXPORT InitGraphics(Window* window){
 	pfd.cDepthBits = 16; //Bit depth, for depthbuffer
 	pfd.cStencilBits = 0;
 	pfd.cAuxBuffers = 0;
-	pfd.iLayerType = PFD_MAIN_PLANE;
+	pfd.iLayerType = 0;
 	pfd.bReserved = 0;
 	pfd.dwLayerMask = 0;
 	pfd.dwVisibleMask = 0;

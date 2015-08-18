@@ -67,7 +67,7 @@ B8 DLLEXPORT InitAudio(Window* window, AudioOutput* audioOutput){
 			DSBUFFERDESC bufferDesc = {};
 			bufferDesc.dwSize = sizeof(bufferDesc);
 			//TODO: Remove Possibly?
-			//bufferDesc.dwFlags |= DSBCAPS_GLOBALFOCUS; //Keeps sound playing when window isn't active
+			bufferDesc.dwFlags |= DSBCAPS_GLOBALFOCUS; //Keeps sound playing when window isn't active
 			bufferDesc.dwBufferBytes = globalAudioOutput->bufferSize;
 			bufferDesc.lpwfxFormat = &waveFormat;
 			

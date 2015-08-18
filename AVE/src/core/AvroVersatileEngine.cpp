@@ -47,10 +47,6 @@ B8 AvroVersatileEngine::Initialize
 	m_window = window;
 	GameWindowSetState(&m_isRunning);
 
-	CreateGLContext(m_window);
-	MakeCurrent(m_window);
-	
-
 	if (!(m_renderingEngine.Initialize(m_window))){
 		DebugPrint("Rendering engine initialization has failed\n");
 		ErrorBox("Rendering Engine initialization failed!", "Error!");

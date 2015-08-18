@@ -10,12 +10,20 @@ B8 AvroRenderingEngine::Initialize(Window* window){
 		ErrorBox("Cant Initialize Graphics", "Error!");
 		return false;
 	}
+
+	CreateGLContext(m_window);
+	if (!(MakeCurrent(m_window))){
+		DebugPrint("OpenGL Rendering Context has failed\n");
+		ErrorBox("OpenGL Rendering Context failed!", "Error!");
+		return false;
+	}
+
 	DebugPrint("Renderer Initialization Sequence Is Complete\n");
 	return true;
 }
 
 void AvroRenderingEngine::Render(){
-	ClearScreen(1,0,1,1);
+	ClearScreen(0,0,0,0);
 	//DebugPrint("Test Message ");
 	//DebugPrint("This is a test for performance ");
 
