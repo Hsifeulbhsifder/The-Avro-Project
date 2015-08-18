@@ -45,7 +45,7 @@ I64 intern CALLBACK Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPARA
 #endif
 
 #ifdef A_W32
-void intern Win32CreateWindow(HWND hwnd, U32 width, U32 height, char* title){
+void intern Win32CreateWindow(HWND* hwnd, U32 width, U32 height, char* title){
 	WNDCLASSEX wcx = {};
 	char* WNDCLASSNAME = "AvroRenderingEngineWindowClass";
 
@@ -68,7 +68,7 @@ void intern Win32CreateWindow(HWND hwnd, U32 width, U32 height, char* title){
 		exit(-1);
 	}
 
-	hwnd = CreateWindowEx(NULL,              // Extended Style For The Window
+	*hwnd = CreateWindowEx(NULL,              // Extended Style For The Window
 		WNDCLASSNAME,               // Class Name
 		title,                  // Window Title
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE,          // Required Window Style
@@ -80,14 +80,15 @@ void intern Win32CreateWindow(HWND hwnd, U32 width, U32 height, char* title){
 		NULL,                   // No Menu
 		GetModuleHandle(0),              // Instance
 		NULL);                  // Don't Pass Anything To WM_CREATE
+	DebugPrint("");
 }
 
 INLINEFORCE intern void Win32TerminateWindow(HWND hwnd, HDC hdc){
 	ReleaseDC(hwnd, hdc);
 }
 
-INLINEFORCE intern void Win32CreateOpenGLContext(HDC deviceContext, HGLRC glContext){
-	glContext = wglCreateContext(deviceContext);
+INLINEFORCE intern void Win32CreateOpenGLContext(HDC deviceContext, HGLRC* glContext){
+	*glContext = wglCreateContext(deviceContext);
 }
 
 INLINEFORCE intern B8 Win32TerminateOpenGLContext(HGLRC glContext){
@@ -126,7 +127,7 @@ INLINEFORCE DLLEXPORT void CreateGameWindow(Window* window, U32 width, U32 heigh
 {
 	
 #ifdef A_W32
-	Win32CreateWindow(window->wnd, width, height, title);
+	Win32CreateWindow(&(window->wnd), width, height, title);
 	window->deviceContext = GetDC(window->wnd);
 #elif A_UNX
 	UnixCreateWindow(width, height, title);
@@ -146,7 +147,7 @@ INLINEFORCE DLLEXPORT void TerminateGameWindow(Window* window)
 INLINEFORCE DLLEXPORT void CreateGLContext(Window* window)
 {
 #ifdef A_W32
-	Win32CreateOpenGLContext(window->deviceContext, window->glContext);
+	Win32CreateOpenGLContext(window->deviceContext, &(window->glContext));
 #elif A_UNX
 	UnixCreateOpenGLContext();
 #endif

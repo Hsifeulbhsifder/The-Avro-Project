@@ -64,6 +64,7 @@ namespace AVI{
 	void Poll();
 
 	//Gamepad
+	U16 Buttons(U32 controllerIndex);
 	B8 U(U32 controllerIndex);
 	B8 D(U32 controllerIndex);
 	B8 L(U32 controllerIndex);

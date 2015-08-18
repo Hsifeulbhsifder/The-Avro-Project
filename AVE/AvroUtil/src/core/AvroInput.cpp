@@ -40,7 +40,6 @@ INLINEFORCE B8 Win32LoadXInput(){
 		// TODO(casey): Diagnostic
 		xInputLib = LoadLibraryA("xinput9_1_0.dll");
 	}
-
 	if (!xInputLib)	{
 		// TODO(casey): Diagnostic
 		xInputLib = LoadLibraryA("xinput1_3.dll");
@@ -99,61 +98,64 @@ void TerminateInput(){
 namespace AVI{
 
 
+	U16 Buttons(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons;
+	}
 
 	B8 U(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_DPAD_U;
+		return (gamepads[controllerIndex].buttons & AVI_DPAD_U) != 0;
 	}
 
 	B8 D(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_DPAD_D;
+		return (gamepads[controllerIndex].buttons & AVI_DPAD_D) != 0;
 	}
 
 	B8 L(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_DPAD_L;
+		return (gamepads[controllerIndex].buttons & AVI_DPAD_L) != 0;
 	}
 
 	B8 R(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_DPAD_R;
+		return (gamepads[controllerIndex].buttons & AVI_DPAD_R) != 0;
 	}
 
 	B8 START(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_START;
+		return (gamepads[controllerIndex].buttons & AVI_START) != 0;
 	}
 
 	B8 BACK(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_BACK;
+		return (gamepads[controllerIndex].buttons & AVI_BACK) != 0;
 	}
 
 	B8 LB(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_LB;
+		return (gamepads[controllerIndex].buttons & AVI_LB) != 0;
 	}
 
 	B8 RB(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_RB;
+		return (gamepads[controllerIndex].buttons & AVI_RB) != 0;
 	}
 
 	B8 L3(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_L3;
+		return (gamepads[controllerIndex].buttons & AVI_L3) != 0;
 	}
 
 	B8 R3(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_R3;
+		return (gamepads[controllerIndex].buttons & AVI_R3) != 0;
 	}
 
 	B8 A(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_A;
+		return (gamepads[controllerIndex].buttons & AVI_A) != 0;
 	}
 
 	B8 B(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_B;
+		return (gamepads[controllerIndex].buttons & AVI_B) != 0;
 	}
 
 	B8 X(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_X;
+		return (gamepads[controllerIndex].buttons & AVI_X) != 0;
 	}
 
 	B8 Y(U32 controllerIndex){
-		return gamepads[controllerIndex].buttons & AVI_Y;
+		return (gamepads[controllerIndex].buttons & AVI_Y) != 0;
 	}
 
 	F32 LX(U32 controllerIndex){

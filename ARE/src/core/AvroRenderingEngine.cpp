@@ -15,7 +15,7 @@ B8 AvroRenderingEngine::Initialize(Window* window){
 }
 
 void AvroRenderingEngine::Render(){
-	ClearScreen();
+	ClearScreen(1,0,1,1);
 	//DebugPrint("Test Message ");
 	//DebugPrint("This is a test for performance ");
 

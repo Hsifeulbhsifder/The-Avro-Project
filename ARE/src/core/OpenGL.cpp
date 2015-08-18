@@ -33,7 +33,7 @@ B8 DLLEXPORT InitGraphics(Window* window){
 	pfd.dwDamageMask = 0;
 
 	I32 format = ChoosePixelFormat(window->deviceContext, &pfd);
-	return !SetPixelFormat(window->deviceContext, format, &pfd);
+	return SetPixelFormat(window->deviceContext, format, &pfd);
 	
 }
 

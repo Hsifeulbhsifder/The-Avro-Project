@@ -11,7 +11,26 @@
 
 struct Window;
 
-B8 DLLEXPORT InitAudio(Window* window, U32 samplesPerSec, U32 fps);
+struct AudioOutput{
+	F32 tSin;
+	U32 sampleHz;
+	U32 toneHz;
+	U32 runningSampleIndex;
+	U32 wavePeriod;
+	U32 bytesPerSample;
+	U32 bufferSize;
+	U32 latencySampleCount;
+	I16 volume;
+	B8 soundIsPlaying;
+};
+
+B8 DLLEXPORT InitAudio(Window* window, AudioOutput* audioOutput);
+
+void DLLEXPORT UpdateAudio();
+
+void DLLEXPORT BufferAudio(AudioOutput* audioOutput, DWORD byteToWrite, DWORD bytesToLock);
+
+B8 DLLEXPORT PlayAudio();
 
 void DLLEXPORT TerminateAudio();
 

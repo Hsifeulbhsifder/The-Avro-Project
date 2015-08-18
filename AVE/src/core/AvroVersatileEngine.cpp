@@ -62,10 +62,26 @@ B8 AvroVersatileEngine::Initialize
 	U32 gameUpdateHz = GetVRefreshRate();
 	m_targetSecondsPerFrame = 1.0f / (F32)gameUpdateHz;
 
-	if (!InitAudio(window, 48000, gameUpdateHz)){
+	//Initialize Audio
+	audioOutput = (AudioOutput*)(AVRO_DEFAULT_ALLOCATOR.Allocate(sizeof(AudioOutput*)));
+	audioOutput->sampleHz = 48000;
+	audioOutput->toneHz = 512;
+	audioOutput->tSin = 0;
+	audioOutput->runningSampleIndex = 0;
+	audioOutput->wavePeriod = audioOutput->sampleHz / audioOutput->toneHz;
+	audioOutput->bytesPerSample = sizeof(U16) * 2;
+	audioOutput->latencySampleCount = audioOutput->sampleHz / 60;
+	//TODO: Make this 60 seconds?
+	audioOutput->bufferSize = audioOutput->sampleHz * audioOutput->bytesPerSample;
+	audioOutput->volume = 1600;
+	audioOutput->soundIsPlaying = false;
+
+	if (!InitAudio(m_window, audioOutput)){
 		DebugPrint("Audio initialization has failed\n");
 		ErrorBox("Audio initialization failed!", "Error!");
 	}
+	BufferAudio(audioOutput, 0, audioOutput->latencySampleCount * audioOutput->bytesPerSample);
+	PlayAudio();
 
 	m_granularSleeping = SetOSSchedulerGranularity(1);
 
@@ -142,17 +158,19 @@ void AvroVersatileEngine::Run(){
 					F32 lt = AVI::LT(i);
 					F32 rt = AVI::RT(i);
 
-					AVI::Vibrate(i, AU::Sqrt(lx*lx + ly*ly), AU::Sqrt(rx*rx + ry*ry));
+					audioOutput->toneHz = (U32)(512 + AVI::LY(i) * 256.0f);
+					audioOutput->wavePeriod = audioOutput->sampleHz / audioOutput->toneHz;
 
-					//char buffer[256];
-					//sprintf_s(buffer, sizeof(buffer),
-					//	"LX: %.03f LY: %.03f RX: %.03f RY: %.03f LT: %.03f RT: %.03f\n",
-					//	lx, ly, rx, ry, lt, rt);
-					//DebugPrint(buffer);
 				}
 			}
 
+			//TODO: Updating
+
+			//TODO: Rendering
 			m_renderingEngine.Render();
+
+			//TODO: Audio
+			UpdateAudio();
 
 			//Control Timing
 
@@ -191,9 +209,9 @@ void AvroVersatileEngine::Run(){
 			lastCycleCount = endCycleCount;
 			F64 kcyclesPerFrame = (F64) cyclesElapsed / (1000.0);
 
-			char buffer[256];
-			sprintf_s(buffer, sizeof(buffer), "%.04fms | (%.02f Hz) | %.02fkcpf\n", 
-					frameTime, frameRate, kcyclesPerFrame);
+			//char buffer[256];
+			//sprintf_s(buffer, sizeof(buffer), "%.04fms | (%.02f Hz) | %.02fkcpf\n", 
+			//		frameTime, frameRate, kcyclesPerFrame);
 			//DebugPrint(buffer);
 
 		}

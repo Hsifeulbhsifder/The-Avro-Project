@@ -65,7 +65,10 @@ namespace AU{
 		return comparand >= 0.f ? valueGreaterThanEqualsZero : valueLesserThanZero;
 	}
 
-	I32 factorial(I32 n);
-	F32 lerp(F32 a, F32 b, F32 alpha);
+	I32 Factorial(I32 n);
+	F32 Lerp(F32 a, F32 b, F32 alpha);
+
+	F32 Sin(F32 x);
+	F32 Cos(F32 x);
 }
 #endif
