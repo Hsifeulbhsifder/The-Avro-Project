@@ -42,7 +42,17 @@ namespace AU{
 namespace AU{
 	template<class T>
 	INLINEFORCE glob T Sq(const T a){
-		return a*a;
+		return a * a;
+	}
+
+	template<class T>
+	INLINEFORCE glob T Cube(const T a){
+		return a * a * a;
+	}
+
+	template<class T>
+	INLINEFORCE glob T Quart(const T a){
+		return a * a * a * a;
 	}
 
 	INLINEFORCE glob F32 Sqrt(const F32 value){ return sqrtf(value); }
@@ -70,7 +80,10 @@ namespace AU{
 		return comparand >= 0.f ? valueGreaterThanEqualsZero : valueLesserThanZero;
 	}
 
-	I32 factorial(I32 n);
-	F32 lerp(F32 a, F32 b, F32 alpha);
+	I32 Factorial(I32 n);
+	F32 Lerp(F32 a, F32 b, F32 alpha);
+
+	F32 Sin(F32 x);
+	F32 Cos(F32 x);
 }
 #endif

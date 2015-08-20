@@ -196,6 +196,12 @@ namespace AU{
 	INLINEFORCE glob void CheckNaNF32(F32 x){}
 #endif
 
+	//Find the sign of any value
+	template<typename T>
+	INLINEFORCE I32 Sgn(T value){
+		return (T(0) < value) - (value < T(0));
+	}
+
 	//Default swap function, define other swap functions 
 	//and use template specialization to do custom swaps
 	template<typename T>

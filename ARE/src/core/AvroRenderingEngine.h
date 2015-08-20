@@ -14,7 +14,7 @@ public:
 
 	B8 Initialize(Window* window);
 
-	void Render(F32 delta);
+	void Render();
 
 	void Terminate();
 

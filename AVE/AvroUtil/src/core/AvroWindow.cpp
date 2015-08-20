@@ -1,5 +1,6 @@
-#include "ARE_stdafx.h"
+#include "AU_stdafx.h"
 #include "AvroWindow.h"
+#include <AvroInput.h>
 
 #ifdef A_W32
 
@@ -19,17 +20,27 @@ I64 intern CALLBACK Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPARA
 
 	}break;
 	case WM_SIZE:{
-		DebugPrint("WM_SIZE\n");
 	}break;
 	case WM_DESTROY:{
 		*m_isRunning = false; //TODO: Handle this as error
+	}break;
+	case WM_SYSKEYDOWN:
+	case WM_SYSKEYUP:
+	case WM_KEYDOWN:
+	case WM_KEYUP:{
+		//Drown These messages, we are using GetKeyState(VK_Menu)
 	}break;
 	case WM_CLOSE:{
 		*m_isRunning = false; //TODO: Handle this as message to user
 	}break;
 	case WM_ACTIVATEAPP:{
-		DebugPrint("WM_ACTIVATE\n");
 	}break;
+	//case WM_PAINT:{
+	//	HDC hDC = BeginPaint(hwnd, &paint);
+	//	SetTextColor(hDC, COLORREF(0x00FF00FF));
+	//	TextOut(hDC, 150, 150, "Hello, World!", sizeof("Hello, World!"));
+	//	EndPaint(hwnd, &paint);
+	//}break;
 	default:{
 		result = DefWindowProcA(hwnd, message, wparam, lparam);
 	}break;
@@ -40,7 +51,7 @@ I64 intern CALLBACK Win32_Callback(HWND hwnd, UINT message, WPARAM wparam, LPARA
 #endif
 
 #ifdef A_W32
-void intern Win32CreateWindow(HWND hwnd, U32 width, U32 height, char* title){
+void intern Win32CreateWindow(HWND* hwnd, U32 width, U32 height, char* title){
 	WNDCLASSEX wcx = {};
 	char* WNDCLASSNAME = "AvroRenderingEngineWindowClass";
 
@@ -58,11 +69,12 @@ void intern Win32CreateWindow(HWND hwnd, U32 width, U32 height, char* title){
 	wcx.hIconSm = NULL; //TODO: set icon
 
 	if (!RegisterClassEx(&wcx)){
+		DebugPrint("Couldn't register window class\n");
 		ErrorBox("Couldn't register window class", "Error!");
 		exit(-1);
 	}
 
-	hwnd = CreateWindowEx(NULL,              // Extended Style For The Window
+	*hwnd = CreateWindowEx(NULL,              // Extended Style For The Window
 		WNDCLASSNAME,               // Class Name
 		title,                  // Window Title
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE,          // Required Window Style
@@ -74,14 +86,15 @@ void intern Win32CreateWindow(HWND hwnd, U32 width, U32 height, char* title){
 		NULL,                   // No Menu
 		GetModuleHandle(0),              // Instance
 		NULL);                  // Don't Pass Anything To WM_CREATE
+	DebugPrint("");
 }
 
 INLINEFORCE intern void Win32TerminateWindow(HWND hwnd, HDC hdc){
 	ReleaseDC(hwnd, hdc);
 }
 
-INLINEFORCE intern void Win32CreateOpenGLContext(HDC deviceContext, HGLRC glContext){
-	glContext = wglCreateContext(deviceContext);
+INLINEFORCE intern void Win32CreateOpenGLContext(HDC deviceContext, HGLRC* glContext){
+	*glContext = wglCreateContext(deviceContext);
 }
 
 INLINEFORCE intern B8 Win32TerminateOpenGLContext(HGLRC glContext){
@@ -120,7 +133,7 @@ INLINEFORCE DLLEXPORT void CreateGameWindow(Window* window, U32 width, U32 heigh
 {
 	
 #ifdef A_W32
-	Win32CreateWindow(window->wnd, width, height, title);
+	Win32CreateWindow(&(window->wnd), width, height, title);
 	window->deviceContext = GetDC(window->wnd);
 #elif A_UNX
 	UnixCreateWindow(width, height, title);
@@ -140,7 +153,7 @@ INLINEFORCE DLLEXPORT void TerminateGameWindow(Window* window)
 INLINEFORCE DLLEXPORT void CreateGLContext(Window* window)
 {
 #ifdef A_W32
-	Win32CreateOpenGLContext(window->deviceContext, window->glContext);
+	Win32CreateOpenGLContext(window->deviceContext, &(window->glContext));
 #elif A_UNX
 	UnixCreateOpenGLContext();
 #endif

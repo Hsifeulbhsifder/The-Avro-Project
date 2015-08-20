@@ -1,6 +1,7 @@
 #ifndef AVRO_UTIL_WIN32_PLATFORM_H
 #define AVRO_UTIL_WIN32_PLATFORM_H
 #include <float.h>
+#include <windows.h>
 
 #pragma warning(disable : 4005)
 
@@ -20,6 +21,8 @@
 
 static INLINEFORCE char IsNaN(float f) { return _isnan(f); }
 static INLINEFORCE char IsFinite(float f) { return _finite(f); }
+
+#define LoadLib(str) LoadLibraryA(str)
 
 #ifdef AVRO_DEBUG
 

@@ -5,6 +5,7 @@
 #include <AvroRenderingEngine.h>
 
 struct Window;
+struct AudioOutput;
 
 class DLLEXPORT AvroVersatileEngine{
 private:
@@ -14,13 +15,14 @@ private:
 	U64 m_perfFrequency;
 	B8 m_granularSleeping;
 public:
-	Window* m_window;
-	B8 m_isRunning;
 	MemoryHeap m_permanentHeap;
 	MemoryHeap m_transientHeap;
 #ifdef AVRO_DEBUG
 	MemoryHeap m_debugHeap;
 #endif
+	Window* m_window;
+	AudioOutput* audioOutput;
+	B8 m_isRunning;
 
 	AvroRenderingEngine m_renderingEngine;
 

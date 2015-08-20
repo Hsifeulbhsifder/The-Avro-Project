@@ -2,7 +2,7 @@
 #define AVRO_UTIL_FILE_IO_H
 
 #include "avro_typedefs.h"
-
+//TODO: Scrap this system and rebuild allowing for asynchronous file IO
 struct AvroFile{
 	char* m_data;
 };
