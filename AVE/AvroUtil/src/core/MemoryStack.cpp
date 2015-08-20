@@ -20,7 +20,7 @@ INLINEFORCE void MemoryStack::Terminate(){
 	Reset();
 }
 
-B8 MemoryStack::Initialize(U64 stackSize_bytes){
+B32 MemoryStack::Initialize(U64 stackSize_bytes){
 	if (m_root) Terminate();
 	AVRO_ASSERT(stackSize_bytes > 0, "Stack Size too low");
 	m_stackSize_bytes = stackSize_bytes;

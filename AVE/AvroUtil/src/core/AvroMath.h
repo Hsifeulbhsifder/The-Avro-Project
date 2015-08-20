@@ -21,10 +21,21 @@
 #define ARCFINITY (3.402e+38f)
 #define VECTOR_PROXIMITY_THRESHOLD (0.00002f)
 #define VECTOR_PARALLEL_THRESHOLD (0.02f)
+#define RAD_TO_DEG (57.2957795f)
+#define DEG_TO_RAD (0.0174532925f)
 
 
 //FUNCTIONS
 namespace AU{
+
+	INLINEFORCE glob F32 ToDeg(F32 rad){
+		return rad * RAD_TO_DEG;
+	}
+
+	INLINEFORCE glob F32 ToRad(F32 deg){
+		return deg * DEG_TO_RAD;
+	}
+
 	template<class T>
 	INLINEFORCE glob T Sq(const T a){
 		return a * a;

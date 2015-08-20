@@ -21,16 +21,16 @@ struct AudioOutput{
 	U32 bufferSize;
 	U32 latencySampleCount;
 	I16 volume;
-	B8 soundIsPlaying;
+	B32 soundIsPlaying;
 };
 
-B8 DLLEXPORT InitAudio(Window* window, AudioOutput* audioOutput);
+B32 DLLEXPORT InitAudio(Window* window, AudioOutput* audioOutput);
 
 void DLLEXPORT UpdateAudio();
 
 void DLLEXPORT BufferAudio(AudioOutput* audioOutput, DWORD byteToWrite, DWORD bytesToLock);
 
-B8 DLLEXPORT PlayAudio();
+B32 DLLEXPORT PlayAudio();
 
 void DLLEXPORT TerminateAudio();
 

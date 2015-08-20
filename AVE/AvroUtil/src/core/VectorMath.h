@@ -54,18 +54,18 @@ namespace AU{
 		INLINEFORCE F32 operator|(const V2& v) const; //dot product
 		INLINEFORCE F32 operator^(const V2& v) const; //cross product
 
-		INLINEFORCE B8 operator==(const V2& v) const; //vector equality check
-		INLINEFORCE B8 operator==(F32 s) const; //scalar comparison
-		INLINEFORCE B8 operator!= (const V2& v) const; //vector inequality check
-		INLINEFORCE B8 operator!= (F32 s) const; //scalar inequality check
-		INLINEFORCE B8 operator<(const V2& v) const; //vector less-than comparison
-		INLINEFORCE B8 operator<(F32 s) const; //scalar less-than comparison
-		INLINEFORCE B8 operator>(const V2& v) const; //vector more-than comparison
-		INLINEFORCE B8 operator>(F32 s) const; //scalar more-than comparison
-		INLINEFORCE B8 operator<=(const V2& v) const; //vector less-than-equals comparison
-		INLINEFORCE B8 operator<=(F32 s) const; //scalar less-than-equals comparison
-		INLINEFORCE B8 operator>=(const V2& v) const; //vector more-than-equals comparison
-		INLINEFORCE B8 operator>=(F32 s) const; //scalar more-than-equals comparison
+		INLINEFORCE B32 operator==(const V2& v) const; //vector equality check
+		INLINEFORCE B32 operator==(F32 s) const; //scalar comparison
+		INLINEFORCE B32 operator!= (const V2& v) const; //vector inequality check
+		INLINEFORCE B32 operator!= (F32 s) const; //scalar inequality check
+		INLINEFORCE B32 operator<(const V2& v) const; //vector less-than comparison
+		INLINEFORCE B32 operator<(F32 s) const; //scalar less-than comparison
+		INLINEFORCE B32 operator>(const V2& v) const; //vector more-than comparison
+		INLINEFORCE B32 operator>(F32 s) const; //scalar more-than comparison
+		INLINEFORCE B32 operator<=(const V2& v) const; //vector less-than-equals comparison
+		INLINEFORCE B32 operator<=(F32 s) const; //scalar less-than-equals comparison
+		INLINEFORCE B32 operator>=(const V2& v) const; //vector more-than-equals comparison
+		INLINEFORCE B32 operator>=(F32 s) const; //scalar more-than-equals comparison
 
 		INLINEFORCE V2 operator-() const; //negate the vector
 
@@ -97,7 +97,7 @@ namespace AU{
 		INLINEFORCE glob F32 Dist(const V2& a, const V2& b); //global distance function
 		INLINEFORCE glob F32 Cross(const V2& a, const V2& b); //global cross product
 
-		INLINEFORCE B8 Equals(const V2& v, F32 tolerance = EPSILON) const; //fuzzy equality test
+		INLINEFORCE B32 Equals(const V2& v, F32 tolerance = EPSILON) const; //fuzzy equality test
 
 		INLINEFORCE V2 Set(F32 x, F32 y); //set components, chained return
 
@@ -114,8 +114,8 @@ namespace AU{
 
 		INLINEFORCE V2 Nor(F32 tolerance = EZERO); // self-normalization, chained return
 
-		INLINEFORCE B8 IsEpsilonZero(F32 tolerance = EPSILON) const; // fuzzy check for zero
-		INLINEFORCE B8 IsZero() const; //check if absolutely zero
+		INLINEFORCE B32 IsEpsilonZero(F32 tolerance = EPSILON) const; // fuzzy check for zero
+		INLINEFORCE B32 IsZero() const; //check if absolutely zero
 
 		INLINEFORCE V2 Clamp(F32 min, F32 max) const; //copies this vector, but clamps axes
 
@@ -127,7 +127,7 @@ namespace AU{
 		INLINEFORCE void CheckNaN() const{}
 #endif
 
-		INLINEFORCE B8 HasNaN() const{
+		INLINEFORCE B32 HasNaN() const{
 			return (IsNaN(x) || IsNaN(y) || !IsFinite(x) || !IsFinite(y));
 		}
 	};
@@ -215,31 +215,31 @@ namespace AU{
 		return Sqrt(Dist2(a, b));
 	}
 
-	INLINEFORCE B8 V2::operator==(const V2& v) const{
+	INLINEFORCE B32 V2::operator==(const V2& v) const{
 		return x == v.x && y == v.y;
 	}
 
-	INLINEFORCE B8 V2::operator!=(const V2& v) const{
+	INLINEFORCE B32 V2::operator!=(const V2& v) const{
 		return x != v.x || y != v.y;
 	}
 
-	INLINEFORCE B8 V2::operator<(const V2& v) const{
+	INLINEFORCE B32 V2::operator<(const V2& v) const{
 		return x < v.x && y < v.y;
 	}
 
-	INLINEFORCE B8 V2::operator>(const V2& v) const{
+	INLINEFORCE B32 V2::operator>(const V2& v) const{
 		return x > v.x && y > v.y;
 	}
 
-	INLINEFORCE B8 V2::operator<=(const V2& v) const{
+	INLINEFORCE B32 V2::operator<=(const V2& v) const{
 		return x <= v.x && y <= v.y;
 	}
 
-	INLINEFORCE B8 V2::operator>=(const V2& v) const{
+	INLINEFORCE B32 V2::operator>=(const V2& v) const{
 		return x >= v.x && y >= v.y;
 	}
 
-	INLINEFORCE B8 V2::Equals(const V2& v, F32 tolerance) const{
+	INLINEFORCE B32 V2::Equals(const V2& v, F32 tolerance) const{
 		return Abs(x - v.x) < tolerance && Abs(y - v.y) < tolerance;
 	}
 
@@ -381,11 +381,11 @@ namespace AU{
 		return *this;
 	}
 
-	INLINEFORCE B8 V2::IsEpsilonZero(F32 tolerance) const{
+	INLINEFORCE B32 V2::IsEpsilonZero(F32 tolerance) const{
 		return Abs(x) < tolerance && Abs(y) < tolerance;
 	}
 
-	INLINEFORCE B8 V2::IsZero() const{
+	INLINEFORCE B32 V2::IsZero() const{
 		return x == 0.f && y == 0.f;
 	}
 
@@ -456,18 +456,18 @@ namespace AU{
 		INLINEFORCE V3 operator^(const V3& v) const; //V3 cross product
 		INLINEFORCE V3 operator^(const V2& v) const; //V2 cross product
 
-		INLINEFORCE B8 operator==(const V3& v) const; //vector equality check
-		INLINEFORCE B8 operator==(F32 s) const; //scalar comparison
-		INLINEFORCE B8 operator!= (const V3& v) const; //vector inequality check
-		INLINEFORCE B8 operator!= (F32 s) const; //scalar inequality check
-		INLINEFORCE B8 operator<(const V3& v) const; //vector less-than comparison
-		INLINEFORCE B8 operator<(F32 s) const; //scalar less-than comparison
-		INLINEFORCE B8 operator>(const V3& v) const; //vector more-than comparison
-		INLINEFORCE B8 operator>(F32 s) const; //scalar more-than comparison
-		INLINEFORCE B8 operator<=(const V3& v) const; //vector less-than-equals comparison
-		INLINEFORCE B8 operator<=(F32 s) const; //scalar less-than-equals comparison
-		INLINEFORCE B8 operator>=(const V3& v) const; //vector more-than-equals comparison
-		INLINEFORCE B8 operator>=(F32 s) const; //scalar more-than-equals comparison
+		INLINEFORCE B32 operator==(const V3& v) const; //vector equality check
+		INLINEFORCE B32 operator==(F32 s) const; //scalar comparison
+		INLINEFORCE B32 operator!= (const V3& v) const; //vector inequality check
+		INLINEFORCE B32 operator!= (F32 s) const; //scalar inequality check
+		INLINEFORCE B32 operator<(const V3& v) const; //vector less-than comparison
+		INLINEFORCE B32 operator<(F32 s) const; //scalar less-than comparison
+		INLINEFORCE B32 operator>(const V3& v) const; //vector more-than comparison
+		INLINEFORCE B32 operator>(F32 s) const; //scalar more-than comparison
+		INLINEFORCE B32 operator<=(const V3& v) const; //vector less-than-equals comparison
+		INLINEFORCE B32 operator<=(F32 s) const; //scalar less-than-equals comparison
+		INLINEFORCE B32 operator>=(const V3& v) const; //vector more-than-equals comparison
+		INLINEFORCE B32 operator>=(F32 s) const; //scalar more-than-equals comparison
 
 		INLINEFORCE V3 operator-() const; // Negate this vector
 
@@ -514,8 +514,8 @@ namespace AU{
 		INLINEFORCE glob V3 Cross(const V3& a, const V3& b); //global cross product
 		INLINEFORCE glob V3 Cross(const V3& a, const V2& b); //global cross product
 
-		INLINEFORCE B8 Equals(const V3& v, F32 tolerance = EPSILON) const; //fuzzy equality test
-		INLINEFORCE B8 AllComponentsEqual(F32 tolerance = EPSILON) const;
+		INLINEFORCE B32 Equals(const V3& v, F32 tolerance = EPSILON) const; //fuzzy equality test
+		INLINEFORCE B32 AllComponentsEqual(F32 tolerance = EPSILON) const;
 
 		INLINEFORCE V3 Set(F32 x, F32 y, F32 z); //set components, chained return
 
@@ -540,8 +540,8 @@ namespace AU{
 
 		INLINEFORCE V3 Nor(F32 tolerance = EZERO); // self-normalization, chained return
 
-		INLINEFORCE B8 IsEpsilonZero(F32 tolerance = EPSILON) const; // fuzzy check for zero
-		INLINEFORCE B8 IsZero() const; //check if absolutely zero
+		INLINEFORCE B32 IsEpsilonZero(F32 tolerance = EPSILON) const; // fuzzy check for zero
+		INLINEFORCE B32 IsZero() const; //check if absolutely zero
 
 		INLINEFORCE void ToDirectionAndMagnitude(V3* v, F32* s) const; //returns a unit direction vector as well as a magnitude
 		INLINEFORCE V3 SignV3() const; //sets each component to either +1 or -1
@@ -553,7 +553,7 @@ namespace AU{
 
 		INLINEFORCE V3 Reciprocal() const; //Reciprocates vector
 
-		INLINEFORCE B8 Uniform(F32 Tolerance = EPSILON) const; //checks if x == y == z
+		INLINEFORCE B32 Uniform(F32 Tolerance = EPSILON) const; //checks if x == y == z
 
 		INLINEFORCE V3 Reflect(const V3& normal) const; // reflects vector across normal vector
 
@@ -561,19 +561,19 @@ namespace AU{
 
 		//TODO: ANGLULAR ROTATION
 
-		INLINEFORCE B8 IsUnit(F32 len2Tolerance = EPSILON) const; //checks if it is unit
+		INLINEFORCE B32 IsUnit(F32 len2Tolerance = EPSILON) const; //checks if it is unit
 
 		INLINEFORCE V3 Project(const V3& v) const; // Projects this vector onto another vector
 
-		INLINEFORCE glob B8 EqualVectors(const V3& a, const V3& b); // Checks if vectors are equal
-		INLINEFORCE glob B8 VectorsAreNear(const V3& a, const V3& b, F32 dist);// checks if vectors are within distance
+		INLINEFORCE glob B32 EqualVectors(const V3& a, const V3& b); // Checks if vectors are equal
+		INLINEFORCE glob B32 VectorsAreNear(const V3& a, const V3& b, F32 dist);// checks if vectors are within distance
 
 		//Distance from plane
 		INLINEFORCE glob F32 VectorPlaneDist(const V3& point, const V3& planeBase, const V3& planeNormal);
 
 		INLINEFORCE glob V3 ProjectPlane(const V3& point, const V3& planeBase, const V3& planeNormal);
 
-		INLINEFORCE glob B8 Parallel(const V3& a, const V3& b); // checks if vectors are roughly parallel
+		INLINEFORCE glob B32 Parallel(const V3& a, const V3& b); // checks if vectors are roughly parallel
 
 		INLINEFORCE glob F32 Triple(const V3& a, const V3& b, const V3& c); // return triple: x|(y^z)
 
@@ -594,7 +594,7 @@ namespace AU{
 		INLINEFORCE void CheckNaN() const{}
 #endif
 
-		INLINEFORCE B8 HasNaN() const{
+		INLINEFORCE B32 HasNaN() const{
 			return (IsNaN(x) || IsNaN(y) || IsNaN(z) || !IsFinite(x) || !IsFinite(y) || !IsFinite(z));
 		}
 	};
@@ -721,51 +721,51 @@ namespace AU{
 		return V3(-z*v.y, z*v.x, x*v.y - y*v.x);
 	}
 
-	INLINEFORCE B8 V3::operator==(const V3& v) const{
+	INLINEFORCE B32 V3::operator==(const V3& v) const{
 		return x == v.x && y == v.y && z == v.z;
 	}
 
-	INLINEFORCE B8 V3::operator==(F32 s) const{
+	INLINEFORCE B32 V3::operator==(F32 s) const{
 		return x == s && y == s && z == s;
 	}
 
-	INLINEFORCE B8 V3::operator!=(const V3& v) const{
+	INLINEFORCE B32 V3::operator!=(const V3& v) const{
 		return x != v.x || y != v.y || z != v.z;
 	}
 
-	INLINEFORCE B8 V3::operator!=(F32 s) const{
+	INLINEFORCE B32 V3::operator!=(F32 s) const{
 		return x != s || y != s || z != s;
 	}
 
-	INLINEFORCE B8 V3::operator<(const V3& v) const{
+	INLINEFORCE B32 V3::operator<(const V3& v) const{
 		return x < v.x && y < v.y && z < v.z;
 	}
 
-	INLINEFORCE B8 V3::operator<(F32 s) const{
+	INLINEFORCE B32 V3::operator<(F32 s) const{
 		return x < s && y < s && z < s;
 	}
 
-	INLINEFORCE B8 V3::operator>(const V3& v) const{
+	INLINEFORCE B32 V3::operator>(const V3& v) const{
 		return x > v.x && y > v.y && z > v.z;
 	}
 
-	INLINEFORCE B8 V3::operator>(F32 s) const{
+	INLINEFORCE B32 V3::operator>(F32 s) const{
 		return x > s && y > s && z > s;
 	}
 
-	INLINEFORCE B8 V3::operator<=(const V3& v) const{
+	INLINEFORCE B32 V3::operator<=(const V3& v) const{
 		return x <= v.x && y <= v.y && z <= v.z;
 	}
 
-	INLINEFORCE B8 V3::operator<=(F32 s) const{
+	INLINEFORCE B32 V3::operator<=(F32 s) const{
 		return x <= s && y <= s && z <= s;
 	}
 
-	INLINEFORCE B8 V3::operator>=(const V3& v) const{
+	INLINEFORCE B32 V3::operator>=(const V3& v) const{
 		return x >= v.x && y >= v.y && z >= v.z;
 	}
 
-	INLINEFORCE B8 V3::operator>=(F32 s) const{
+	INLINEFORCE B32 V3::operator>=(F32 s) const{
 		return x >= s && y >= s && z >= s;
 	}
 
@@ -968,11 +968,11 @@ namespace AU{
 		return a ^ b;
 	}
 
-	INLINEFORCE B8 V3::Equals(const V3& v, F32 tolerance) const{
+	INLINEFORCE B32 V3::Equals(const V3& v, F32 tolerance) const{
 		return AU::Abs(x - v.x) < tolerance && AU::Abs(y - v.y) < tolerance && AU::Abs(z - v.z);
 	}
 
-	INLINEFORCE B8 V3::AllComponentsEqual(F32 tolerance) const{
+	INLINEFORCE B32 V3::AllComponentsEqual(F32 tolerance) const{
 		return AU::Abs(x - y) < tolerance && AU::Abs(y - z) < tolerance && AU::Abs(y - z) < tolerance;
 	}
 
@@ -1072,11 +1072,11 @@ namespace AU{
 		return *this;
 	}
 
-	INLINEFORCE B8 V3::IsEpsilonZero(F32 tolerance) const{
+	INLINEFORCE B32 V3::IsEpsilonZero(F32 tolerance) const{
 		return AU::Abs(x) < tolerance && AU::Abs(y) < tolerance && AU::Abs(z) < tolerance;
 	}
 
-	INLINEFORCE B8 V3::IsZero() const{
+	INLINEFORCE B32 V3::IsZero() const{
 		return x == 0.f && y == 0.f && z == 0.f;
 	}
 
@@ -1123,7 +1123,7 @@ namespace AU{
 		return vec;
 	}
 
-	INLINEFORCE B8 V3::Uniform(F32 tolerance) const{
+	INLINEFORCE B32 V3::Uniform(F32 tolerance) const{
 		return (AU::Abs(x - y) < tolerance) && (AU::Abs(y - z) < tolerance);
 	}
 
@@ -1131,7 +1131,7 @@ namespace AU{
 		return *this - normal * (2.f * (*this | normal));
 	}
 
-	INLINEFORCE B8 V3::IsUnit(F32 len2Tolerance) const{
+	INLINEFORCE B32 V3::IsUnit(F32 len2Tolerance) const{
 		return AU::Abs(1.0f - Len2()) < len2Tolerance;
 	}
 
@@ -1139,19 +1139,19 @@ namespace AU{
 		return (v * ((*this | v) / (v | v)));
 	}
 
-	INLINEFORCE B8 V3::EqualVectors(const V3& a, const V3& b){
+	INLINEFORCE B32 V3::EqualVectors(const V3& a, const V3& b){
 		return (AU::Abs(a.x - b.x) < VECTOR_PROXIMITY_THRESHOLD 
 			 && AU::Abs(a.y - b.y) < VECTOR_PROXIMITY_THRESHOLD 
 			 && AU::Abs(a.z - b.z) < VECTOR_PROXIMITY_THRESHOLD);
 	}
 
-	INLINEFORCE B8 V3::VectorsAreNear(const V3& a, const V3& b, F32 dist){
+	INLINEFORCE B32 V3::VectorsAreNear(const V3& a, const V3& b, F32 dist){
 		return (AU::Abs(a.x - b.x) < dist 
 			&& AU::Abs(a.y - b.y) < dist
 			&& AU::Abs(a.z - b.z) < dist);
 	}
 
-	INLINEFORCE B8 V3::Parallel(const V3& a, const V3& b){
+	INLINEFORCE B32 V3::Parallel(const V3& a, const V3& b){
 		return (AU::Abs((a | b) - 1.0f) <= VECTOR_PARALLEL_THRESHOLD);
 	}
 
@@ -1275,18 +1275,18 @@ namespace AU{
 		INLINEFORCE V4 operator^(const V3& v) const;
 		INLINEFORCE V4 operator^(const V4& v) const;
 
-		INLINEFORCE B8 operator==(const V4& v) const; //vector equality check
-		INLINEFORCE B8 operator==(F32 s) const; //scalar comparison
-		INLINEFORCE B8 operator!= (const V4& v) const; //vector inequality check
-		INLINEFORCE B8 operator!= (F32 s) const; //scalar inequality check
-		INLINEFORCE B8 operator<(const V4& v) const; //vector less-than comparison
-		INLINEFORCE B8 operator<(F32 s) const; //scalar less-than comparison
-		INLINEFORCE B8 operator>(const V4& v) const; //vector more-than comparison
-		INLINEFORCE B8 operator>(F32 s) const; //scalar more-than comparison
-		INLINEFORCE B8 operator<=(const V4& v) const; //vector less-than-equals comparison
-		INLINEFORCE B8 operator<=(F32 s) const; //scalar less-than-equals comparison
-		INLINEFORCE B8 operator>=(const V4& v) const; //vector more-than-equals comparison
-		INLINEFORCE B8 operator>=(F32 s) const; //scalar more-than-equals comparison
+		INLINEFORCE B32 operator==(const V4& v) const; //vector equality check
+		INLINEFORCE B32 operator==(F32 s) const; //scalar comparison
+		INLINEFORCE B32 operator!= (const V4& v) const; //vector inequality check
+		INLINEFORCE B32 operator!= (F32 s) const; //scalar inequality check
+		INLINEFORCE B32 operator<(const V4& v) const; //vector less-than comparison
+		INLINEFORCE B32 operator<(F32 s) const; //scalar less-than comparison
+		INLINEFORCE B32 operator>(const V4& v) const; //vector more-than comparison
+		INLINEFORCE B32 operator>(F32 s) const; //scalar more-than comparison
+		INLINEFORCE B32 operator<=(const V4& v) const; //vector less-than-equals comparison
+		INLINEFORCE B32 operator<=(F32 s) const; //scalar less-than-equals comparison
+		INLINEFORCE B32 operator>=(const V4& v) const; //vector more-than-equals comparison
+		INLINEFORCE B32 operator>=(F32 s) const; //scalar more-than-equals comparison
 
 		INLINEFORCE V4 operator-() const; // Negate this vector
 
@@ -1346,8 +1346,8 @@ namespace AU{
 		INLINEFORCE glob V4 Cross(const V4& a, const V3& b); //global cross product
 		INLINEFORCE glob V4 Cross(const V4& a, const V2& b); //global cross product
 
-		INLINEFORCE B8 Equals(const V4& v, F32 tolerance = EPSILON) const; //fuzzy equality test
-		INLINEFORCE B8 AllComponentsEqual(F32 tolerance = EPSILON) const;
+		INLINEFORCE B32 Equals(const V4& v, F32 tolerance = EPSILON) const; //fuzzy equality test
+		INLINEFORCE B32 AllComponentsEqual(F32 tolerance = EPSILON) const;
 
 		INLINEFORCE V4 Set(F32 x, F32 y, F32 z, F32 w = 1.0f); //set components, chained return
 
@@ -1376,8 +1376,8 @@ namespace AU{
 
 		INLINEFORCE V4 Nor(F32 tolerance = EZERO); // self-normalization, chained return
 
-		INLINEFORCE B8 IsEpsilonZero(F32 tolerance = EPSILON) const; // fuzzy check for zero
-		INLINEFORCE B8 IsZero() const; //check if absolutely zero
+		INLINEFORCE B32 IsEpsilonZero(F32 tolerance = EPSILON) const; // fuzzy check for zero
+		INLINEFORCE B32 IsZero() const; //check if absolutely zero
 
 		INLINEFORCE void ToDirectionAndMagnitude(V4* v, F32* s) const; //returns a unit direction vector as well as a magnitude
 		INLINEFORCE V4 SignV4() const; //sets each component to either +1 or -1
@@ -1389,8 +1389,8 @@ namespace AU{
 
 		INLINEFORCE V4 Reciprocal() const; //Reciprocates vector
 
-		INLINEFORCE B8 Uniform(F32 Tolerance = EPSILON) const; //checks if x == y == z == w
-		INLINEFORCE B8 Uniform3(F32 Tolerance = EPSILON) const; //checks if x == y == z
+		INLINEFORCE B32 Uniform(F32 Tolerance = EPSILON) const; //checks if x == y == z == w
+		INLINEFORCE B32 Uniform3(F32 Tolerance = EPSILON) const; //checks if x == y == z
 
 		INLINEFORCE V4 Reflect(const V4& normal) const; // reflects vector across normal vector
 		INLINEFORCE V4 Reflect3(const V4& normal) const; // reflects vector across normal vector
@@ -1399,19 +1399,19 @@ namespace AU{
 
 		//TODO: ANGLULAR ROTATION
 
-		INLINEFORCE B8 IsUnit(F32 len2Tolerance = EPSILON) const; //checks if it is unit
+		INLINEFORCE B32 IsUnit(F32 len2Tolerance = EPSILON) const; //checks if it is unit
 
 		INLINEFORCE V4 Project(const V4& v) const; // Projects this vector onto another vector
 
-		INLINEFORCE glob B8 EqualVectors(const V4& a, const V4& b); // Checks if vectors are equal
-		INLINEFORCE glob B8 VectorsAreNear(const V4& a, const V4& b, F32 dist);// checks if vectors are within distance
+		INLINEFORCE glob B32 EqualVectors(const V4& a, const V4& b); // Checks if vectors are equal
+		INLINEFORCE glob B32 VectorsAreNear(const V4& a, const V4& b, F32 dist);// checks if vectors are within distance
 
 		//Distance from plane
 		INLINEFORCE glob F32 VectorPlaneDist(const V4& point, const V3& planeBase, const V3& planeNormal);
 
 		INLINEFORCE glob V4 ProjectPlane(const V4& point, const V3& planeBase, const V3& planeNormal);
 
-		INLINEFORCE glob B8 Parallel(const V4& a, const V4& b); // checks if vectors are roughly parallel
+		INLINEFORCE glob B32 Parallel(const V4& a, const V4& b); // checks if vectors are roughly parallel
 
 		INLINEFORCE glob F32 Triple(const V4& a, const V4& b, const V4& c); // return triple: x|(y^z)
 
@@ -1446,7 +1446,7 @@ namespace AU{
 		INLINEFORCE void CheckNaN() const{}
 #endif
 
-		INLINEFORCE B8 HasNaN() const{
+		INLINEFORCE B32 HasNaN() const{
 			return (IsNaN(x) || IsNaN(y) || IsNaN(z) || IsNaN(w) || !IsFinite(x) || !IsFinite(y) || !IsFinite(z) || !IsFinite(w));
 		}
 	};
@@ -1633,51 +1633,51 @@ namespace AU{
 		return V4(-z*v.y, z*v.x, x*v.y - y*v.x, 0);
 	}
 
-	INLINEFORCE B8 V4::operator==(const V4& v) const{
+	INLINEFORCE B32 V4::operator==(const V4& v) const{
 		return x == v.x && y == v.y && z == v.z && w == v.w;
 	}
 
-	INLINEFORCE B8 V4::operator==(F32 s) const{
+	INLINEFORCE B32 V4::operator==(F32 s) const{
 		return x == s && y == s && z == s && w == s;
 	}
 
-	INLINEFORCE B8 V4::operator!=(const V4& v) const{
+	INLINEFORCE B32 V4::operator!=(const V4& v) const{
 		return x != v.x || y != v.y || z != v.z || w != v.w;
 	}
 
-	INLINEFORCE B8 V4::operator!=(F32 s) const{
+	INLINEFORCE B32 V4::operator!=(F32 s) const{
 		return x != s || y != s || z != s || w != s;
 	}
 
-	INLINEFORCE B8 V4::operator<(const V4& v) const{
+	INLINEFORCE B32 V4::operator<(const V4& v) const{
 		return x < v.x && y < v.y && z < v.z && w < v.w;
 	}
 
-	INLINEFORCE B8 V4::operator<(F32 s) const{
+	INLINEFORCE B32 V4::operator<(F32 s) const{
 		return x < s && y < s && z < s && w < s;
 	}
 
-	INLINEFORCE B8 V4::operator>(const V4& v) const{
+	INLINEFORCE B32 V4::operator>(const V4& v) const{
 		return x > v.x && y > v.y && z > v.z && w > v.w;
 	}
 
-	INLINEFORCE B8 V4::operator>(F32 s) const{
+	INLINEFORCE B32 V4::operator>(F32 s) const{
 		return x > s && y > s && z > s && w > s;
 	}
 
-	INLINEFORCE B8 V4::operator<=(const V4& v) const{
+	INLINEFORCE B32 V4::operator<=(const V4& v) const{
 		return x <= v.x && y <= v.y && z <= v.z && w <= v.w;
 	}
 
-	INLINEFORCE B8 V4::operator<=(F32 s) const{
+	INLINEFORCE B32 V4::operator<=(F32 s) const{
 		return x <= s && y <= s && z <= s && w <= s;
 	}
 
-	INLINEFORCE B8 V4::operator>=(const V4& v) const{
+	INLINEFORCE B32 V4::operator>=(const V4& v) const{
 		return x >= v.x && y >= v.y && z >= v.z && w >= v.w;
 	}
 
-	INLINEFORCE B8 V4::operator>=(F32 s) const{
+	INLINEFORCE B32 V4::operator>=(F32 s) const{
 		return x >= s && y >= s && z >= s && w >= s;
 	}
 
@@ -1970,12 +1970,12 @@ namespace AU{
 		return a ^ b;
 	}
 
-	INLINEFORCE B8 V4::Equals(const V4& v, F32 tolerance) const{
+	INLINEFORCE B32 V4::Equals(const V4& v, F32 tolerance) const{
 		return AU::Abs(x - v.x) < tolerance && AU::Abs(y - v.y) < tolerance 
 			&& AU::Abs(z - v.z) && AU::Abs(w - v.w) < tolerance;
 	}
 
-	INLINEFORCE B8 V4::AllComponentsEqual(F32 tolerance) const{
+	INLINEFORCE B32 V4::AllComponentsEqual(F32 tolerance) const{
 		return AU::Abs(x - y) < tolerance && AU::Abs(y - z) < tolerance 
 			&& AU::Abs(y - z) < tolerance && AU::Abs(z - w) < tolerance;
 	}
@@ -2120,11 +2120,11 @@ namespace AU{
 		return *this;
 	}
 
-	INLINEFORCE B8 V4::IsEpsilonZero(F32 tolerance) const{
+	INLINEFORCE B32 V4::IsEpsilonZero(F32 tolerance) const{
 		return AU::Abs(x) < tolerance && AU::Abs(y) < tolerance && AU::Abs(z) < tolerance && AU::Abs(w) < tolerance;
 	}
 
-	INLINEFORCE B8 V4::IsZero() const{
+	INLINEFORCE B32 V4::IsZero() const{
 		return x == 0.f && y == 0.f && z == 0.f && w == 0.0f;
 	}
 
@@ -2173,11 +2173,11 @@ namespace AU{
 		return vec;
 	}
 
-	INLINEFORCE B8 V4::Uniform(F32 tolerance) const{
+	INLINEFORCE B32 V4::Uniform(F32 tolerance) const{
 		return (AU::Abs(x - y) < tolerance) && (AU::Abs(y - z) < tolerance) && (AU::Abs(z - w) < tolerance);
 	}
 
-	INLINEFORCE B8 V4::Uniform3(F32 tolerance) const{
+	INLINEFORCE B32 V4::Uniform3(F32 tolerance) const{
 		return (AU::Abs(x - y) < tolerance) && (AU::Abs(y - z) < tolerance);
 	}
 
@@ -2189,7 +2189,7 @@ namespace AU{
 		return *this - normal * 2.f * Dot3(*this, normal);
 	}
 
-	INLINEFORCE B8 V4::IsUnit(F32 len2Tolerance) const{
+	INLINEFORCE B32 V4::IsUnit(F32 len2Tolerance) const{
 		return AU::Abs(1.0f - Len2()) < len2Tolerance;
 	}
 
@@ -2197,21 +2197,21 @@ namespace AU{
 		return (v * ((*this | v) / (v | v)));
 	}
 
-	INLINEFORCE B8 V4::EqualVectors(const V4& a, const V4& b){
+	INLINEFORCE B32 V4::EqualVectors(const V4& a, const V4& b){
 		return (AU::Abs(a.x - b.x) < VECTOR_PROXIMITY_THRESHOLD
 			&& AU::Abs(a.y - b.y) < VECTOR_PROXIMITY_THRESHOLD
 			&& AU::Abs(a.z - b.z) < VECTOR_PROXIMITY_THRESHOLD
 			&& AU::Abs(a.w - b.w) < VECTOR_PROXIMITY_THRESHOLD);
 	}
 
-	INLINEFORCE B8 V4::VectorsAreNear(const V4& a, const V4& b, F32 dist){
+	INLINEFORCE B32 V4::VectorsAreNear(const V4& a, const V4& b, F32 dist){
 		return (AU::Abs(a.x - b.x) < dist
 			&& AU::Abs(a.y - b.y) < dist
 			&& AU::Abs(a.z - b.z) < dist
 			&& AU::Abs(a.w - b.w) < dist);
 	}
 
-	INLINEFORCE B8 V4::Parallel(const V4& a, const V4& b){
+	INLINEFORCE B32 V4::Parallel(const V4& a, const V4& b){
 		return (AU::Abs((a | b) - 1.0f) <= VECTOR_PARALLEL_THRESHOLD);
 	}
 
@@ -2329,9 +2329,162 @@ namespace AU{
 		glob const Q4 XYW_AXIS;
 		glob const Q4 XZW_AXIS;
 		glob const Q4 YZW_AXIS;
+
+		INLINEFORCE Q4(){} //Default ctor
+		INLINEFORCE explicit Q4(F32 s); //Scalar ctor
+		INLINEFORCE Q4(F32 x, F32 y, F32 z, F32 w = 1); //Defined ctor
+		INLINEFORCE Q4(const V3& axis, F32 rad); //Axis-Angle ctor
+		INLINEFORCE explicit Q4(const M44& m); //Matrix ctor
+		INLINEFORCE Q4(const Q4& rhs); //Copy ctor
+		INLINEFORCE Q4(Q4&& rhs); //Move ctor
+
+		INLINEFORCE Q4 operator=(const Q4& rhs); //Copy operator
+		INLINEFORCE Q4 operator=(Q4&& rhs); //Move operator
+
+		INLINEFORCE Q4 operator+(const Q4& q) const; //Quaternion addition
+		INLINEFORCE Q4 operator-(const Q4& q) const; //Quaternion subtraction
+		INLINEFORCE Q4 operator*(const V3& v) const; //Quaternion multiplication
+		INLINEFORCE Q4 operator*(const M44& m) const; //Quaternion multiplication
+		INLINEFORCE Q4 operator*(const Q4& q) const; //Quaternion multiplication
+		INLINEFORCE Q4 operator*(F32 scl) const; //Quaternion multiplication
+		INLINEFORCE Q4 operator/(F32 scl) const; //Quaternion division
+
+		INLINEFORCE Q4 operator%(F32 tolerance) const; //Quaternion normalization
+		INLINEFORCE F32 operator|(const Q4& q) const; //Quaternion dot product
+		INLINEFORCE F32 operator~() const; //Euclidean length squared
+
+		INLINEFORCE Q4 operator+=(const Q4& q); //Quaternion self-addition
+		INLINEFORCE Q4 operator-=(const Q4& q); //Quaternion self-subtraction
+		INLINEFORCE Q4 operator*=(const Q4& q); //Quaternion self-multiplication
+		INLINEFORCE Q4 operator*=(F32 scl); //Quaternion self-multiplication
+		INLINEFORCE Q4 operator/=(F32 scl); //Quaternion self-division
+
+		INLINEFORCE Q4 operator%=(const Q4& q); //Quaternion self-normalization
+
+		INLINEFORCE B32 operator==(const Q4& q) const; //Equality test
+		INLINEFORCE B32 operator!=(const Q4& q) const; //Inequality test
+
+		glob Q4 EulerFactory(const V3& euler); //Vector of radian angles to Quaternion
+		INLINEFORCE V3 Euler() const; //Returns vector of radian angles
+
+		INLINEFORCE Q4 Nor(F32 tolerance = EPSILON); //Normalize quaternion, chained return
+		INLINEFORCE B32 IsNor() const; //Checks if already normalized
+
+		INLINEFORCE F32 Len() const; //Euclidean length
+		INLINEFORCE F32 Len2() const; //Euclidean length squared
+
+		INLINEFORCE void ToAxisAndAngle(V3& axis, F32& angle) const; //Returns axis and angle
+
+		INLINEFORCE V3 Rotate(V3 v) const; //Return vector rotated by this quaternion
+
+		INLINEFORCE Q4 Log() const; //return Q4 with w = 0 and v = theta*v
+		INLINEFORCE Q4 Exp() const; //Use after log, Exp(q) = (sin(theta)*v, cos(theta))
+
+		INLINEFORCE Q4 Inverse() const; //Inverse quaternion
+
+		void EnforceShortestArc(const Q4& other); //Enforce the delta between this Q4
+												  //and an other Q4 represents the shortest
+												  //possible rotation angle
+
+		INLINEFORCE V3 XAxis() const; //Get X rotation axis
+		INLINEFORCE V3 YAxis() const; //Get Y rotation axis
+		INLINEFORCE V3 ZAxis() const; //Get Z rotation axis
+
+		INLINEFORCE V3 RotationAxis() const; //Axis of the quaternion
+
+		INLINEFORCE B32 HasNaN() const; //Check if there are NaNs
+
+#if CHECK_NAN
+		INLINEFORCE void CheckNaN() const{
+			AVRO_ASSERT(!HasNaN(), "Q4 contains NaN");
+		}
+#else
+		INLINEFORCE void CheckNaN() const{}
+#endif
+
+		glob F32 Error(const Q4& a, const Q4& b); //Error angle [0-1] between to Q4s
+		glob F32 ErrorAutoNor(const Q4& a, const Q4& b); //Error with auto-normalization
+
+		glob Q4 QuickLerp(const Q4& a, const Q4& b, const F32 alpha); //Quick Q4 linear 
+																				  //interpolation
+
+		glob Q4 QuickBilerp(const Q4& q00, const Q4& q10, const Q4& q01,
+										const Q4& q11, F32 fracX, F32 fracY); //Quick Bilinear 
+																			  //interpolation
+
+		glob Q4 Slerp(const Q4& a, const Q4& b, F32 alpha); //Spherical interpolation
+
+		glob Q4 FullSlerp(const Q4& a, const Q4& b, F32 alpha); //Slerp with no 
+																//shortest distance checks
+
+		glob Q4 Squad(const Q4& q1, const Q4& t1, const Q4& q2, const Q4& t2, F32 alpha); //Find 
+				//the point at alpha between start and end Q4s and tangents
+
+		//Calculate tangent between given points
+		glob void CalcTangents(const Q4& prevP, const Q4& p, const Q4& nextP, F32 tension, Q4* outTan);
+
+		INLINEFORCE V2 XY() const; //Swizzles to V2(x,y)
+		INLINEFORCE V2 YZ() const; //Swizzles to V2(y,z)
+		INLINEFORCE V2 XZ() const; //Swizzles to V2(x,z)
+		INLINEFORCE V2 YX() const; //Swizzles to V2(y,x)
+		INLINEFORCE V2 ZY() const; //Swizzles to V2(z,y)
+		INLINEFORCE V2 ZX() const; //Swizzles to V2(z,x)
+		INLINEFORCE V2 XW() const; //Swizzles to V2(x,w)
+		INLINEFORCE V2 YW() const; //Swizzles to V2(y,w)
+		INLINEFORCE V2 ZW() const; //Swizzles to V2(z,w)
+		INLINEFORCE V2 WX() const; //Swizzles to V2(w,x)
+		INLINEFORCE V2 WY() const; //Swizzles to V2(w,y)
+		INLINEFORCE V2 WZ() const; //Swizzles to V2(w,z)
+		INLINEFORCE V3 XYZ() const; //Swizzles to V3(x,y,z)
+		INLINEFORCE V3 XYW() const; //Swizzles to V3(x,y,w)
+		INLINEFORCE V3 XZW() const; //Swizzles to V3(x,z,w)
+		INLINEFORCE V3 YZW() const; //Swizzles to V3(y,z,w)
+
 	};
 
+	//Functions
 
+	INLINEFORCE Q4::Q4(F32 s) :x(s), y(s), z(s), w(s){}
+
+	INLINEFORCE Q4::Q4(F32 x, F32 y, F32 z, F32 w = 1):x(x), y(y), z(z), w(w){}
+
+	INLINEFORCE Q4::Q4(const V3& axis, F32 rad){
+		const F32 halfAngle = 0.5f * rad;
+		const F32 sinHalfAngle = AU::Sin(halfAngle);
+		const F32 cosHalfAngle = AU::Cos(halfAngle);
+
+		x = sinHalfAngle * axis.x;
+		y = sinHalfAngle * axis.y;
+		z = sinHalfAngle * axis.z;
+		w = cosHalfAngle;
+	}
+
+	INLINEFORCE Q4::Q4(const M44& m){} //TODO: Complete after M44 struct
+
+	INLINEFORCE Q4::Q4(const Q4& rhs): x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w){}
+
+	INLINEFORCE Q4::Q4(Q4&& rhs) : x(rhs.x), y(rhs.y), z(rhs.z), w(rhs.w){
+		rhs.x = 0;
+		rhs.y = 0;
+		rhs.z = 0;
+		rhs.w = 0;
+	}
+
+	INLINEFORCE Q4 Q4::operator=(const Q4& rhs){
+		x = rhs.x;
+		y = rhs.y;
+		z = rhs.z;
+		w = rhs.w;
+	}
+
+	INLINEFORCE Q4 Q4::operator=(Q4&& rhs){
+		x = rhs.x;
+		y = rhs.y;
+		z = rhs.z;
+		w = rhs.w;
+
+		rhs.x = rhs.y = rhs.z = rhs.w = 0;
+	}
 
 
 

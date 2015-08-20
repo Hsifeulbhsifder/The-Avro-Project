@@ -5,9 +5,9 @@
 #ifdef A_W32
 
 glob PAINTSTRUCT paint;
-glob B8* m_isRunning;
+glob B32* m_isRunning;
 
-void GameWindowSetState(B8* isRunning){
+void GameWindowSetState(B32* isRunning){
 	m_isRunning = isRunning;
 }
 
@@ -97,11 +97,11 @@ INLINEFORCE intern void Win32CreateOpenGLContext(HDC deviceContext, HGLRC* glCon
 	*glContext = wglCreateContext(deviceContext);
 }
 
-INLINEFORCE intern B8 Win32TerminateOpenGLContext(HGLRC glContext){
+INLINEFORCE intern B32 Win32TerminateOpenGLContext(HGLRC glContext){
 	return wglDeleteContext(glContext);
 }
 
-INLINEFORCE intern B8 Win32MakeCurrentRenderingContext(HDC deviceContext, HGLRC glContext){
+INLINEFORCE intern B32 Win32MakeCurrentRenderingContext(HDC deviceContext, HGLRC glContext){
 	return wglMakeCurrent(deviceContext, glContext);
 }
 
@@ -119,11 +119,11 @@ INLINEFORCE intern void UnixCreateOpenGLContext(){
 
 }
 
-INLINEFORCE intern B8 UnixTerminateOpenGLContext(){
+INLINEFORCE intern B32 UnixTerminateOpenGLContext(){
 	return false;
 }
 
-INLINEFORCE intern B8 UnixMakeCurrentRenderingContext(){
+INLINEFORCE intern B32 UnixMakeCurrentRenderingContext(){
 	return false;
 }
 
@@ -159,7 +159,7 @@ INLINEFORCE DLLEXPORT void CreateGLContext(Window* window)
 #endif
 }
 
-INLINEFORCE DLLEXPORT B8 TerminateGLContext(Window* window)
+INLINEFORCE DLLEXPORT B32 TerminateGLContext(Window* window)
 {
 #ifdef A_W32
 	return Win32TerminateOpenGLContext(window->glContext);
@@ -168,7 +168,7 @@ INLINEFORCE DLLEXPORT B8 TerminateGLContext(Window* window)
 #endif
 }
 
-INLINEFORCE DLLEXPORT B8 MakeCurrent(Window* window, B8 terminate)
+INLINEFORCE DLLEXPORT B32 MakeCurrent(Window* window, B32 terminate)
 {
 #ifdef A_W32
 	if (!terminate)	return Win32MakeCurrentRenderingContext(GetDC(window->wnd), window->glContext);

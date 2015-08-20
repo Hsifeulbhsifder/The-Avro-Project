@@ -36,7 +36,7 @@ void MemoryHeap::Terminate(){
 	Reset();
 }
 
-B8 MemoryHeap::Initialize(U64 heapSize_bytes)
+B32 MemoryHeap::Initialize(U64 heapSize_bytes)
 {
 	if (m_heapBlocks) Terminate(); // Pre-allocation check
 	AVRO_ASSERT(heapSize_bytes > 0, "Size too low");
@@ -53,7 +53,7 @@ void* MemoryHeap::Allocate(U64 size_bytes)
 	size_bytes += HEADER_SIZE + FOOTER_SIZE; //makes room for headers and footers
 	//TODO: don't forget the header and footer size
 	U8* srchPointer = m_root;
-	B8 found = false;
+	B32 found = false;
 	//Iterate through list until valid location is found
 	for (U64 i = 0; i < m_numBlocks; i++){
 		U8 srchpointerSize = *srchPointer;
@@ -118,7 +118,7 @@ void MemoryHeap::DissipateAligned(void* mem)
 	Dissipate(rawMem);
 }
 
-B8 MemoryHeap::GrowHeapSize()
+B32 MemoryHeap::GrowHeapSize()
 {
 	//allocate a new array
 	U64 mallocSize = sizeof(U8*) * (m_numBlocks + 1);

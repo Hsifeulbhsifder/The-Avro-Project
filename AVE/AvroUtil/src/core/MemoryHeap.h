@@ -9,13 +9,13 @@ class DLLEXPORT MemoryHeap: public AvroAllocator{
 	U8* m_root;
 	U64 m_heapSize_bytes;
 	U64 m_memoryAvailable;
-	B8 m_resizable;
+	B32 m_resizable;
 	U64 m_numBlocks;
 public:
 	MemoryHeap();
 	
 	// Initialize heap with memory size
-	B8 Initialize(U64 heapSize_bytes);
+	B32 Initialize(U64 heapSize_bytes);
 	
 	// Allocates from heap
 	void* Allocate(U64 size_bytes);
@@ -37,7 +37,7 @@ private:
 	// Resets all member variables
 	void Reset();
 	// Expands heap, if flagged for resizing
-	B8 GrowHeapSize();
+	B32 GrowHeapSize();
 	// Allocates a new Block
 	void AllocateNewBlock(U8* pointer, U64 size_bytes);
 

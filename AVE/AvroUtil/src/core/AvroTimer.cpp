@@ -59,7 +59,7 @@ INLINEFORCE DLLEXPORT void OSSleep(U32 ms)
 #endif
 }
 
-INLINEFORCE DLLEXPORT B8 SetOSSchedulerGranularity(U32 msGranularity){
+INLINEFORCE DLLEXPORT B32 SetOSSchedulerGranularity(U32 msGranularity){
 #ifdef A_W32
 	return timeBeginPeriod(msGranularity) == TIMERR_NOERROR;
 #elif A_UNX

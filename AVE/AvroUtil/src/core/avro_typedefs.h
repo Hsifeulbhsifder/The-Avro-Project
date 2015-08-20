@@ -5,7 +5,7 @@
 
 #ifdef A_W32
 #include <xmmintrin.h>
-typedef unsigned __int8 B8;
+typedef unsigned __int32 B32;
 
 typedef signed __int8 I8;
 typedef signed __int16 I16;
@@ -23,7 +23,7 @@ typedef double F64;
 typedef __m128 VF32;
 #elif A_UNX
 
-typedef unsigned __int8 B8;
+typedef unsigned __int32 B32;
 
 typedef signed char			I8;
 typedef signed short		I16;

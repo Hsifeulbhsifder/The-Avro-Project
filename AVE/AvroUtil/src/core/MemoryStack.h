@@ -18,7 +18,7 @@ public:
 	MemoryStack();
 
 	// Initialize stack with new memory 
-	B8 Initialize(U64 stackSize_bytes);
+	B32 Initialize(U64 stackSize_bytes);
 
 	// Allocates a new block of the given size from stack
 	// top.
@@ -61,7 +61,7 @@ class DiBufferedStack : public AvroAllocator{
 	U32 m_currStack;
 	MemoryStack m_stack[2];
 public:
-	INLINEFORCE B8 Initialize(U64 stackSize_bytes){
+	INLINEFORCE B32 Initialize(U64 stackSize_bytes){
 		return (m_stack[0].Initialize(stackSize_bytes)) && (m_stack[1].Initialize(stackSize_bytes));
 	}
 
@@ -96,7 +96,7 @@ class TriBufferedStack : public AvroAllocator{
 	U32 m_currStack;
 	MemoryStack m_stack[3];
 public:
-	INLINEFORCE B8 Initialize(U64 stackSize_bytes){
+	INLINEFORCE B32 Initialize(U64 stackSize_bytes){
 		return (m_stack[0].Initialize(stackSize_bytes))
 			&& (m_stack[1].Initialize(stackSize_bytes))
 			&& (m_stack[2].Initialize(stackSize_bytes));
@@ -133,7 +133,7 @@ class QuadBufferedStack : public AvroAllocator{
 	U32 m_currStack;
 	MemoryStack m_stack[4];
 public:
-	INLINEFORCE B8 Initialize(U64 stackSize_bytes){
+	INLINEFORCE B32 Initialize(U64 stackSize_bytes){
 		return (m_stack[0].Initialize(stackSize_bytes))
 			&& (m_stack[1].Initialize(stackSize_bytes))
 			&& (m_stack[2].Initialize(stackSize_bytes))

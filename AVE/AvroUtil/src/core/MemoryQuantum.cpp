@@ -11,7 +11,7 @@ MemoryQuantum::~MemoryQuantum(){
 	Terminate();
 }
 
-B8 MemoryQuantum::Initialize(U64 quantumSize, U64 quanta){
+B32 MemoryQuantum::Initialize(U64 quantumSize, U64 quanta){
 	if (m_universe) Terminate(); //Check if already allocated
 	AVRO_ASSERT(quantumSize > 0, "Size too low")
 	//set size for memory units
@@ -69,7 +69,7 @@ void MemoryQuantum::Reset(){
 	m_resizable = false;
 }
 
-B8 MemoryQuantum::ExpandUniverse(){
+B32 MemoryQuantum::ExpandUniverse(){
 
 	//allocates a new array
 	U64 universeSize = sizeof(U8*) * (m_particles + 1);

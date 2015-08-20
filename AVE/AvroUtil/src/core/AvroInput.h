@@ -52,7 +52,7 @@ struct Controller{
 };
 typedef Controller GamePad;
 
-B8 InitInput(U32 numControllers);
+B32 InitInput(U32 numControllers);
 
 //Termination of Input
 void TerminateInput();
@@ -65,20 +65,20 @@ namespace AVI{
 
 	//Gamepad
 	U16 Buttons(U32 controllerIndex);
-	B8 U(U32 controllerIndex);
-	B8 D(U32 controllerIndex);
-	B8 L(U32 controllerIndex);
-	B8 R(U32 controllerIndex);
-	B8 START(U32 controllerIndex);
-	B8 BACK(U32 controllerIndex);
-	B8 LB(U32 controllerIndex);
-	B8 RB(U32 controllerIndex);
-	B8 L3(U32 controllerIndex);
-	B8 R3(U32 controllerIndex);
-	B8 A(U32 controllerIndex);
-	B8 B(U32 controllerIndex);
-	B8 X(U32 controllerIndex);
-	B8 Y(U32 controllerIndex);
+	B32 U(U32 controllerIndex);
+	B32 D(U32 controllerIndex);
+	B32 L(U32 controllerIndex);
+	B32 R(U32 controllerIndex);
+	B32 START(U32 controllerIndex);
+	B32 BACK(U32 controllerIndex);
+	B32 LB(U32 controllerIndex);
+	B32 RB(U32 controllerIndex);
+	B32 L3(U32 controllerIndex);
+	B32 R3(U32 controllerIndex);
+	B32 A(U32 controllerIndex);
+	B32 B(U32 controllerIndex);
+	B32 X(U32 controllerIndex);
+	B32 Y(U32 controllerIndex);
 
 	F32 LX(U32 controllerIndex);
 	F32 LY(U32 controllerIndex);
@@ -95,7 +95,7 @@ namespace AVI{
 	F32 GetStickDeadzone();
 	F32 GetTriggerDeadzone();
 
-	B8 GamePadIsActive(U32 controllerIndex);
+	B32 GamePadIsActive(U32 controllerIndex);
 
 	//Keyboard
 
@@ -106,12 +106,12 @@ namespace AVI{
 
 #elif A_UNX
 
-	INLINEFORCE B8 GetKey(U32 vkCode){ return false; }
+	INLINEFORCE B32 GetKey(U32 vkCode){ return false; }
 
 #endif
 
-	B8 GetKeyTapped(U32 vkCode);
-	B8 GetKeyReleased(U32 vkCode);
+	B32 GetKeyTapped(U32 vkCode);
+	B32 GetKeyReleased(U32 vkCode);
 
 }
 

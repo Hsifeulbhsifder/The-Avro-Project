@@ -85,7 +85,7 @@ namespace AU{
 		return u.f64;
 	}
 
-	INLINEFORCE glob U64 HashB8(B8 value){
+	INLINEFORCE glob U64 HashB8(B32 value){
 		if (value) value /= value;
 		return (U64)value;
 	}
@@ -184,7 +184,7 @@ namespace AU{
 	}
 
 	//Forces a check if a value is NaN
-	INLINEFORCE glob B8 ForceCheckNaNF32(F32 x){
+	INLINEFORCE glob B32 ForceCheckNaNF32(F32 x){
 		return (IsNaN(x) || !IsFinite(x));
 	}
 

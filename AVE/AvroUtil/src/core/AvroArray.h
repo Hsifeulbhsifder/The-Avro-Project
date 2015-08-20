@@ -68,11 +68,11 @@ public:
 	}
 	//@}
 
-	INLINEFORCE B8 operator bool() const{
+	INLINEFORCE B32 operator bool() const{
 		return m_container.IsValidIndex(m_index)
 	}
 
-	INLINEFORCE B8 operator!() const{
+	INLINEFORCE B32 operator!() const{
 		return !(bool)*this;
 	}
 
@@ -84,11 +84,11 @@ public:
 		m_index = 0;
 	}
 
-	INLINEFORCE friend B8 operator==(const IndexedIterator& lhs, const IndexedIterator& rhs){
+	INLINEFORCE friend B32 operator==(const IndexedIterator& lhs, const IndexedIterator& rhs){
 		return &lhs.m_container == &rhs.m_container && lhs.m_index == rhs.m_index;
 	}
 
-	INLINEFORCE friend B8 operator!=(const IndexedIterator& lhs, const IndexedIterator& rhs){
+	INLINEFORCE friend B32 operator!=(const IndexedIterator& lhs, const IndexedIterator& rhs){
 		return &lhs.m_container != &rhs.m_container || lhs.m_index != rhs.m_index;
 	}
 
@@ -137,7 +137,7 @@ public:
 	INLINEFORCE void* GetData(){ return m_data; }
 	INLINEFORCE const void* GetData() const { return m_data; }
 
-	INLINEFORCE B8 IsValidIndex(U32 i) const{
+	INLINEFORCE B32 IsValidIndex(U32 i) const{
 		return i >= 0 && i < m_size;
 	}
 
@@ -192,7 +192,7 @@ public:
 		AU::Swap(m_data[indexA], m_data[indexB]);
 	}
 
-	INLINEFORCE B8 Contains(void* value, B8 reverseDir = false) const{
+	INLINEFORCE B32 Contains(void* value, B32 reverseDir = false) const{
 		if (reverseDir){
 			for (U32 i = m_size - 1; i >= 0; i--)
 				if (m_data[i] == value) return true;
@@ -205,7 +205,7 @@ public:
 		return false;
 	}
 
-	INLINEFORCE I32 IndexOf(void* value, B8 reverseDir = false) const{
+	INLINEFORCE I32 IndexOf(void* value, B32 reverseDir = false) const{
 		if (reverseDir){
 			for (U32 i = m_size - 1; i >= 0; i--)
 				if (m_data[i] == value) return i;
@@ -218,7 +218,7 @@ public:
 		return -1;
 	}
 
-	INLINEFORCE B8 Remove(void* value, B8 reverseDir = false){
+	INLINEFORCE B32 Remove(void* value, B32 reverseDir = false){
 		if (reverseDir){
 			for (U32 i = m_size - 1; i >= 0; i--){
 				if (m_data[i] == value){
@@ -262,7 +262,7 @@ public:
 	}
 
 	// returns true i array was modified
-	B8 RemoveArr(const void* arr, U32 start, U32 count, B8 reverseDir = false){
+	B32 RemoveArr(const void* arr, U32 start, U32 count, B32 reverseDir = false){
 		//TODO: Optimize
 		U32 sizeAtStart = m_size;
 		if (reverseDir){
@@ -289,7 +289,7 @@ public:
 		return sizeAtStart - m_size;
 	}
 
-	B8 RemoveArr(const VoidArray& arr, B8 reverseDir = false){
+	B32 RemoveArr(const VoidArray& arr, B32 reverseDir = false){
 		//TODO: Optimize
 		U32 sizeAtStart = m_size;
 		if (reverseDir){
@@ -316,7 +316,7 @@ public:
 		return sizeAtStart - m_size;
 	}
 
-	B8 RemoveArr(const VoidArray& arr, U32 start, U32 count, B8 reverseDir = false){
+	B32 RemoveArr(const VoidArray& arr, U32 start, U32 count, B32 reverseDir = false){
 		//TODO: Optimize
 		U32 sizeAtStart = m_size;
 		if (reverseDir){
@@ -432,8 +432,8 @@ class ReversePredicateWrapper{
 public:
 	ReversePredicateWrapper(const P& predicate) : m_predicate(predicate){}
 
-	INLINEFORCE B8 operator()(E& a, E& b) const{ return m_predicate(b, a); }
-	INLINEFORCE B8 operator()(const E& a, const E& b) const{ return m_predicate(b, a); }
+	INLINEFORCE B32 operator()(E& a, E& b) const{ return m_predicate(b, a); }
+	INLINEFORCE B32 operator()(const E& a, const E& b) const{ return m_predicate(b, a); }
 };
 
 /**
@@ -446,13 +446,13 @@ class ReversePredicateWrapper < E*, P > {
 public:
 	ReversePredicateWrapper(const P& predicate) : m_predicate(predicate){}
 
-	INLINEFORCE B8 operator()(E* a, E* b) const{
+	INLINEFORCE B32 operator()(E* a, E* b) const{
 		AVRO_ASSERT(a, "Element 'a' is null");
 		AVRO_ASSERT(b, "Element 'b' is null");
 		return m_predicate(*b, *a);
 	}
 
-	INLINEFORCE B8 operator()(const E* a, const E* b) const{
+	INLINEFORCE B32 operator()(const E* a, const E* b) const{
 		AVRO_ASSERT(a, "Element 'a' is null");
 		AVRO_ASSERT(b, "Element 'b' is null");
 		return m_predicate(*b, *a);
@@ -569,7 +569,7 @@ public:
 	INLINEFORCE E* GetData(){ return m_data; }
 	INLINEFORCE const E* GetData() const { return m_data; }
 
-	INLINEFORCE B8 IsValidIndex(U32 i) const{
+	INLINEFORCE B32 IsValidIndex(U32 i) const{
 		return i >= 0 && i < m_size;
 	}
 
@@ -624,7 +624,7 @@ public:
 		AU::Swap(m_data[indexA], m_data[indexB]);
 	}
 
-	INLINEFORCE B8 Contains(const E& value, B8 reverseDir = false) const{
+	INLINEFORCE B32 Contains(const E& value, B32 reverseDir = false) const{
 		if (reverseDir){
 			for (U32 i = m_size - 1; i >= 0; i--)
 				if (m_data[i] == value) return true;
@@ -637,7 +637,7 @@ public:
 		return false;
 	}
 
-	INLINEFORCE I32 IndexOf(const E& value, B8 reverseDir = false) const{
+	INLINEFORCE I32 IndexOf(const E& value, B32 reverseDir = false) const{
 		if (reverseDir){
 			for (U32 i = m_size - 1; i >= 0; i--)
 				if (m_data[i] == value) return i;
@@ -650,7 +650,7 @@ public:
 		return -1;
 	}
 
-	INLINEFORCE B8 Remove(const E& value, B8 reverseDir = false){
+	INLINEFORCE B32 Remove(const E& value, B32 reverseDir = false){
 		if (reverseDir){
 			for (U32 i = m_size - 1; i >= 0; i--){
 				if (m_data[i] == value){
@@ -694,7 +694,7 @@ public:
 	}
 
 	// returns true i array was modified
-	B8 RemoveArr(const E* arr, U32 start, U32 count, B8 reverseDir = false){
+	B32 RemoveArr(const E* arr, U32 start, U32 count, B32 reverseDir = false){
 		//TODO: Optimize
 		U32 sizeAtStart = m_size;
 		if (reverseDir){
@@ -721,7 +721,7 @@ public:
 		return sizeAtStart - m_size;
 	}
 
-	B8 RemoveArr(const Array& arr, B8 reverseDir = false){
+	B32 RemoveArr(const Array& arr, B32 reverseDir = false){
 		//TODO: Optimize
 		U32 sizeAtStart = m_size;
 		if (reverseDir){
@@ -748,7 +748,7 @@ public:
 		return sizeAtStart - m_size;
 	}
 
-	B8 RemoveArr(const Array& arr, U32 start, U32 count, B8 reverseDir = false){
+	B32 RemoveArr(const Array& arr, U32 start, U32 count, B32 reverseDir = false){
 		//TODO: Optimize
 		U32 sizeAtStart = m_size;
 		if (reverseDir){

@@ -10,12 +10,12 @@ class MemoryQuantum{
 	U64 m_quantumSize;
 	U64 m_quanta;
 	U64 m_particles;
-	B8 m_resizable;
+	B32 m_resizable;
 	
 public:
 	MemoryQuantum();
 
-	B8 Initialize(U64 quantumSize, U64 quanta);
+	B32 Initialize(U64 quantumSize, U64 quanta);
 
 	// Allocates from pool
 	void* Allocate();
@@ -32,7 +32,7 @@ private:
 
 	void Reset();
 
-	B8 ExpandUniverse();
+	B32 ExpandUniverse();
 	U8* AllocateNewQuantumVolume(U64 total_size, U64 segment_size);
 
 	INLINEFORCE U8* GetNext(U8* volume);

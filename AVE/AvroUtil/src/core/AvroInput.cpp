@@ -34,7 +34,7 @@ glob XINPUT_SET_STATE_FUNC_TYPE* XInputSetState_ = XInputSetStateStub;
 #define XInputGetState XInputGetState_
 #define XInputSetState XInputSetState_
 
-INLINEFORCE B8 Win32LoadXInput(){
+INLINEFORCE B32 Win32LoadXInput(){
 	HMODULE xInputLib = LoadLib("xinput1_4.dll");
 	if (!xInputLib)	{
 		// TODO(casey): Diagnostic
@@ -61,7 +61,7 @@ INLINEFORCE B8 Win32LoadXInput(){
 #endif
 
 //TODO: Support lack of gamepads
-B8 InitInput(U32 _numControllers){
+B32 InitInput(U32 _numControllers){
 
 #ifdef A_W32
 	if (Win32LoadXInput()){
@@ -102,60 +102,60 @@ namespace AVI{
 		return gamepads[controllerIndex].buttons;
 	}
 
-	B8 U(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_DPAD_U) != 0;
+	B32 U(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_DPAD_U;
 	}
 
-	B8 D(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_DPAD_D) != 0;
+	B32 D(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_DPAD_D;
 	}
 
-	B8 L(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_DPAD_L) != 0;
+	B32 L(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_DPAD_L;
 	}
 
-	B8 R(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_DPAD_R) != 0;
+	B32 R(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_DPAD_R;
 	}
 
-	B8 START(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_START) != 0;
+	B32 START(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_START;
 	}
 
-	B8 BACK(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_BACK) != 0;
+	B32 BACK(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_BACK;
 	}
 
-	B8 LB(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_LB) != 0;
+	B32 LB(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_LB;
 	}
 
-	B8 RB(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_RB) != 0;
+	B32 RB(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_RB;
 	}
 
-	B8 L3(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_L3) != 0;
+	B32 L3(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_L3;
 	}
 
-	B8 R3(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_R3) != 0;
+	B32 R3(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_R3;
 	}
 
-	B8 A(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_A) != 0;
+	B32 A(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_A != 0;
 	}
 
-	B8 B(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_B) != 0;
+	B32 B(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_B != 0;
 	}
 
-	B8 X(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_X) != 0;
+	B32 X(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_X;
 	}
 
-	B8 Y(U32 controllerIndex){
-		return (gamepads[controllerIndex].buttons & AVI_Y) != 0;
+	B32 Y(U32 controllerIndex){
+		return gamepads[controllerIndex].buttons & AVI_Y;
 	}
 
 	F32 LX(U32 controllerIndex){
@@ -208,16 +208,16 @@ namespace AVI{
 		return TRIGGER_DEADZONE / AVI_MAX_TRIGGER_VALUE;
 	}
 	
-	B8 GamePadIsActive(U32 controllerIndex){
+	B32 GamePadIsActive(U32 controllerIndex){
 		lscope XINPUT_STATE controllerState;
 		return (XInputGetState(controllerIndex, &controllerState) == ERROR_SUCCESS);
 	}
 
-	B8 GetKeyTapped(U32 vkCode){
+	B32 GetKeyTapped(U32 vkCode){
 		return GetKey(vkCode) && !prevKeys[vkCode];
 	}
 
-	B8 GetKeyReleased(U32 vkCode){
+	B32 GetKeyReleased(U32 vkCode){
 		return !GetKey(vkCode) && prevKeys[vkCode];
 	}
 

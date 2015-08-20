@@ -14,7 +14,7 @@ AudioOutput* globalAudioOutput;
 #define DIRECT_SOUND_CREATE(name) HRESULT WINAPI name(LPCGUID guidDevice, LPDIRECTSOUND *ds, LPUNKNOWN u)
 typedef DIRECT_SOUND_CREATE(DIRECT_SOUND_CREATE_FUNC_TYPE);
 
-B8 DLLEXPORT InitAudio(Window* window, AudioOutput* audioOutput){
+B32 DLLEXPORT InitAudio(Window* window, AudioOutput* audioOutput){
 	globalAudioOutput = audioOutput;
 
 	//Load DirectSound Library
@@ -161,7 +161,7 @@ void BufferAudio(AudioOutput* audioOutput, DWORD byteToLock, DWORD bytesToWrite)
 	}
 }
 
-B8 DLLEXPORT PlayAudio()
+B32 DLLEXPORT PlayAudio()
 {
 	HRESULT error = globalSecondaryBuffer->Play(0, 0, DSBPLAY_LOOPING);
 	if (SUCCEEDED(error)){
@@ -176,7 +176,7 @@ B8 DLLEXPORT PlayAudio()
 
 #elif A_UNX
 
-B8 DLLEXPORT InitAudio(Window* window, U32 samplesPerSec, U32 fps){
+B32 DLLEXPORT InitAudio(Window* window, U32 samplesPerSec, U32 fps){
 	return false;
 }
 
