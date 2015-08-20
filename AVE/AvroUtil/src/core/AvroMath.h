@@ -24,6 +24,21 @@
 #define RAD_TO_DEG (57.2957795f)
 #define DEG_TO_RAD (0.0174532925f)
 
+//Structs
+namespace AU{
+
+	//Radians wrapper class
+	struct R32{
+		F32 rad;
+	};
+
+	//Angle wrapper class
+	struct A32{
+		F32 deg;
+	};
+
+}
+
 
 //FUNCTIONS
 namespace AU{
